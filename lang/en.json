@@ -47,7 +47,7 @@
     },
     "Item": {
       "Tabs": {
-        "Attributes": "Attributes",
+        "Details": "Details",
         "Description": "Description",
         "Effects": "Effects"
       },
@@ -79,7 +79,7 @@
   },
   "TYPES": {
     "Actor": {
-      "character": "Character",
+      "player": "Player",
       "pawn": "Pawn"
     },
     "Item": {

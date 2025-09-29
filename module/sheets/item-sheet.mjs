@@ -45,15 +45,15 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
     description: {
       template: 'systems/lore/templates/item/description.hbs',
     },
-    attributesFeature: {
+    detailsFeature: {
       template:
-        'systems/lore/templates/item/attribute-parts/feature.hbs',
+        'systems/lore/templates/item/detail-parts/feature.hbs',
     },
-    attributesGear: {
-      template: 'systems/lore/templates/item/attribute-parts/gear.hbs',
+    detailsGear: {
+      template: 'systems/lore/templates/item/detail-parts/gear.hbs',
     },
-    attributesSpell: {
-      template: 'systems/lore/templates/item/attribute-parts/spell.hbs',
+    detailsSpell: {
+      template: 'systems/lore/templates/item/detail-parts/spell.hbs',
     },
     effects: {
       template: 'systems/lore/templates/item/effects.hbs',
@@ -70,13 +70,13 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
     // Control which parts show based on document subtype
     switch (this.document.type) {
       case 'feature':
-        options.parts.push('attributesFeature', 'effects');
+        options.parts.push('detailsFeature', 'effects');
         break;
       case 'gear':
-        options.parts.push('attributesGear');
+        options.parts.push('detailsGear');
         break;
       case 'spell':
-        options.parts.push('attributesSpell');
+        options.parts.push('detailsSpell');
         break;
     }
   }
@@ -110,9 +110,9 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
   /** @override */
   async _preparePartContext(partId, context) {
     switch (partId) {
-      case 'attributesFeature':
-      case 'attributesGear':
-      case 'attributesSpell':
+      case 'detailsFeature':
+      case 'detailsGear':
+      case 'detailsSpell':
         // Necessary for preserving active tab on re-render
         context.tab = context.tabs[partId];
         break;
@@ -171,11 +171,11 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
           tab.id = 'description';
           tab.label += 'Description';
           break;
-        case 'attributesFeature':
-        case 'attributesGear':
-        case 'attributesSpell':
-          tab.id = 'attributes';
-          tab.label += 'Attributes';
+        case 'detailsFeature':
+        case 'detailsGear':
+        case 'detailsSpell':
+          tab.id = 'details';
+          tab.label += 'Details';
           break;
         case 'effects':
           tab.id = 'effects';

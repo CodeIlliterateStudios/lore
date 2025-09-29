@@ -71,7 +71,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     if (this.document.limited) return;
     // Control which parts show based on document subtype
     switch (this.document.type) {
-      case 'character':
+      case 'player':
         options.parts.push('features', 'gear', 'spells', 'effects');
         break;
       case 'pawn':

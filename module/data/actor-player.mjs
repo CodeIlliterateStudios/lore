@@ -1,9 +1,9 @@
 import loreActorBase from './base-actor.mjs';
 
-export default class loreCharacter extends loreActorBase {
+export default class lorePlayer extends loreActorBase {
   static LOCALIZATION_PREFIXES = [
     ...super.LOCALIZATION_PREFIXES,
-    'LORE.Actor.Character',
+    'LORE.Actor.Player',
   ];
 
   static defineSchema() {

@@ -10,7 +10,7 @@
   ],
   "documentTypes": {
     "Actor": {
-        "character": {
+        "player": {
             "htmlFields": ["biography"]
         },
         "pawn": {
@@ -35,10 +35,10 @@
       "paths": ["css", "lang", "templates"]
     }
   },
-  "url": "Replace this with a link to your public repository",
+  "url": "https://github.com/CodeIlliterateAdmin/lore",
   "license": "LICENSE.txt",
   "readme": "README.md",
-  "bugs": "Replace this with a link to file issues or tickets",
+  "bugs": "https://github.com/CodeIlliterateAdmin/lore/issues",
   "changelog": "CHANGELOG.md",
   "media": [
     {
@@ -65,7 +65,7 @@
   "packFolders": [],
   "socket": false,
   "manifest": "Replace this with a link to the /latest release system.json so people can receive updates after they've installed the system",
-  "download": "This must link to a .zip file of the current version",
+  "download": "Thttps://github.com/CodeIlliterateAdmin/lore/archive/refs/heads/main.zip",
   "background": "systems/lore/assets/lore-logo.png",
   "grid": {
     "type": 1,

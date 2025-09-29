@@ -48,9 +48,9 @@ Hooks.once('init', function () {
 
   // Note that you don't need to declare a DataModel
   // for the base actor/item classes - they are included
-  // with the Character/Pawn as part of super.defineSchema()
+  // with the Player/Pawn as part of super.defineSchema()
   CONFIG.Actor.dataModels = {
-    character: models.loreCharacter,
+    player: models.lorePlayer,
     pawn: models.lorePawn,
   };
   CONFIG.Item.documentClass = loreItem;
