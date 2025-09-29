@@ -17,10 +17,10 @@ export default class loreActorBase extends foundry.abstract
       max: new fields.NumberField({ ...requiredInteger, initial: 5 }),
     });
 
-    // Iterate over ability names and create a new SchemaField for each.
-    schema.abilities = new fields.SchemaField(
-      Object.keys(CONFIG.LORE.abilities).reduce((obj, ability) => {
-        obj[ability] = new fields.SchemaField({
+    // Iterate over attribute names and create a new SchemaField for each.
+    schema.attributes = new fields.SchemaField(
+      Object.keys(CONFIG.LORE.attributes).reduce((obj, attribute) => {
+        obj[attribute] = new fields.SchemaField({
           value: new fields.NumberField({
             ...requiredInteger,
             initial: 10,
@@ -33,5 +33,34 @@ export default class loreActorBase extends foundry.abstract
     schema.biography = new fields.HTMLField();
 
     return schema;
+  }
+
+  prepareDerivedData() {
+    // Loop through attribute scores, and add their modifiers to our sheet output.
+    for (const key in this.attributes) {
+      // Calculate the modifier using d20 rules.
+      this.attributes[key].mod = Math.floor(
+        (this.attributes[key].value - 10) / 2
+      );
+      // Handle attribute label localization.
+      this.attributes[key].label =
+        game.i18n.localize(CONFIG.LORE.attributes[key]) ?? key;
+    }
+  }
+
+   getRollData() {
+    const data = {};
+
+    // Copy the attribute scores to the top level, so that rolls can use
+    // formulas like `@str.mod + 4`.
+    if (this.attributes) {
+      for (let [k, v] of Object.entries(this.attributes)) {
+        data[k] = foundry.utils.deepClone(v);
+      }
+    }
+
+    data.lvl = this.level.value;
+
+    return data;
   }
 }

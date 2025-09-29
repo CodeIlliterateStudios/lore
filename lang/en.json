@@ -1,6 +1,6 @@
 {
   "LORE": {
-    "Ability": {
+    "Attribute": {
       "Str": { "long": "Strength", "abbr": "str" },
       "Con": { "long": "Constitution", "abbr": "con" },
       "Dex": { "long": "Dexterity", "abbr": "dex" },
@@ -33,7 +33,7 @@
           }
         }
       },
-      "Character": {
+      "Player": {
         "FIELDS": {
           "level.value": {"label": "Level"}
         }
