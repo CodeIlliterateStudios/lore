@@ -7,7 +7,7 @@ export default class loreActorBase extends foundry.abstract
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = {};
 
-    schema.health = new fields.SchemaField({
+    schema.wounds = new fields.SchemaField({
       value: new fields.NumberField({...requiredInteger, initial: 0, min: 0, }),
       max: new fields.NumberField({ ...requiredInteger, initial: 3 }),
     });

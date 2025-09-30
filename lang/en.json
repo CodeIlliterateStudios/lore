@@ -23,9 +23,9 @@
       "base": {
         "FIELDS": {
           "biography": {"label": "Biography"},
-          "health": {
-            "value": {"label": "Health"},
-            "max": {"label": "Maximum Health"}
+          "wounds": {
+            "value": {"label": "Wounds"},
+            "max": {"label": "Maximum Wounds"}
           },
           "fatigue": {
             "value": {"label": "Fatigue"},
