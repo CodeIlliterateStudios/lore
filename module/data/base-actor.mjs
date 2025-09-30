@@ -28,6 +28,7 @@ export default class loreActorBase extends foundry.abstract
       }, {})
     );
 
+    
     schema.ancestry = new fields.StringField({ initial: "" });
     schema.gender = new fields.StringField({ initial: "" });
     schema.age = new fields.StringField({ initial: "" });

@@ -38,12 +38,7 @@
             data-dtype='Number'
           />
           <span> / </span>
-          <input
-            type='text'
-            name='system.wounds.max'
-            value='{{system.wounds.max}}'
-            data-dtype='Number'
-          />
+          <label for='system.wounds.max' class='resource-label'>{{system.wounds.max}}</label>
         </div>
       </div>
 
@@ -59,12 +54,7 @@
             data-dtype='Number'
           />
           <span> / </span>
-          <input
-            type='text'
-            name='system.fatigue.max'
-            value='{{system.fatigue.max}}'
-            data-dtype='Number'
-          />
+          <label for='system.fatigue.max' class='resource-label'>{{system.fatigue.max}}</label>
         </div>
       </div>
 
@@ -84,18 +74,7 @@
           </div>
         {{/if}}
         {{#if (eq actor.type 'pawn')}}
-          <label class='resource-label'>
-            {{localize 'LORE.Actor.Pawn.FIELDS.level.value.label'}}
-          </label>
-          <div class='resource-content flexrow flex-center flex-between'>
-            <input
-              type='text'
-              name='system.level.value'
-              value='{{system.level.value}}'
-              data-dtype='Number'
-              class='center-text'
-            />
-          </div>
+          
         {{/if}}
         {{#if (eq actor.type 'professional')}}
           <label class='resource-label'>

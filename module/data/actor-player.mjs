@@ -14,6 +14,8 @@ export default class lorePlayer extends loreActorBase {
     schema.level = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: 1 })
     });
+
+    schema.playerName = new fields.StringField({ initial: "" });
     
     return schema;
   }
