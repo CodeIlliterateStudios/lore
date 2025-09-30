@@ -21,3 +21,16 @@ LORE.attributeAbbreviations = {
   phy: 'LORE.Attribute.Phy.abbr',
   cha: 'LORE.Attribute.Cha.abbr',
 };
+
+/**
+ * The type of each attribute: 'physical' or 'mental'.
+ * @type {Object}
+ */
+LORE.attributeTypes = {
+  ref: 'physical',
+  int: 'mental',
+  gri: 'mental',
+  mig: 'physical',
+  phy: 'physical',
+  cha: 'mental',
+};

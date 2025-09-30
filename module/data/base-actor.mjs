@@ -21,12 +21,10 @@ export default class loreActorBase extends foundry.abstract
     schema.attributes = new fields.SchemaField(
       Object.keys(CONFIG.LORE.attributes).reduce((obj, attribute) => {
         obj[attribute] = new fields.SchemaField({
-          value: new fields.NumberField({
-            ...requiredInteger,
-            initial: 1,
-            min: 1,
-          }),
+          value: new fields.NumberField({ ...requiredInteger, initial: 1, min: 1 }),
+          type: new fields.StringField({ initial: CONFIG.LORE.attributeTypes[attribute] }),
         });
+        console.log(obj);
         return obj;
       }, {})
     );
@@ -38,8 +36,13 @@ export default class loreActorBase extends foundry.abstract
   prepareDerivedData() {
     // Loop through attribute scores, and add their modifiers to our sheet output.
     for (const key in this.attributes) {
-      // Modifier is value - 1 (rank 1 = 0, rank 2 = 1, etc).
-      this.attributes[key].mod = (this.attributes[key].value - 1);
+      let mod = this.attributes[key].value - 1;
+      if(this.attributes[key].type === 'physical') {
+        mod -= this.wounds.value;
+      } else if(this.attributes[key].type === 'mental') {
+        mod -= this.fatigue.value;
+      }
+      this.attributes[key].mod = mod;
       // Handle attribute label localization.
       this.attributes[key].label =
         game.i18n.localize(CONFIG.LORE.attributes[key]) ?? key;
