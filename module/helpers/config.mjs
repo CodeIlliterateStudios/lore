@@ -5,19 +5,19 @@ export const LORE = {};
  * @type {Object}
  */
 LORE.attributes = {
-  str: 'LORE.Attribute.Str.long',
-  dex: 'LORE.Attribute.Dex.long',
-  con: 'LORE.Attribute.Con.long',
+  ref: 'LORE.Attribute.Ref.long',
   int: 'LORE.Attribute.Int.long',
-  wis: 'LORE.Attribute.Wis.long',
+  gri: 'LORE.Attribute.Gri.long',
+  mig: 'LORE.Attribute.Mig.long',
+  phy: 'LORE.Attribute.Phy.long',
   cha: 'LORE.Attribute.Cha.long',
 };
 
 LORE.attributeAbbreviations = {
-  str: 'LORE.Attribute.Str.abbr',
-  dex: 'LORE.Attribute.Dex.abbr',
-  con: 'LORE.Attribute.Con.abbr',
+  ref: 'LORE.Attribute.Ref.abbr',
   int: 'LORE.Attribute.Int.abbr',
-  wis: 'LORE.Attribute.Wis.abbr',
+  gri: 'LORE.Attribute.Gri.abbr',
+  mig: 'LORE.Attribute.Mig.abbr',
+  phy: 'LORE.Attribute.Phy.abbr',
   cha: 'LORE.Attribute.Cha.abbr',
 };

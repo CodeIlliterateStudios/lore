@@ -1,11 +1,11 @@
 {
   "LORE": {
     "Attribute": {
-      "Str": { "long": "Strength", "abbr": "str" },
-      "Con": { "long": "Constitution", "abbr": "con" },
-      "Dex": { "long": "Dexterity", "abbr": "dex" },
-      "Int": { "long": "Intelligence", "abbr": "int" },
-      "Wis": { "long": "Wisdom", "abbr": "wis" },
+      "Ref": { "long": "Reflexes", "abbr": "ref" },
+      "Int": { "long": "Intellect", "abbr": "int" },
+      "Gri": { "long": "Grit", "abbr": "gri" },
+      "Mig": { "long": "Might", "abbr": "mig" },
+      "Phy": { "long": "Physique", "abbr": "phy" },
       "Cha": { "long": "Charisma", "abbr": "cha" }
     },
     "SheetLabels": {
