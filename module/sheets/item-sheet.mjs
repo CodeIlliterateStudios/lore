@@ -120,7 +120,7 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
         context.tab = context.tabs[partId];
         // Enrich description info for display
         // Enrichment turns text like `[[/r 1d20]]` into buttons
-        context.enrichedDescription = await TextEditor.enrichHTML(
+        context.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
           this.item.system.description,
           {
             // Whether to show secret blocks in the finished html
@@ -505,8 +505,8 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
   /** The following pieces set up drag handling and are unlikely to need modification  */
 
   /**
-   * Returns an array of DragDrop instances
-   * @type {DragDrop[]}
+  * Returns an array of foundry.applications.ux.DragDrop instances
+  * @type {foundry.applications.ux.DragDrop[]}
    */
   get dragDrop() {
     return this.#dragDrop;
@@ -518,7 +518,7 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
 
   /**
    * Create drag-and-drop workflow handlers for this Application
-   * @returns {DragDrop[]}     An array of DragDrop handlers
+  * @returns {foundry.applications.ux.DragDrop[]}     An array of DragDrop handlers
    * @private
    */
   #createDragDropHandlers() {
@@ -532,7 +532,7 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
         dragover: this._onDragOver.bind(this),
         drop: this._onDrop.bind(this),
       };
-      return new DragDrop(d);
+      return new foundry.applications.ux.DragDrop(d);
     });
   }
 }
