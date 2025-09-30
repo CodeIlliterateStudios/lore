@@ -254,6 +254,8 @@
 }
 .lore .tab.biography {
   flex: 1;
+  max-height: 400px; /* Adjust as needed for your layout */
+  overflow-y: auto;
 }
 .lore .tab.biography .editor {
   height: 100%;

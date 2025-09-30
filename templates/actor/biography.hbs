@@ -1,9 +1,32 @@
 {{! Biography Tab }}
+
 <section
   class='tab biography {{tab.cssClass}}'
   data-group='primary'
   data-tab='biography'
 >
+  {{#if (eq actor.type 'player')}}
+  <label for="system.playerName">{{localize "LORE.Actor.base.FIELDS.PlayerName.label"}}</label>
+  <input type="text" name="system.playerName" value="{{system.playerName}}" {{#unless editable}}disabled{{/unless}}>
+  {{/if}}
+
+  <label for="system.ancestry">{{localize "LORE.Actor.base.FIELDS.Ancestry.label"}}</label>
+  <input type="text" name="system.ancestry" value="{{system.ancestry}}" {{#unless editable}}disabled{{/unless}}>
+
+  <label for="system.gender">{{localize "LORE.Actor.base.FIELDS.Gender.label"}}</label>
+  <input type="text" name="system.gender" value="{{system.gender}}" {{#unless editable}}disabled{{/unless}}>
+
+  <label for="system.age">{{localize "LORE.Actor.base.FIELDS.Age.label"}}</label>
+  <input type="text" name="system.age" value="{{system.age}}" {{#unless editable}}disabled{{/unless}}>
+
+  <label for="system.height">{{localize "LORE.Actor.base.FIELDS.Height.label"}}</label>
+  <input type="text" name="system.height" value="{{system.height}}" {{#unless editable}}disabled{{/unless}}>
+
+  <label for="system.weight">{{localize "LORE.Actor.base.FIELDS.Weight.label"}}</label>
+  <input type="text" name="system.weight" value="{{system.weight}}" {{#unless editable}}disabled{{/unless}}>
+
+  <label for="system.biography">{{localize "LORE.Actor.base.FIELDS.biography.label"}}</label>
+
   {{! Editors must receive enriched text data from getData to properly handle rolls, UUID links, etc. }}
   {{#if editable}} 
     <prose-mirror name="system.biography" data-document-u-u-i-d="{{actor.uuid}}" value="{{system.biography}}" collaborate="true" toggled="true">

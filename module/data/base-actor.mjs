@@ -24,10 +24,16 @@ export default class loreActorBase extends foundry.abstract
           value: new fields.NumberField({ ...requiredInteger, initial: 1, min: 1 }),
           type: new fields.StringField({ initial: CONFIG.LORE.attributeTypes[attribute] }),
         });
-        console.log(obj);
         return obj;
       }, {})
     );
+
+    schema.ancestry = new fields.StringField({ initial: "" });
+    schema.gender = new fields.StringField({ initial: "" });
+    schema.age = new fields.StringField({ initial: "" });
+    schema.height = new fields.StringField({ initial: "" });
+    schema.weight = new fields.StringField({ initial: "" });
+
     schema.biography = new fields.HTMLField();
 
     return schema;

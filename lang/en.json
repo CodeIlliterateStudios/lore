@@ -22,6 +22,12 @@
       },
       "base": {
         "FIELDS": {
+          "PlayerName": {"label": "Player Name"},
+          "Ancestry": {"label": "Ancestry"},
+          "Gender": {"label": "Gender"},
+          "Age": {"label": "Age"},
+          "Height": {"label": "Height"},
+          "Weight": {"label": "Weight"},
           "biography": {"label": "Biography"},
           "wounds": {
             "value": {"label": "Wounds"},
