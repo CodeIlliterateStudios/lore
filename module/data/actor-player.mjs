@@ -24,5 +24,11 @@ export default class lorePlayer extends loreActorBase {
 
   getRollData() {
     super.getRollData();
+    const data = {};
+
+
+    data.lvl = this.level.value;
+
+    return data;
   }
 }

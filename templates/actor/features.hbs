@@ -15,7 +15,7 @@
             <label
               class='resource-label rollable flexlarge align-left'
               data-action='roll'
-              data-roll='d20+@attributes.{{key}}.mod'
+              data-roll='{{attribute.value}}d6khx+@attributes.{{key}}.mod'
               data-label='{{localize (lookup @root.config.attributes key)}}'
             >{{localize (lookup @root.config.attributes key)}}</label>
             <input
@@ -25,10 +25,9 @@
               class="attribute-score"
               data-dtype='Number'
             />
+            <div>d6</div>
             <span
-              class='attribute-mod rollable'
-              data-action='roll'
-              data-roll='d20+@attributes.{{key}}.mod'
+              class='attribute-mod'
               data-label='{{localize (lookup @root.config.attributes key)}}'
             >{{numberFormat attribute.mod decimals=0 sign=true}}</span>
           </div>

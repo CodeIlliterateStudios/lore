@@ -267,12 +267,13 @@
 .lore .resource-label {
   font-weight: bold;
 }
-.lore .ability {
+.lore .attribute {
   margin-bottom: 2px;
 }
-.lore .ability-score,
-.lore .ability-mod {
-  flex: 0 0 44px;
+.lore .attribute-score,
+.lore .attribute-mod {
+  flex: 0 0 30px;
+  text-align: center;
 }
 .lore .items-header {
   height: 28px;

@@ -17,10 +17,10 @@ export default class lorePawn extends loreActorBase {
   }
 
   prepareDerivedData() {
-    super.prepareDerivedData
+    super.prepareDerivedData();
   }
 
   getRollData() {
-    
+    super.getRollData();
   }
 }

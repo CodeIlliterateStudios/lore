@@ -57,8 +57,6 @@ export default class loreActorBase extends foundry.abstract
       }
     }
 
-    data.lvl = this.level.value;
-
     return data;
   }
 }
