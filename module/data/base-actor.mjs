@@ -22,6 +22,7 @@ export default class loreActorBase extends foundry.abstract
       Object.keys(CONFIG.LORE.attributes).reduce((obj, attribute) => {
         obj[attribute] = new fields.SchemaField({
           value: new fields.NumberField({ ...requiredInteger, initial: 1, min: 1 }),
+          max: new fields.NumberField({ ...requiredInteger, initial: 5 }),
           type: new fields.StringField({ initial: CONFIG.LORE.attributeTypes[attribute] }),
         });
         return obj;

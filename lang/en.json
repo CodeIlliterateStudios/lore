@@ -10,7 +10,8 @@
     },
     "SheetLabels": {
       "Actor": "lore Actor Sheet",
-      "Item": "lore Item Sheet"
+      "Item": "lore Item Sheet",
+      "Attribute": "Attribute"
     },
     "Actor": {
       "Tabs": {
@@ -60,6 +61,9 @@
         "Details": "Details",
         "Description": "Description",
         "Effects": "Effects"
+      },
+      "Skill": {
+        "Rank": "Rank"
       },
       "Gear": {
         "FIELDS": {
