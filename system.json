@@ -15,6 +15,9 @@
         },
         "pawn": {
             "htmlFields": ["biography"]
+        },
+        "professional": {
+            "htmlFields": ["biography"]
         }
     },
     "Item": {

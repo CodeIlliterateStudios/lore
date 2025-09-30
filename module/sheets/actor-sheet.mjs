@@ -75,7 +75,10 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
         options.parts.push('features', 'gear', 'spells', 'effects');
         break;
       case 'pawn':
-        options.parts.push('gear', 'effects');
+        options.parts.push('features', 'gear', 'effects');
+        break;
+      case 'professional':
+        options.parts.push('features', 'gear', 'spells', 'effects');
         break;
     }
   }
@@ -121,7 +124,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
         context.tab = context.tabs[partId];
         // Enrich biography info for display
         // Enrichment turns text like `[[/r 1d20]]` into buttons
-  context.enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        context.enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
           this.actor.system.biography,
           {
             // Whether to show secret blocks in the finished html
@@ -156,7 +159,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // If you have sub-tabs this is necessary to change
     const tabGroup = 'primary';
     // Default tab for first time it's rendered this session
-    if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = 'biography';
+    if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = 'features';
     return parts.reduce((tabs, partId) => {
       const tab = {
         cssClass: '',
@@ -172,10 +175,6 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
         case 'header':
         case 'tabs':
           return tabs;
-        case 'biography':
-          tab.id = 'biography';
-          tab.label += 'Biography';
-          break;
         case 'features':
           tab.id = 'features';
           tab.label += 'Features';
@@ -191,6 +190,10 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
         case 'effects':
           tab.id = 'effects';
           tab.label += 'Effects';
+          break;
+          case 'biography':
+          tab.id = 'biography';
+          tab.label += 'Biography';
           break;
       }
       if (this.tabGroups[tabGroup] === tab.id) tab.cssClass = 'active';

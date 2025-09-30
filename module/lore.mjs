@@ -52,6 +52,7 @@ Hooks.once('init', function () {
   CONFIG.Actor.dataModels = {
     player: models.lorePlayer,
     pawn: models.lorePawn,
+    professional: models.loreProfessional,
   };
   CONFIG.Item.documentClass = loreItem;
   CONFIG.Item.dataModels = {

@@ -2,6 +2,7 @@
 export { default as loreActorBase } from './base-actor.mjs';
 export { default as lorePlayer } from './actor-player.mjs';
 export { default as lorePawn } from './actor-pawn.mjs';
+export { default as loreProfessional } from './actor-professional.mjs';
 
 // Export Items
 export { default as loreItemBase } from './base-item.mjs';

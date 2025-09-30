@@ -43,6 +43,11 @@
           "cr": {"label": "CR"}
         },
         "xp": {"label": "XP"}
+      },
+      "Professional": {
+        "FIELDS": {
+          "level.value": {"label": "Level"}
+        }
       }
     },
     "Item": {
@@ -80,7 +85,8 @@
   "TYPES": {
     "Actor": {
       "player": "Player",
-      "pawn": "Pawn"
+      "pawn": "Pawn",
+      "professional": "Professional"
     },
     "Item": {
       "gear": "Gear",
