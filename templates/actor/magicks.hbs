@@ -1,32 +1,32 @@
-{{! Spells Tab }}
+{{! Magicks Tab }}
 <section
-  class='tab spells {{tab.cssClass}}'
+  class='tab magicks {{tab.cssClass}}'
   data-group='primary'
-  data-tab='spells'
+  data-tab='magicks'
 >
   <ol class='items-list'>
-    {{#each spells as |spells spellLevel|}}
+    {{#each magicks as |magicks magickLevel|}}
       <li class='item flexrow items-header'>
         <div class='item-name'>
-          {{localize 'LORE.Item.Spell.SpellLVL' level=spellLevel}}
+          {{localize 'LORE.Item.Magick.MagickLVL' level=magickLevel}}
         </div>
         <div class='item-controls'>
           {{#if @root.editable}}
             <a
               class='item-control item-create'
-              title='{{localize "DOCUMENT.Create" type='Spell'}}'
+              title='{{localize "DOCUMENT.Create" type='Magick'}}'
               data-action='createDoc'
               data-document-class='Item'
-              data-type='spell'
-              data-system.spell-level='{{spellLevel}}'
+              data-type='magick'
+              data-system.magick-level='{{magickLevel}}'
             >
               <i class='fas fa-plus'></i>
-              {{localize 'LORE.Item.Spell.AddLVL' level=spellLevel}}
+              {{localize 'LORE.Item.Magick.AddLVL' level=magickLevel}}
             </a>
           {{/if}}
         </div>
       </li>
-      {{#each spells as |item id|}}
+      {{#each magicks as |item id|}}
         <li
           class='item flexrow'
           data-item-id='{{item._id}}'
@@ -49,7 +49,7 @@
           <div class='item-controls'>
             <a
               class='item-control item-edit'
-              title='{{localize "DOCUMENT.Update" type='spell'}}'
+              title='{{localize "DOCUMENT.Update" type='magick'}}'
               data-action='viewDoc'
             >
               <i class='fas fa-edit'></i>
@@ -57,7 +57,7 @@
             {{#if @root.editable}}
               <a
                 class='item-control item-delete'
-                title='{{localize "DOCUMENT.Delete" type='spell'}}'
+                title='{{localize "DOCUMENT.Delete" type='magick'}}'
                 data-action='deleteDoc'
               >
                 <i class='fas fa-trash'></i>

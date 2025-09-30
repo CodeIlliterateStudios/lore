@@ -488,3 +488,7 @@
 .lore .effects .item .effect-controls {
   border: none;
 }
+/* Center text in input fields */
+.center-text {
+  text-align: center;
+}

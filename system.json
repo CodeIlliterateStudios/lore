@@ -27,7 +27,7 @@
         "gear": {
             "htmlFields": ["description"]
         },
-        "spell": {
+        "magick": {
             "htmlFields": ["description"]
         }
     }

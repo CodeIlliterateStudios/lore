@@ -52,8 +52,8 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
     detailsGear: {
       template: 'systems/lore/templates/item/detail-parts/gear.hbs',
     },
-    detailsSpell: {
-      template: 'systems/lore/templates/item/detail-parts/spell.hbs',
+    detailsMagick: {
+      template: 'systems/lore/templates/item/detail-parts/magick.hbs',
     },
     effects: {
       template: 'systems/lore/templates/item/effects.hbs',
@@ -75,8 +75,8 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
       case 'gear':
         options.parts.push('detailsGear');
         break;
-      case 'spell':
-        options.parts.push('detailsSpell');
+      case 'magick':
+        options.parts.push('detailsMagick');
         break;
     }
   }
@@ -112,7 +112,7 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
     switch (partId) {
       case 'detailsFeature':
       case 'detailsGear':
-      case 'detailsSpell':
+      case 'detailsMagick':
         // Necessary for preserving active tab on re-render
         context.tab = context.tabs[partId];
         break;
@@ -173,7 +173,7 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
           break;
         case 'detailsFeature':
         case 'detailsGear':
-        case 'detailsSpell':
+        case 'detailsMagick':
           tab.id = 'details';
           tab.label += 'Details';
           break;
@@ -287,8 +287,8 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
       // These data attributes are reserved for the action handling
       if (['action', 'documentClass'].includes(dataKey)) continue;
       // Nested properties require dot notation in the HTML, e.g. anything with `system`
-      // An example exists in spells.hbs, with `data-system.spell-level`
-      // which turns into the dataKey 'system.spellLevel'
+  // An example exists in magick.hbs, with `data-system.magick-level`
+      // which turns into the dataKey 'system.magickLevel'
       foundry.utils.setProperty(effectData, dataKey, value);
     }
 

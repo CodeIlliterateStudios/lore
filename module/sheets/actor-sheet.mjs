@@ -54,8 +54,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     gear: {
       template: 'systems/lore/templates/actor/gear.hbs',
     },
-    spells: {
-      template: 'systems/lore/templates/actor/spells.hbs',
+    magicks: {
+      template: 'systems/lore/templates/actor/magicks.hbs',
     },
     effects: {
       template: 'systems/lore/templates/actor/effects.hbs',
@@ -72,13 +72,13 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // Control which parts show based on document subtype
     switch (this.document.type) {
       case 'player':
-        options.parts.push('features', 'gear', 'spells', 'effects');
+        options.parts.push('features', 'gear', 'magicks', 'effects');
         break;
       case 'pawn':
-        options.parts.push('features', 'gear', 'effects');
+        options.parts.push('features', 'gear', 'magicks', 'effects');
         break;
       case 'professional':
-        options.parts.push('features', 'gear', 'spells', 'effects');
+        options.parts.push('features', 'gear', 'magicks', 'effects');
         break;
     }
   }
@@ -116,7 +116,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
   async _preparePartContext(partId, context) {
     switch (partId) {
       case 'features':
-      case 'spells':
+      case 'magicks':
       case 'gear':
         context.tab = context.tabs[partId];
         break;
@@ -183,9 +183,9 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
           tab.id = 'gear';
           tab.label += 'Gear';
           break;
-        case 'spells':
-          tab.id = 'spells';
-          tab.label += 'Spells';
+        case 'magicks':
+          tab.id = 'magicks';
+          tab.label += 'Magicks';
           break;
         case 'effects':
           tab.id = 'effects';
@@ -211,10 +211,10 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // Initialize containers.
     // You can just use `this.document.itemTypes` instead
     // if you don't need to subdivide a given type like
-    // this sheet does with spells
+    // this sheet does with magicks
     const gear = [];
     const features = [];
-    const spells = {
+    const magicks = {
       0: [],
       1: [],
       2: [],
@@ -237,22 +237,22 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       else if (i.type === 'feature') {
         features.push(i);
       }
-      // Append to spells.
-      else if (i.type === 'spell') {
-        if (i.system.spellLevel != undefined) {
-          spells[i.system.spellLevel].push(i);
+      // Append to magicks.
+      else if (i.type === 'magick') {
+        if (i.system.magickLevel != undefined) {
+          magicks[i.system.magickLevel].push(i);
         }
       }
     }
 
-    for (const s of Object.values(spells)) {
+    for (const s of Object.values(magicks)) {
       s.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     }
 
     // Sort then assign
     context.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.features = features.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    context.spells = spells;
+    context.magicks = magicks;
   }
 
   /**
@@ -355,8 +355,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       // These data attributes are reserved for the action handling
       if (['action', 'documentClass'].includes(dataKey)) continue;
       // Nested properties require dot notation in the HTML, e.g. anything with `system`
-      // An example exists in spells.hbs, with `data-system.spell-level`
-      // which turns into the dataKey 'system.spellLevel'
+      // An example exists in magicks.hbs, with `data-system.magick-level`
+      // which turns into the dataKey 'system.magickLevel'
       foundry.utils.setProperty(docData, dataKey, value);
     }
 

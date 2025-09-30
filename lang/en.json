@@ -17,7 +17,7 @@
         "Biography": "Biography",
         "Features": "Features",
         "Gear": "Gear",
-        "Spells": "Spells",
+        "Magicks": "Magicks",
         "Effects": "Effects"
       },
       "base": {
@@ -66,11 +66,11 @@
           "weight": {"label": "Weight"}
         }
       },
-      "Spell": {
+      "Magick": {
         "FIELDS": {
-          "level": {"label": "Spell Level"}
+          "level": {"label": "Magick Level"}
         },
-        "SpellLVL": "Level {level} Spells",
+        "MagickLVL": "Level {level} Magicks",
         "AddLVL": "Add LVL {level}"
       }
     },
@@ -91,7 +91,7 @@
     "Item": {
       "gear": "Gear",
       "feature": "Feature",
-      "spell": "Spell"
+      "magick": "Magick"
     }
   }
 }
