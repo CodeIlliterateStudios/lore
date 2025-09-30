@@ -7,5 +7,5 @@ export { default as loreProfessional } from './actor-professional.mjs';
 // Export Items
 export { default as loreItemBase } from './base-item.mjs';
 export { default as loreGear } from './item-gear.mjs';
-export { default as loreFeature } from './item-feature.mjs';
+export { default as loreSkill } from './item-skill.mjs';
 export { default as loreMagick } from './item-magick.mjs';

@@ -57,7 +57,7 @@ Hooks.once('init', function () {
   CONFIG.Item.documentClass = loreItem;
   CONFIG.Item.dataModels = {
     gear: models.loreGear,
-    feature: models.loreFeature,
+    skill: models.loreSkill,
     magick: models.loreMagick,
   };
 

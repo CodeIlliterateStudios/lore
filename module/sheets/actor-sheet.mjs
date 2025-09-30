@@ -45,8 +45,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       // Foundry-provided generic template
       template: 'templates/generic/tab-navigation.hbs',
     },
-    features: {
-      template: 'systems/lore/templates/actor/features.hbs',
+    skills: {
+      template: 'systems/lore/templates/actor/skills.hbs',
     },
     biography: {
       template: 'systems/lore/templates/actor/biography.hbs',
@@ -72,13 +72,13 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // Control which parts show based on document subtype
     switch (this.document.type) {
       case 'player':
-        options.parts.push('features', 'gear', 'magicks', 'effects');
+        options.parts.push('skills', 'gear', 'magicks', 'effects');
         break;
       case 'pawn':
-        options.parts.push('features', 'gear', 'magicks', 'effects');
+        options.parts.push('skills', 'gear', 'magicks', 'effects');
         break;
       case 'professional':
-        options.parts.push('features', 'gear', 'magicks', 'effects');
+        options.parts.push('skills', 'gear', 'magicks', 'effects');
         break;
     }
   }
@@ -115,7 +115,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
   /** @override */
   async _preparePartContext(partId, context) {
     switch (partId) {
-      case 'features':
+      case 'skills':
       case 'magicks':
       case 'gear':
         context.tab = context.tabs[partId];
@@ -159,7 +159,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // If you have sub-tabs this is necessary to change
     const tabGroup = 'primary';
     // Default tab for first time it's rendered this session
-    if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = 'features';
+    if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = 'skills';
     return parts.reduce((tabs, partId) => {
       const tab = {
         cssClass: '',
@@ -175,9 +175,9 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
         case 'header':
         case 'tabs':
           return tabs;
-        case 'features':
-          tab.id = 'features';
-          tab.label += 'Features';
+        case 'skills':
+          tab.id = 'skills';
+          tab.label += 'Skills';
           break;
         case 'gear':
           tab.id = 'gear';
@@ -213,7 +213,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // if you don't need to subdivide a given type like
     // this sheet does with magicks
     const gear = [];
-    const features = [];
+    const skills = [];
     const magicks = {
       0: [],
       1: [],
@@ -233,9 +233,9 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       if (i.type === 'gear') {
         gear.push(i);
       }
-      // Append to features.
-      else if (i.type === 'feature') {
-        features.push(i);
+      // Append to skills.
+      else if (i.type === 'skill') {
+        skills.push(i);
       }
       // Append to magicks.
       else if (i.type === 'magick') {
@@ -251,7 +251,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
 
     // Sort then assign
     context.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    context.features = features.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.skills = skills.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.magicks = magicks;
   }
 

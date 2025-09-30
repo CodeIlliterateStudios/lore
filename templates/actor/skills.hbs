@@ -1,8 +1,8 @@
-{{! Features Tab }}
+{{! Skills Tab }}
 <section
-  class='tab features {{tab.cssClass}}'
+  class='tab skills {{tab.cssClass}}'
   data-group='primary'
-  data-tab='features'
+  data-tab='skills'
 >
   <section class='grid grid-3col'>
     <aside class='sidebar'>
@@ -35,7 +35,7 @@
       </div>
     </aside>
 
-    {{! For the main features list, span the right two columns }}
+    {{! For the main skills list, span the right two columns }}
     <section class='main grid-span-2'>
       <ol class='items-list'>
         <li class='item flexrow items-header'>
@@ -47,15 +47,15 @@
                 title='Create item'
                 data-action='createDoc'
                 data-document-class='Item'
-                data-type='feature'
+                data-type='skill'
               >
                 <i class='fas fa-plus'></i>
-                {{localize 'DOCUMENT.New' type='feature'}}
+                {{localize 'DOCUMENT.New' type='skill'}}
               </a>
             {{/if}}
           </div>
         </li>
-        {{#each features as |item id|}}
+        {{#each skills as |item id|}}
           <li
             class='item flexrow'
             data-item-id='{{item._id}}'
@@ -78,7 +78,7 @@
             <div class='item-controls'>
               <a
                 class='item-control item-edit'
-                title='{{localize "DOCUMENT.Update" type='feature'}}'
+                title='{{localize "DOCUMENT.Update" type='skill'}}'
                 data-action='viewDoc'
               >
                 <i class='fas fa-edit'></i>
@@ -86,7 +86,7 @@
               {{#if @root.editable}}
                 <a
                   class='item-control item-delete'
-                  title='{{localize "DOCUMENT.Delete" type='feature'}}'
+                  title='{{localize "DOCUMENT.Delete" type='skill'}}'
                   data-action='deleteDoc'
                 >
                   <i class='fas fa-trash'></i>

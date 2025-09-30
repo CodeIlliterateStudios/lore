@@ -1,8 +1,8 @@
 import loreItemBase from './base-item.mjs';
 
-export default class loreFeature extends loreItemBase {
+export default class loreSkill extends loreItemBase {
   static LOCALIZATION_PREFIXES = [
     'LORE.Item.base',
-    'LORE.Item.Feature',
+    'LORE.Item.Skill',
   ];
 }

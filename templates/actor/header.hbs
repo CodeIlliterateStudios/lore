@@ -84,10 +84,32 @@
           </div>
         {{/if}}
         {{#if (eq actor.type 'pawn')}}
-          
+          <label class='resource-label'>
+            {{localize 'LORE.Actor.Pawn.FIELDS.level.value.label'}}
+          </label>
+          <div class='resource-content flexrow flex-center flex-between'>
+            <input
+              type='text'
+              name='system.level.value'
+              value='{{system.level.value}}'
+              data-dtype='Number'
+              class='center-text'
+            />
+          </div>
         {{/if}}
         {{#if (eq actor.type 'professional')}}
-          
+          <label class='resource-label'>
+            {{localize 'LORE.Actor.Professional.FIELDS.level.value.label'}}
+          </label>
+          <div class='resource-content flexrow flex-center flex-between'>
+            <input
+              type='text'
+              name='system.level.value'
+              value='{{system.level.value}}'
+              data-dtype='Number'
+              class='center-text'
+            />
+          </div>
         {{/if}}
       </div>
     </div>

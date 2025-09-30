@@ -15,7 +15,7 @@
     "Actor": {
       "Tabs": {
         "Biography": "Biography",
-        "Features": "Features",
+        "Skills": "Skills",
         "Gear": "Gear",
         "Magicks": "Magicks",
         "Effects": "Effects"
@@ -40,9 +40,8 @@
       },
       "Pawn": {
         "FIELDS": {
-          "cr": {"label": "CR"}
-        },
-        "xp": {"label": "XP"}
+          "level.value": {"label": "Level"}
+        }
       },
       "Professional": {
         "FIELDS": {
@@ -90,7 +89,7 @@
     },
     "Item": {
       "gear": "Gear",
-      "feature": "Feature",
+      "Skill": "Skill",
       "magick": "Magick"
     }
   }
