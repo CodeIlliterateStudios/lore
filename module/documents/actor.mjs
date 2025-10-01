@@ -26,8 +26,9 @@ export class loreActor extends Actor {
    * is queried and has a roll executed directly from it).
    */
   prepareDerivedData() {
-    const actorData = this;
-    const flags = actorData.flags.lore || {};
+  super.prepareDerivedData();
+  const actorData = this;
+  const flags = actorData.flags.lore || {};
   }
 
   /**

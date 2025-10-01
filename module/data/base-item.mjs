@@ -10,4 +10,8 @@ export default class loreItemBase extends foundry.abstract.TypeDataModel {
 
     return schema;
   }
+
+  prepareDerivedData() {
+    
+  }
 }

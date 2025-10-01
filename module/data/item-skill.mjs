@@ -23,6 +23,36 @@ export default class loreSkill extends loreItemBase {
       choices: Object.keys(CONFIG.LORE?.attributeTypes ?? { ref: '', int: '', gri: '', mig: '', phy: '', cha: '' })
     });
 
+    // Break down roll formula into three independent fields
+    schema.roll = new fields.SchemaField({
+      diceNum: new fields.NumberField({ initial: 1, min: 1, required: true }),
+      diceSize: new fields.StringField({ initial: 'd6' }),
+      diceBonus: new fields.StringField({
+        initial: '@{tiedAttribute}.mod',
+      }),
+    });
+
     return schema;
+  }
+
+  prepareDerivedData() {
+    super.prepareDerivedData();
+    
+    // this.parent should be the Item's parent (the Actor)
+    const actor = this.parent.parent;
+    if (!actor || !this.tiedAttribute) return 0;
+    // Defensive: check if attributes exist and have the tied attribute
+    const attr = actor.system.attributes?.[this.tiedAttribute];
+    console.log('attr', attr);
+    console.log('attr.mod', this.diceBonus);
+
+    // Build the formula dynamically using string interpolation
+    const roll = this.roll;
+    let diceNum = this.rank.value;
+    let bonus = '';
+    console.log(bonus);
+
+    this.formula = `${diceNum}${this.roll.diceSize}khx${bonus}`;
+    console.log(this.formula);
   }
 }

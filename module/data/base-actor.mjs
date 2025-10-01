@@ -24,6 +24,7 @@ export default class loreActorBase extends foundry.abstract
           value: new fields.NumberField({ ...requiredInteger, initial: 1, min: 1 }),
           max: new fields.NumberField({ ...requiredInteger, initial: 5 }),
           type: new fields.StringField({ initial: CONFIG.LORE.attributeTypes[attribute] }),
+          mod: new fields.NumberField({ ...requiredInteger, initial: 0 }),
         });
         return obj;
       }, {})
@@ -37,6 +38,8 @@ export default class loreActorBase extends foundry.abstract
     schema.weight = new fields.StringField({ initial: "" });
 
     schema.biography = new fields.HTMLField();
+
+    
 
     return schema;
   }
@@ -54,8 +57,11 @@ export default class loreActorBase extends foundry.abstract
       // Handle attribute label localization.
       this.attributes[key].label =
         game.i18n.localize(CONFIG.LORE.attributes[key]) ?? key;
+
+        console.log(this.attributes);
     }
   }
+  
 
    getRollData() {
     const data = {};
