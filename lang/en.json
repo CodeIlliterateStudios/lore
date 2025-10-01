@@ -65,6 +65,12 @@
       "Skill": {
         "Rank": "Rank"
       },
+      "Boons": {
+        "label": "Boons"
+      },
+      "Banes": {
+        "label": "Banes"
+      },
       "Gear": {
         "FIELDS": {
           "rollFormula": {"label": "Roll Formula"},

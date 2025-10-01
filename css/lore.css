@@ -225,7 +225,7 @@
 
 /* Styles limited to lore sheets */
 .lore .sidebar {
-  background-color: #757575;
+  background: none;
 }
 
 .lore .item-form {
@@ -240,7 +240,7 @@
   justify-content: flex-start;
   margin-bottom: 10px;
   padding: 5px;
-  background-color: #757575;
+  
 }
 .lore .sheet-header .profile-img {
   flex: 0 0 100px;
@@ -252,7 +252,6 @@
 }
 .lore .sheet-tabs {
   flex: 0;
-  background-color: #757575;
 }
 .lore .sheet-body,
 .lore .sheet-body .tab,
@@ -311,7 +310,6 @@
   overflow-y: auto;
   scrollbar-width: thin;
   color: var(--lore-c-tan);
-  background-color: #757575;
 }
 .lore .items-list .item-list {
   list-style: none;
