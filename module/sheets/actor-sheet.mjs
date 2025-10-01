@@ -552,7 +552,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     }
 
     // Perform the sort
-    const sortUpdates = SortingHelpers.performIntegerSort(effect, {
+  const sortUpdates = foundry.utils.performIntegerSort(effect, {
       target,
       siblings,
     });
@@ -675,7 +675,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     }
 
     // Perform the sort
-    const sortUpdates = SortingHelpers.performIntegerSort(item, {
+  const sortUpdates = foundry.utils.performIntegerSort(item, {
       target,
       siblings,
     });

@@ -447,7 +447,7 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
     }
 
     // Perform the sort
-    const sortUpdates = SortingHelpers.performIntegerSort(effect, {
+  const sortUpdates = foundry.utils.performIntegerSort(effect, {
       target,
       siblings,
     });
