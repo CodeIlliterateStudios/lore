@@ -57,9 +57,19 @@ export class loreItem extends Item {
       const rollData = this.getRollData();
 
       // Optionally, modify the formula string before creating the Roll object
+      let rollMod = '0';
+      if(this.name == 'Untrained') {
+        rollMod = '-3';
+      } 
+      else
+      {
+        rollMod = rollData.actor.attributes[this.system.tiedAttribute].mod;
+      }
+
+
       let formula = rollData.formula;
       if (rollData.actor?.attributes[this.system.tiedAttribute]?.mod) {
-        formula = `${formula} + ${rollData.actor.attributes[this.system.tiedAttribute].mod}`;
+        formula = `${formula} + ${rollMod}`;
       }
 
       // Invoke the roll and submit it to chat.
