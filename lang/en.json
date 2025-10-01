@@ -99,7 +99,7 @@
     },
     "Item": {
       "gear": "Gear",
-      "Skill": "Skill",
+      "skill": "Skill",
       "magick": "Magick"
     }
   }

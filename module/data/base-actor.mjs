@@ -53,12 +53,11 @@ export default class loreActorBase extends foundry.abstract
       } else if(this.attributes[key].type === 'mental') {
         mod -= this.fatigue.value;
       }
+      
       this.attributes[key].mod = mod;
       // Handle attribute label localization.
       this.attributes[key].label =
         game.i18n.localize(CONFIG.LORE.attributes[key]) ?? key;
-
-        console.log(this.attributes);
     }
   }
   
