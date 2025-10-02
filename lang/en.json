@@ -37,7 +37,10 @@
           "fatigue": {
             "value": {"label": "Fatigue"},
             "max": {"label": "Maximum Fatigue"}
-          }
+          },
+          "movement": {"label": "Movement"},
+          "toughness": {"label": "Toughness"},
+          "parry": {"label": "Parry"}
         }
       },
       "Player": {
