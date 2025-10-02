@@ -10,9 +10,16 @@
     <div class='document-name'>
       <input name='name' type='text' value='{{item.name}}' placeholder='Name' />
     </div>
-    {{! You may prefer to have a separate header file instead of this if statement}}
     {{#if (eq item.type 'gear')}}
-      <div class='grid grid-2col'>
+      <div class='grid grid-3col'>
+        <div class='resource'>
+          <label class='resource-label'>Type</label>
+          <select name='system.gearType'>
+            <option value='gear' {{#if (eq system.gearType 'gear')}}selected{{/if}}>Gear</option>
+            <option value='weapon' {{#if (eq system.gearType 'weapon')}}selected{{/if}}>Weapon</option>
+            <option value='armor' {{#if (eq system.gearType 'armor')}}selected{{/if}}>Armor</option>
+          </select>
+        </div>
         <div class='resource'>
           <label class='resource-label'>{{localize 'LORE.Item.Gear.FIELDS.quantity.label'}}</label>
           <input

@@ -11,6 +11,13 @@ export default class loreGear extends loreItemBase {
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = super.defineSchema();
 
+    // New: Add gearType field for Gear, Weapon, Armor
+    schema.gearType = new fields.StringField({
+      required: true,
+      initial: 'gear', // default to Gear
+      choices: ['gear', 'weapon', 'armor'],
+    });
+
     schema.quantity = new fields.NumberField({
       ...requiredInteger,
       initial: 1,

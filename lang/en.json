@@ -73,6 +73,7 @@
       },
       "Gear": {
         "FIELDS": {
+          "gearType": {"label": "Gear Type", "gear": "Gear", "weapon": "Weapon", "armor": "Armor"},
           "rollFormula": {"label": "Roll Formula"},
           "numDice": {"label": "Number of Dice"},
           "dieSize": {"label": "Die Size"},
