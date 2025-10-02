@@ -17,6 +17,10 @@ export default class loreActorBase extends foundry.abstract
       max: new fields.NumberField({ ...requiredInteger, initial: 3 }),
     });
 
+    schema.movement = new fields.NumberField({ ...requiredInteger, initial: 6, min: 0 });
+    schema.parry = new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 });
+    schema.toughness = new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 });
+
     // Iterate over attribute names and create a new SchemaField for each.
     schema.attributes = new fields.SchemaField(
       Object.keys(CONFIG.LORE.attributes).reduce((obj, attribute) => {
@@ -59,6 +63,27 @@ export default class loreActorBase extends foundry.abstract
       this.attributes[key].label =
         game.i18n.localize(CONFIG.LORE.attributes[key]) ?? key;
     }
+
+    // Handle Parry calculation.
+    let parry = 2;
+    // Check for parent (Actor) and items collection
+    if (this.parent && this.parent.items) {
+      // Find a skill item named "Fighting"
+      const fightingSkill = this.parent.items.find(
+        (item) => item.type === "skill" && item.name === "Fighting"
+      );
+      if (fightingSkill && fightingSkill.system?.rank?.value != null) {
+        parry += Math.floor(fightingSkill.system.rank.value / 2);
+      }
+    }
+    this.parry = parry;
+    console.log(this.parry);
+
+    // Handle Toughness calculation.
+    let toughness = 2;
+    // Do armor calculation here once implemented.
+    this.toughness = toughness;
+    console.log(this.toughness);
   }
   
 
