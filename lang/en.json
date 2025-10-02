@@ -80,13 +80,6 @@
           "quantity": {"label": "Quantity"},
           "weight": {"label": "Weight"}
         }
-      },
-      "Magick": {
-        "FIELDS": {
-          "level": {"label": "Magick Level"}
-        },
-        "MagickLVL": "Level {level} Magicks",
-        "AddLVL": "Add LVL {level}"
       }
     },
     "Effect": {

@@ -214,18 +214,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // this sheet does with magicks
     const gear = [];
     const skills = [];
-    const magicks = {
-      0: [],
-      1: [],
-      2: [],
-      3: [],
-      4: [],
-      5: [],
-      6: [],
-      7: [],
-      8: [],
-      9: [],
-    };
+    const magicks = [];
 
     // Iterate through items, allocating to containers
     for (let i of this.document.items) {
@@ -239,20 +228,14 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       }
       // Append to magicks.
       else if (i.type === 'magick') {
-        if (i.system.magickLevel != undefined) {
-          magicks[i.system.magickLevel].push(i);
-        }
+        magicks.push(i);
       }
-    }
-
-    for (const s of Object.values(magicks)) {
-      s.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     }
 
     // Sort then assign
     context.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.skills = skills.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    context.magicks = magicks;
+    context.magicks = magicks.sort((a, b) => (a.sort || 0) - (b.sort || 0));
   }
 
   /**
