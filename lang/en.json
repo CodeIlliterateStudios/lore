@@ -34,10 +34,13 @@
             "value": {"label": "Wounds"},
             "max": {"label": "Maximum Wounds"}
           },
+          "incapacitated": {"label": "Incapacitated"},
           "fatigue": {
             "value": {"label": "Fatigue"},
             "max": {"label": "Maximum Fatigue"}
           },
+          "unconscious": {"label": "Unconscious"},
+          "stunned": {"label": "Stunned"},
           "movement": {"label": "Movement"},
           "toughness": {"label": "Toughness"},
           "parry": {"label": "Parry"}

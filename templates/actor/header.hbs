@@ -40,6 +40,28 @@
           <span> / </span>
           <label for='system.wounds.max' class='resource-label'>{{system.wounds.max}}</label>
         </div>
+        <div class='resource-content flexrow flex-center flex-between'>
+          <input
+            type='checkbox'
+            name='system.unconscious'
+            {{#if system.unconscious}}checked{{/if}}
+            id='system.unconscious'
+          />
+          <label for='system.unconscious' class='resource-label'>
+              {{localize 'LORE.Actor.base.FIELDS.unconscious.label' 'Unconscious'}}
+          </label>
+        </div>
+        <div class='resource-content flexrow flex-center flex-between'>
+          <input
+            type='checkbox'
+            name='system.stunned'
+            {{#if system.stunned}}checked{{/if}}
+            id='system.stunned'
+          />
+          <label for='system.stunned' class='resource-label'>
+              {{localize 'LORE.Actor.base.FIELDS.stunned.label' 'Stunned'}}
+          </label>
+        </div>
       </div>
 
       <div class='resource flex-group-center'>
@@ -55,6 +77,17 @@
           />
           <span> / </span>
           <label for='system.fatigue.max' class='resource-label'>{{system.fatigue.max}}</label>
+        </div>
+        <div class='resource-content flexrow flex-center flex-between'>
+          <input
+            type='checkbox'
+            name='system.incapacitated'
+            {{#if system.incapacitated}}checked{{/if}}
+            id='system.incapacitated'
+          />
+          <label for='system.incapacitated' class='resource-label'>
+              {{localize 'LORE.Actor.base.FIELDS.incapacitated.label' 'Incapacitated'}}
+          </label>
         </div>
       </div>
 

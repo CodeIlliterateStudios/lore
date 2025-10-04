@@ -12,10 +12,16 @@ export default class loreActorBase extends foundry.abstract
       max: new fields.NumberField({ ...requiredInteger, initial: 3 }),
     });
 
+    schema.incapacitated = new fields.BooleanField({ initial: false });
+
     schema.fatigue = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 }),
       max: new fields.NumberField({ ...requiredInteger, initial: 3 }),
     });
+
+    schema.unconscious = new fields.BooleanField({ initial: false });
+
+    schema.stunned = new fields.BooleanField({ initial: false });
 
     schema.movement = new fields.NumberField({ ...requiredInteger, initial: 6, min: 0 });
     schema.parry = new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 });
