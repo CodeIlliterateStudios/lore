@@ -68,9 +68,7 @@ export class loreItem extends Item {
 
 
       let formula = rollData.formula;
-      if (rollData.actor?.attributes[this.system.tiedAttribute]?.mod) {
-        formula = `${formula} + ${rollMod}`;
-      }
+      formula = `${formula} + ${rollMod}`;
 
       // Invoke the roll and submit it to chat.
       const roll = new Roll(formula, rollData.actor);
