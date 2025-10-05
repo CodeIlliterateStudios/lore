@@ -68,7 +68,7 @@ export class loreItem extends Item {
 
 
       let formula = rollData.formula;
-      formula = `${formula} + ${rollMod}`;
+      formula = `${formula} + ${rollMod}+1d6x`;
 
       // Invoke the roll and submit it to chat.
       const roll = new Roll(formula, rollData.actor);
