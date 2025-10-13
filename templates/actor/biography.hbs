@@ -6,7 +6,7 @@
   data-tab='biography'
 >
   {{#if (eq actor.type 'player')}}
-  <label for="system.playerName">{{localize "LORE.Actor.base.FIELDS.PlayerName.label"}}</label>
+  <label for="system.playerName">{{localize "LORE.Actor.Player.FIELDS.PlayerName.label"}}</label>
   <input type="text" name="system.playerName" value="{{system.playerName}}" {{#unless editable}}disabled{{/unless}}>
   {{/if}}
 

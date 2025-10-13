@@ -501,3 +501,31 @@
 .center-text {
   text-align: center;
 }
+
+/* Health Circles */
+.health-circles {
+  gap: 8px;
+}
+.health-circle {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--lore-c-dark);
+  background: transparent;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.health-circle.filled {
+  background: var(--lore-c-dark);
+}
+.health-circle.hollow {
+  background: transparent;
+}
+
+.resource.flexcol.flex-center.grid-span-1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

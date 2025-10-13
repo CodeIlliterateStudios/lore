@@ -23,7 +23,8 @@
       },
       "base": {
         "FIELDS": {
-          "PlayerName": {"label": "Player Name"},
+          "level": {"label": "Level"},
+          
           "Ancestry": {"label": "Ancestry"},
           "Gender": {"label": "Gender"},
           "Age": {"label": "Age"},
@@ -34,13 +35,13 @@
             "value": {"label": "Wounds"},
             "max": {"label": "Maximum Wounds"}
           },
-          "incapacitated": {"label": "Incapacitated"},
+          "incapacitated": {"label": "Inc"},
           "fatigue": {
             "value": {"label": "Fatigue"},
             "max": {"label": "Maximum Fatigue"}
           },
-          "unconscious": {"label": "Unconscious"},
-          "stunned": {"label": "Stunned"},
+          "unconscious": {"label": "Unc"},
+          "stunned": {"label": "Stn"},
           "movement": {"label": "Movement"},
           "toughness": {"label": "Toughness"},
           "parry": {"label": "Parry"}
@@ -48,17 +49,17 @@
       },
       "Player": {
         "FIELDS": {
-          "level.value": {"label": "Level"}
+          "PlayerName": {"label": "Player Name"}
         }
       },
       "Pawn": {
         "FIELDS": {
-          "level.value": {"label": "Level"}
+          
         }
       },
       "Professional": {
         "FIELDS": {
-          "level.value": {"label": "Level"}
+          
         }
       }
     },

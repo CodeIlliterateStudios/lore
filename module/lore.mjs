@@ -83,10 +83,20 @@ Hooks.once('init', function () {
 /*  Handlebars Helpers                          */
 /* -------------------------------------------- */
 
+
 // If you need to add Handlebars helpers, here is a useful example:
 Handlebars.registerHelper('toLowerCase', function (str) {
   return str.toLowerCase();
 });
+
+// Register a 'range' helper for looping in templates
+Handlebars.registerHelper('range', function (start, end) {
+  let arr = [];
+  for (let i = start; i < end; i++) arr.push(i);
+  return arr;
+});
+
+
 
 /* -------------------------------------------- */
 /*  Ready Hook                                  */

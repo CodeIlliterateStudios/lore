@@ -7,6 +7,10 @@ export default class loreActorBase extends foundry.abstract
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = {};
 
+    schema.level = new fields.SchemaField({
+      value: new fields.NumberField({ ...requiredInteger, initial: 1 })
+    });
+
     schema.wounds = new fields.SchemaField({
       value: new fields.NumberField({...requiredInteger, initial: 0, min: 0, }),
       max: new fields.NumberField({ ...requiredInteger, initial: 3 }),
@@ -87,9 +91,10 @@ export default class loreActorBase extends foundry.abstract
 
     // Handle Toughness calculation.
     let toughness = 2;
-    // Do armor calculation here once implemented.
     this.toughness = toughness;
     console.log(this.toughness);
+
+    // Do armor calculation here once implemented.
   }
   
 
