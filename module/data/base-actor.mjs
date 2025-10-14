@@ -59,6 +59,7 @@ export default class loreActorBase extends foundry.abstract
   }
 
   prepareDerivedData() {
+
     // Loop through attribute scores, and add their modifiers to our sheet output.
     for (const key in this.attributes) {
       let mod = this.attributes[key].value - 1;
@@ -74,25 +75,15 @@ export default class loreActorBase extends foundry.abstract
         game.i18n.localize(CONFIG.LORE.attributes[key]) ?? key;
     }
 
-    // Handle Parry calculation.
+    
     let parry = 2;
-    // Check for parent (Actor) and items collection
-    if (this.parent && this.parent.items) {
-      // Find a skill item named "Fighting"
-      const fightingSkill = this.parent.items.find(
-        (item) => item.type === "skill" && item.name === "Fighting"
-      );
-      if (fightingSkill && fightingSkill.system?.rank?.value != null) {
-        parry += Math.floor(fightingSkill.system.rank.value / 2);
-      }
-    }
+    // Handle Parry calculation.
     this.parry = parry;
-    console.log(this.parry);
 
-    // Handle Toughness calculation.
+    
     let toughness = 2;
+    // Handle Toughness calculation.
     this.toughness = toughness;
-    console.log(this.toughness);
 
     // Do armor calculation here once implemented.
   }

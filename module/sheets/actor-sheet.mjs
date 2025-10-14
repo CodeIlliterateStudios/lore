@@ -252,6 +252,65 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // You may want to add other special handling here
     // Foundry comes with a large number of utility classes, e.g. SearchFilter
     // That you may want to implement yourself.
+
+    // Wounds checkboxes health bar logic
+    const woundsCheckboxes = $(this.element).find('.wounds-checkbox');
+    // Set checked state based on actor's wounds.value
+    const woundsValue = this.actor.system.wounds?.value || 0;
+    woundsCheckboxes.each(function(i) {
+      this.checked = i < woundsValue;
+    });
+
+    woundsCheckboxes.on('change', (e) => {
+      const idx = woundsCheckboxes.index(e.target);
+      if (e.target.checked) {
+        woundsCheckboxes.each(function(i) {
+          if (i <= idx) this.checked = true;
+        });
+      } else {
+        woundsCheckboxes.each(function(i) {
+          if (i >= idx) this.checked = false;
+        });
+      }
+      // Update wounds.value in actor data
+      const newValue = woundsCheckboxes.filter(':checked').length;
+        this.actor.update({ 'system.wounds.value': newValue });
+        // Automatically set unconscious to true if wounds.value equals wounds.max
+        const woundsMax = this.actor.system.wounds?.max || 0;
+        if (newValue === woundsMax && woundsMax > 0) {
+          this.actor.update({ 'system.unconscious': true });
+        }
+    });
+
+    // Fatigue checkboxes health bar logic
+    const fatigueCheckboxes = $(this.element).find('.fatigue-checkbox');
+    // Set checked state based on actor's fatigue.value
+    const fatigueValue = this.actor.system.fatigue?.value || 0;
+    fatigueCheckboxes.each(function(i) {
+      this.checked = i < fatigueValue;
+    });
+
+    fatigueCheckboxes.on('change', (e) => {
+      const idx = fatigueCheckboxes.index(e.target);
+      if (e.target.checked) {
+        fatigueCheckboxes.each(function(i) {
+          if (i <= idx) this.checked = true;
+        });
+      } else {
+        fatigueCheckboxes.each(function(i) {
+          if (i >= idx) this.checked = false;
+        });
+      }
+      // Update fatigue.value in actor data
+      const newValue = fatigueCheckboxes.filter(':checked').length;
+        this.actor.update({ 'system.fatigue.value': newValue });
+        // Automatically set incapacitated to true if fatigue.value equals fatigue.max
+        const fatigueMax = this.actor.system.fatigue?.max || 0;
+        if (newValue === fatigueMax && fatigueMax > 0) {
+          this.actor.update({ 'system.incapacitated': true });
+        }
+    });
+    
   }
 
   /**************

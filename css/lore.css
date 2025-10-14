@@ -501,31 +501,48 @@
 .center-text {
   text-align: center;
 }
-
-/* Health Circles */
-.health-circles {
-  gap: 8px;
-}
-.health-circle {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 2px solid var(--lore-c-dark);
-  background: transparent;
-  cursor: pointer;
-  box-sizing: border-box;
-}
-.health-circle.filled {
-  background: var(--lore-c-dark);
-}
-.health-circle.hollow {
-  background: transparent;
-}
-
 .resource.flexcol.flex-center.grid-span-1 {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+/* Custom circular checkboxes for wounds and fatigue */
+.wounds-checkbox, .fatigue-checkbox, .status-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+.wounds-checkbox + .custom-circle,
+.fatigue-checkbox + .custom-circle,
+.status-checkbox + .custom-circle {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--lore-c-dark);
+  border-radius: 50%;
+  background: transparent;
+  vertical-align: middle;
+  margin: 0 4px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+.wounds-checkbox:checked + .custom-circle,
+.fatigue-checkbox:checked + .custom-circle,
+.status-checkbox:checked + .custom-circle {
+  background: var(--lore-c-dark);
+  box-shadow: 0 0 0 2px var(--lore-c-dark) inset;
+}
+
+.wounds-checkbox:checked, .fatigue-checkbox:checked, .status-checkbox:checked {
+  background: var(--lore-c-dark);
+  box-shadow: 0 0 0 2px var(--lore-c-dark) inset;
+}
+.wounds-checkbox:focus, .fatigue-checkbox:focus, .status-checkbox:focus {
+  box-shadow: 0 0 0 2px var(--lore-c-tan);
 }
