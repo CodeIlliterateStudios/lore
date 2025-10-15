@@ -4,6 +4,22 @@
  */
 export class loreItem extends Item {
   /**
+   * Return the default artwork for a new item, based on its type.
+   * @param {object} itemData - The item data object
+   * @returns {{img: string}}
+   */
+  static getDefaultArtwork(itemData = {}) {
+    const type = itemData.type || "default";
+    // You can customize these paths as needed
+    const defaultImages = {
+      gear: "icons/svg/coins.svg",
+      magick: "systems/lore/assets/default-magick.png",
+      skill: "icons/dice/d6black.svg",
+      default: "systems/lore/assets/default-item.png"
+    };
+    return { img: defaultImages[type] || defaultImages.default };
+  }
+  /**
    * Augment the basic Item data model with additional dynamic data.
    */
   prepareData() {

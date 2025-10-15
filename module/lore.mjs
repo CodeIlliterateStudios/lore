@@ -105,6 +105,72 @@ Handlebars.registerHelper('range', function (start, end) {
 Hooks.once('ready', function () {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on('hotbarDrop', (bar, data, slot) => createDocMacro(data, slot));
+    // Automatically add default skills to new actors
+    Hooks.on('createActor', async function(actor, options, userId) {
+      // Only add if actor is owned by the current user
+      if (actor.isOwner) {
+        const defaultSkills = [
+          {
+            name: 'Untrained',
+            type: 'skill',
+            img: 'icons/dice/d6black.svg', // You can change the icon path
+            system: {
+              rank: { value: 1, max: 5 },
+              tiedAttribute: 'ref', // Example attribute, adjust as needed
+            }
+          },
+          {
+            name: 'Athletics',
+            type: 'skill',
+            img: 'icons/dice/d6black.svg', // You can change the icon path
+            system: {
+              rank: { value: 1, max: 5 },
+              tiedAttribute: 'mig', // Example attribute, adjust as needed
+            }
+          },
+          {
+            name: 'Knowledge',
+            type: 'skill',
+            img: 'icons/dice/d6black.svg', // You can change the icon path
+            system: {
+              rank: { value: 1, max: 5 },
+              tiedAttribute: 'int', // Example attribute, adjust as needed
+            }
+          },
+          {
+            name: 'Notice',
+            type: 'skill',
+            img: 'icons/dice/d6black.svg', // You can change the icon path
+            system: {
+              rank: { value: 1, max: 5 },
+              tiedAttribute: 'ref', // Example attribute, adjust as needed
+            }
+          },
+          {
+            name: 'Persuasion',
+            type: 'skill',
+            img: 'icons/dice/d6black.svg', // You can change the icon path
+            system: {
+              rank: { value: 1, max: 5 },
+              tiedAttribute: 'cha', // Example attribute, adjust as needed
+            }
+          },
+          {
+            name: 'Stealth',
+            type: 'skill',
+            img: 'icons/dice/d6black.svg', // You can change the icon path
+            system: {
+              rank: { value: 1, max: 5 },
+              tiedAttribute: 'ref', // Example attribute, adjust as needed
+            }
+          },
+        ];
+        // Create each skill item for the actor
+        for (let skillData of defaultSkills) {
+          await actor.createEmbeddedDocuments('Item', [skillData]);
+        }
+      }
+    });
 });
 
 /* -------------------------------------------- */
