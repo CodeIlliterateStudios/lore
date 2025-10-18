@@ -15,7 +15,7 @@
             <label
               class='resource-label rollable flexlarge align-left'
               data-action='roll'
-              data-roll='{{attribute.value}}d6khx+@attributes.{{key}}.mod+1d6x'
+              data-roll='{{attribute.value}}d6khx+@attributes.{{key}}.mod{{#unless (eq @root.actor.type "pawn")}}+1d6x{{/unless}}'
               data-label='{{localize (lookup @root.config.attributes key)}}'
             >{{localize (lookup @root.config.attributes key)}}</label>
             <input

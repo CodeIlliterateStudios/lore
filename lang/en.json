@@ -11,7 +11,8 @@
     "SheetLabels": {
       "Actor": "lore Actor Sheet",
       "Item": "lore Item Sheet",
-      "Attribute": "Attribute"
+      "Attribute": "Attribute",
+      "RollModifier": "Roll Modifier"
     },
     "Actor": {
       "Tabs": {

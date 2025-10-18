@@ -1,0 +1,16 @@
+<div class="lore-roll-popup">
+  <!-- Title is shown in the Window header via the Application title; keep content focused on controls -->
+  <p>Type: {{rollType}}</p>
+  <pre>{{{JSONstringify rollData}}}</pre>
+  {{#if options}}
+    <div class="roll-options">
+      {{#each options}}
+        <button class="roll-option" data-option="{{@key}}">{{this}}</button>
+      {{/each}}
+    </div>
+  {{/if}}
+  <div class="roll-popup-actions">
+    <button class="confirm-roll">Confirm</button>
+    <button class="close-popup">Close</button>
+  </div>
+</div>

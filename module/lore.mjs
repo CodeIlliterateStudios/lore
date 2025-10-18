@@ -66,17 +66,21 @@ Hooks.once('init', function () {
   // if the transfer property on the Active Effect is true.
   CONFIG.ActiveEffect.legacyTransferral = false;
 
-  // Register sheet application classes
-  foundry.documents.collections.Actors.unregisterSheet('core', foundry.appv1.sheets.ActorSheet);
-  foundry.documents.collections.Actors.registerSheet('lore', loreActorSheet, {
-    makeDefault: true,
-    label: 'LORE.SheetLabels.Actor',
-  });
-  foundry.documents.collections.Items.unregisterSheet('core', foundry.appv1.sheets.ItemSheet);
-  foundry.documents.collections.Items.registerSheet('lore', loreItemSheet, {
-    makeDefault: true,
-    label: 'LORE.SheetLabels.Item',
-  });
+  // Register sheet application classes after confirming existence
+  if (loreActorSheet && loreItemSheet) {
+    foundry.documents.collections.Actors.unregisterSheet('core', foundry.appv1.sheets.ActorSheet);
+    foundry.documents.collections.Actors.registerSheet('lore', loreActorSheet, {
+      makeDefault: true,
+      label: 'LORE.SheetLabels.Actor',
+    });
+    foundry.documents.collections.Items.unregisterSheet('core', foundry.appv1.sheets.ItemSheet);
+    foundry.documents.collections.Items.registerSheet('lore', loreItemSheet, {
+      makeDefault: true,
+      label: 'LORE.SheetLabels.Item',
+    });
+  } else {
+    console.error('Lore sheet classes not found for registration.');
+  }
 });
 
 /* -------------------------------------------- */
@@ -90,6 +94,14 @@ Handlebars.registerHelper('toLowerCase', function (str) {
 });
 
 // Register a 'range' helper for looping in templates
+// Register a safe JSONstringify helper for roll-popup and other templates
+Handlebars.registerHelper('JSONstringify', function(context) {
+  try {
+    return JSON.stringify(context, null, 2);
+  } catch (e) {
+    return '';
+  }
+});
 Handlebars.registerHelper('range', function (start, end) {
   let arr = [];
   for (let i = start; i < end; i++) arr.push(i);
@@ -225,7 +237,7 @@ function rollItemMacro(itemUuid) {
     uuid: itemUuid,
   };
   // Load the item from the uuid.
-  Item.fromDropData(dropData).then((item) => {
+  Item.fromDropData(dropData).then(async (item) => {
     // Determine if the item loaded and if it's an owned item.
     if (!item || !item.parent) {
       const itemName = item?.name ?? itemUuid;
@@ -234,7 +246,13 @@ function rollItemMacro(itemUuid) {
       );
     }
 
-    // Trigger the item roll
-    item.roll();
+    // Trigger the item roll and send it to chat directly (no popup)
+    const rollResult = await item.roll();
+    const roll = rollResult instanceof Roll ? rollResult : new Roll(rollResult?.formula || '');
+    await roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: item.parent }),
+      flavor: item.name,
+      rollMode: game.settings.get('core', 'rollMode'),
+    });
   });
 }

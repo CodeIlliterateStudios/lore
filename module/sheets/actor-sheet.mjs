@@ -1,4 +1,5 @@
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
+import { RollPopup } from '../apps/roll-popup.mjs';
 
 const { api, sheets } = foundry.applications;
 
@@ -440,8 +441,24 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
 
     // Handle rolls that supply the formula directly.
     if (dataset.roll) {
+      // Show a confirmation popup with roll data before executing the roll
       let label = dataset.label ? `[attribute] ${dataset.label}` : '';
-      let roll = new Roll(dataset.roll, this.actor.getRollData());
+      const roll = new Roll(dataset.roll, this.actor.getRollData());
+
+      // Prepare roll data for display in the popup
+      const rollData = roll.toJSON ? roll.toJSON() : { formula: dataset.roll };
+
+    const popup = new RollPopup({ rollType: 'attribute', rollData });
+      popup.render(true);
+
+      // Await the user's confirmation before sending the roll
+      try {
+        await popup.awaitConfirm();
+      } catch (err) {
+        // If awaiting fails or is canceled, don't proceed
+        return null;
+      }
+
       await roll.toMessage({
         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
         flavor: label,
