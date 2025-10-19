@@ -4,13 +4,22 @@
 export class RollPopup extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
 ) {
-  constructor({ rollType = "generic", rollData = {}, options = {} } = {}) {
+  constructor({ rollType = "generic", rollData = {}, label = "", options = {} } = {}) {
     // Pass rendering options to super but don't overwrite the Application.options property.
     super(options);
-    this.rollType = rollType;
+  this.rollType = rollType;
     this.rollData = rollData;
+  this.label = label;
     // Keep popup-specific options separate to avoid clobbering Application internals
     this.popupOptions = options || {};
+  }
+
+  /**
+   * Window title shown in the header.
+   * Prefer the provided roll label, otherwise fall back to configured options or the default.
+   */
+  get title() {
+    return this.label || this.options?.title || this.constructor.DEFAULT_OPTIONS?.title || "";
   }
 
   static DEFAULT_OPTIONS = foundry.utils.mergeObject(
@@ -29,9 +38,10 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
   /** @override */
   getData() {
     return {
-      title: this.options?.title || this.title,
+      title: this.title,
       rollType: this.rollType,
       rollData: this.rollData,
+      label: this.label,
       options: this.popupOptions,
     };
   }
@@ -40,9 +50,10 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
   async _prepareContext(options) {
     // Provide the same render context the template expects
     return {
-      title: this.options?.title || this.title,
+      title: this.title,
       rollType: this.rollType,
       rollData: this.rollData,
+      label: this.label,
       options: this.popupOptions,
     };
   }

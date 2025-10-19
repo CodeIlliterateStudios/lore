@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
-@import url('../css/level.css');
 :root {
   --lore-c-dark: #191813;
   --lore-c-faint: #c9c7b8;
@@ -225,10 +224,6 @@
 }
 
 /* Styles limited to lore sheets */
-.lore .sidebar {
-  background: none;
-}
-
 .lore .item-form {
   font-family: "Roboto", sans-serif;
 }
@@ -240,8 +235,6 @@
   flex-wrap: wrap;
   justify-content: flex-start;
   margin-bottom: 10px;
-  padding: 5px;
-  
 }
 .lore .sheet-header .profile-img {
   flex: 0 0 100px;
@@ -258,12 +251,9 @@
 .lore .sheet-body .tab,
 .lore .sheet-body .tab .editor {
   height: 100%;
-  background-color: #757575;
 }
 .lore .tab.biography {
   flex: 1;
-  max-height: 400px; /* Adjust as needed for your layout */
-  overflow-y: auto;
 }
 .lore .tab.biography .editor {
   height: 100%;
@@ -282,7 +272,10 @@
 }
 .lore .attribute-score,
 .lore .attribute-mod {
-  flex: 0 0 30px;
+  flex: 0 0 44px;
+}
+.lore .attribute-input {
+  width: 44px;
   text-align: center;
 }
 .lore .items-header {
@@ -498,52 +491,55 @@
 .lore .effects .item .effect-controls {
   border: none;
 }
-/* Center text in input fields */
-.center-text {
+
+/* Roll popup */
+.lore-roll-popup {
   text-align: center;
 }
-.resource.flexcol.flex-center.grid-span-1 {
+.lore-roll-popup .roll-options,
+.lore-roll-popup .roll-popup-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.lore-roll-popup .roll-popup-actions {
   justify-content: center;
 }
-/* Custom circular checkboxes for wounds and fatigue */
-.wounds-checkbox, .fatigue-checkbox, .status-checkbox {
-  position: absolute;
-  opacity: 0;
-  width: 24px;
-  height: 24px;
-  margin: 0;
-  cursor: pointer;
-  z-index: 2;
+.lore-roll-popup .roll-options {
+  justify-content: center;
 }
-.wounds-checkbox + .custom-circle,
-.fatigue-checkbox + .custom-circle,
-.status-checkbox + .custom-circle {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  border: 2px solid var(--lore-c-dark);
-  border-radius: 50%;
-  background: transparent;
-  vertical-align: middle;
-  margin: 0 4px;
-  box-sizing: border-box;
-  position: relative;
-  z-index: 1;
-}
-.wounds-checkbox:checked + .custom-circle,
-.fatigue-checkbox:checked + .custom-circle,
-.status-checkbox:checked + .custom-circle {
-  background: var(--lore-c-dark);
-  box-shadow: 0 0 0 2px var(--lore-c-dark) inset;
+.lore-roll-popup .roll-options .roll-option,
+.lore-roll-popup .roll-popup-actions button {
+  flex: 0 0 auto; /* keep buttons sized to content, side-by-side */
 }
 
-.wounds-checkbox:checked, .fatigue-checkbox:checked, .status-checkbox:checked {
-  background: var(--lore-c-dark);
-  box-shadow: 0 0 0 2px var(--lore-c-dark) inset;
+/* Make the action bar full-bleed to window sides/bottom and stick to bottom */
+.window-app.lore-roll-popup .window-content {
+  /* Remove default padding on sides and bottom for this popup */
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+  /* Make the content area a flex column to allow sticky footer */
+  display: flex;
+  flex-direction: column;
 }
-.wounds-checkbox:focus, .fatigue-checkbox:focus, .status-checkbox:focus {
-  box-shadow: 0 0 0 2px var(--lore-c-tan);
+
+.window-app.lore-roll-popup .window-content > .lore-roll-popup {
+  /* Use flex and let this fill the available space */
+  min-height: 100%;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.window-app.lore-roll-popup .window-content > .lore-roll-popup .roll-popup-actions {
+  /* Push actions to bottom and make them span full width */
+  margin-top: 0px; /* overrides earlier margin-top */
+  width: 0%;
+  /* Optional subtle separation from content above */
+  padding-top: 8px;
+  border-top: 1px solid var(--lore-c-faint);
 }

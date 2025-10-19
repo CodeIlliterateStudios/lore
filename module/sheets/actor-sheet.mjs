@@ -442,13 +442,13 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // Handle rolls that supply the formula directly.
     if (dataset.roll) {
       // Show a confirmation popup with roll data before executing the roll
-      let label = dataset.label ? `[attribute] ${dataset.label}` : '';
+      const label = dataset.label ?? '';
       const roll = new Roll(dataset.roll, this.actor.getRollData());
 
       // Prepare roll data for display in the popup
       const rollData = roll.toJSON ? roll.toJSON() : { formula: dataset.roll };
 
-    const popup = new RollPopup({ rollType: 'attribute', rollData });
+    const popup = new RollPopup({ rollType: 'attribute', rollData, label });
       popup.render(true);
 
       // Await the user's confirmation before sending the roll

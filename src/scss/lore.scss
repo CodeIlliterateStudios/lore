@@ -19,3 +19,55 @@
   @import 'components/items';
   @import 'components/effects';
 }
+
+/* Roll popup */
+.lore-roll-popup {
+  text-align: center;
+  .roll-options,
+  .roll-popup-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .roll-popup-actions {
+    justify-content: center;
+  }
+  .roll-options { justify-content: center; }
+
+  .roll-options .roll-option,
+  .roll-popup-actions button {
+    flex: 0 0 auto; /* keep buttons sized to content, side-by-side */
+  }
+}
+
+/* Make the action bar full-bleed to window sides/bottom and stick to bottom */
+.window-app.lore-roll-popup .window-content {
+  /* Remove default padding on sides and bottom for this popup */
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+  /* Make the content area a flex column to allow sticky footer */
+  display: flex;
+  flex-direction: column;
+}
+
+.window-app.lore-roll-popup .window-content > .lore-roll-popup {
+  /* Use flex and let this fill the available space */
+  min-height: 100%;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.window-app.lore-roll-popup .window-content > .lore-roll-popup .roll-popup-actions {
+  /* Push actions to bottom and make them span full width */
+  margin-top: auto; /* overrides earlier margin-top */
+  width: 100%;
+  /* Optional subtle separation from content above */
+  padding-top: 8px;
+  border-top: 1px solid var(--lore-c-faint);
+}

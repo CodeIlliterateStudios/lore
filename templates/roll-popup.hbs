@@ -1,7 +1,7 @@
 <div class="lore-roll-popup">
   <!-- Title is shown in the Window header via the Application title; keep content focused on controls -->
-  <p>Type: {{rollType}}</p>
-  <pre>{{{JSONstringify rollData}}}</pre>
+  
+  <p class="roll-formula">{{rollData.formula}}</p>
   {{#if options}}
     <div class="roll-options">
       {{#each options}}
