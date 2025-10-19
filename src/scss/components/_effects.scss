@@ -27,9 +27,10 @@
 .effects-list {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 8px 0 0; /* right gutter so text doesn't touch scrollbar */
   overflow-y: auto;
   scrollbar-width: thin;
+  scrollbar-gutter: stable;
   color: $c-tan;
 
   // Child lists

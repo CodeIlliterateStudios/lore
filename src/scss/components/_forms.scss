@@ -2,6 +2,11 @@
   font-family: $font-primary;
 }
 
+.window-app.lore .window-content {
+  display: flex;
+  flex-direction: column;
+}
+
 .sheet-header {
   flex: 0 auto;
   overflow: hidden;
@@ -50,14 +55,38 @@
   flex: 0;
 }
 
-.sheet-body,
-.sheet-body .tab,
+.sheet-body {
+  flex: 1 1 auto;
+  min-height: 0; // critical to allow inner tabs to scroll
+  display: flex;
+  flex-direction: column;
+}
+
+.sheet-body .tab {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .sheet-body .tab .editor {
   height: 100%;
 }
 
+/* Add a consistent right-side gutter to all tabs */
+.sheet-body .tab {
+  padding-right: 8px;
+  scrollbar-gutter: stable;
+}
+
 .tab.biography {
   flex: 1;
+  margin-top: 8px;
+  /* Allow scrolling when biography content exceeds available space */
+  overflow-y: auto;
+  /* Keep a little space between content and the right scrollbar */
+  padding-right: 8px;
+  /* Reserve space to prevent layout shift when scrollbar appears (where supported) */
+  scrollbar-gutter: stable;
+  min-height: 0; /* ensure flex child can shrink to enable overflow */
 
   .editor {
     height: 100%;

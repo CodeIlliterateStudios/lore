@@ -21,15 +21,45 @@
 }
 
 // -----------------------------------------
+// Gear, Magicks, Effects tabs: fixed size and scrolling
+// -----------------------------------------
+// Follow the same pattern as Skills: only flex when active so Foundry's
+// tab visibility isn't overridden; make inner lists scroll with a right gutter.
+.tab.gear,
+.tab.magicks,
+.tab.effects {
+  min-height: 0;
+
+  &.active {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; // keep tab at fixed height; let inner lists scroll
+  }
+
+  // Top-level list should fill and scroll
+  > .items-list,
+  > .effects-list,
+  > ol {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 100%;
+    overflow-y: auto;
+    padding-right: 8px; // consistent right gutter
+    scrollbar-gutter: stable;
+  }
+}
+
+// -----------------------------------------
 // Items Lists
 // -----------------------------------------
 
 .items-list {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 8px 0 0; /* right gutter so text doesn't touch scrollbar */
   overflow-y: auto;
   scrollbar-width: thin;
+  scrollbar-gutter: stable;
   color: $c-tan;
 
   // Child lists
@@ -118,4 +148,52 @@
   
   flex: 0 0 200px;
   padding: 0 8px;
+}
+
+// -----------------------------------------
+// Skills Tab: scroll only the skills list
+// -----------------------------------------
+// In the Skills tab, the markup places attributes in a left sidebar and
+// the skills list in a right-side .main area within a CSS grid. To ensure
+// only the skills list scrolls (and not the attributes), we need to:
+// 1) Allow the grid and the .main grid item to shrink within the tab's height
+//    by setting min-height: 0 (grid items default to min-height: auto).
+// 2) Make the .main area a flex column and let the .items-list flex and scroll.
+.tab.skills {
+  // Ensure this tab can shrink within the sheet body height (prevents clipping header)
+  min-height: 0;
+
+  // Only when the skills tab is active should it become a flex column
+  &.active {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; // keep tab at fixed height; let inner lists scroll
+  }
+  // Ensure the grid container in this tab can shrink and enable child overflow
+  .grid {
+    flex: 1 1 auto; // fill available vertical space inside the tab
+    min-height: 0;
+  }
+
+  // Let the left sidebar scroll independently if it grows tall
+  .sidebar {
+    overflow-y: auto;
+    padding-right: 8px; // maintain right gutter like other scrolling panes
+    min-height: 0;
+  }
+
+  // The right-side main area that holds the skills list
+  .main {
+    display: flex;
+    flex-direction: column;
+    min-height: 0; // critical for overflow children inside grid item
+
+    // The skills list itself should take remaining space and scroll
+    .items-list,
+    > ol {
+      flex: 1 1 auto;
+      min-height: 0;
+      max-height: 100%;
+    }
+  }
 }

@@ -227,6 +227,10 @@
 .lore .item-form {
   font-family: "Roboto", sans-serif;
 }
+.window-app.lore .window-content {
+  display: flex;
+  flex-direction: column;
+}
 .lore .sheet-header {
   flex: 0 auto;
   overflow: hidden;
@@ -267,13 +271,33 @@
 .lore .sheet-tabs {
   flex: 0;
 }
-.lore .sheet-body,
-.lore .sheet-body .tab,
+.lore .sheet-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.lore .sheet-body .tab {
+  flex: 1 1 auto;
+  min-height: 0;
+}
 .lore .sheet-body .tab .editor {
   height: 100%;
 }
+.lore .sheet-body .tab {
+  padding-right: 8px;
+  scrollbar-gutter: stable;
+}
 .lore .tab.biography {
   flex: 1;
+  margin-top: 8px;
+  /* Allow scrolling when biography content exceeds available space */
+  overflow-y: auto;
+  /* Keep a little space between content and the right scrollbar */
+  padding-right: 8px;
+  /* Reserve space to prevent layout shift when scrollbar appears (where supported) */
+  scrollbar-gutter: stable;
+  min-height: 0; /* ensure flex child can shrink to enable overflow */
 }
 .lore .tab.biography .editor {
   height: 100%;
@@ -317,12 +341,41 @@
   text-align: left;
   display: flex;
 }
+.lore .tab.gear,
+.lore .tab.magicks,
+.lore .tab.effects {
+  min-height: 0;
+}
+.lore .tab.gear.active,
+.lore .tab.magicks.active,
+.lore .tab.effects.active {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.lore .tab.gear > .items-list,
+.lore .tab.gear > .effects-list,
+.lore .tab.gear > ol,
+.lore .tab.magicks > .items-list,
+.lore .tab.magicks > .effects-list,
+.lore .tab.magicks > ol,
+.lore .tab.effects > .items-list,
+.lore .tab.effects > .effects-list,
+.lore .tab.effects > ol {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  padding-right: 8px;
+  scrollbar-gutter: stable;
+}
 .lore .items-list {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 8px 0 0; /* right gutter so text doesn't touch scrollbar */
   overflow-y: auto;
   scrollbar-width: thin;
+  scrollbar-gutter: stable;
   color: var(--lore-c-tan);
 }
 .lore .items-list .item-list {
@@ -399,6 +452,34 @@
   flex: 0 0 200px;
   padding: 0 8px;
 }
+.lore .tab.skills {
+  min-height: 0;
+}
+.lore .tab.skills.active {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.lore .tab.skills .grid {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.lore .tab.skills .sidebar {
+  overflow-y: auto;
+  padding-right: 8px;
+  min-height: 0;
+}
+.lore .tab.skills .main {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.lore .tab.skills .main .items-list,
+.lore .tab.skills .main > ol {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+}
 .lore .effects-header {
   height: 28px;
   margin: 2px 0;
@@ -421,9 +502,10 @@
 .lore .effects-list {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 8px 0 0; /* right gutter so text doesn't touch scrollbar */
   overflow-y: auto;
   scrollbar-width: thin;
+  scrollbar-gutter: stable;
   color: var(--lore-c-tan);
 }
 .lore .effects-list .effect-list {

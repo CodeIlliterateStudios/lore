@@ -121,59 +121,68 @@ Hooks.once('ready', function () {
     Hooks.on('createActor', async function(actor, options, userId) {
       // Only add if actor is owned by the current user
       if (actor.isOwner) {
+        // For newly created Player actors, default the prototype token disposition to Friendly
+        if (actor.type === 'player' && actor.prototypeToken) {
+          try {
+            await actor.prototypeToken.update({ disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY });
+          } catch (err) {
+            console.error('Lore | Failed to set default token disposition to Friendly:', err);
+          }
+        }
+
         const defaultSkills = [
           {
             name: 'Untrained',
             type: 'skill',
-            img: 'icons/dice/d6black.svg', // You can change the icon path
+            img: 'icons/dice/d6black.svg', 
             system: {
               rank: { value: 1, max: 5 },
-              tiedAttribute: 'ref', // Example attribute, adjust as needed
+              tiedAttribute: 'ref', 
             }
           },
           {
             name: 'Athletics',
             type: 'skill',
-            img: 'icons/dice/d6black.svg', // You can change the icon path
+            img: 'icons/dice/d6black.svg', 
             system: {
               rank: { value: 1, max: 5 },
-              tiedAttribute: 'mig', // Example attribute, adjust as needed
+              tiedAttribute: 'mig', 
             }
           },
           {
             name: 'Knowledge',
             type: 'skill',
-            img: 'icons/dice/d6black.svg', // You can change the icon path
+            img: 'icons/dice/d6black.svg', 
             system: {
               rank: { value: 1, max: 5 },
-              tiedAttribute: 'int', // Example attribute, adjust as needed
+              tiedAttribute: 'int', 
             }
           },
           {
             name: 'Notice',
             type: 'skill',
-            img: 'icons/dice/d6black.svg', // You can change the icon path
+            img: 'icons/dice/d6black.svg', 
             system: {
               rank: { value: 1, max: 5 },
-              tiedAttribute: 'ref', // Example attribute, adjust as needed
+              tiedAttribute: 'ref', 
             }
           },
           {
             name: 'Persuasion',
             type: 'skill',
-            img: 'icons/dice/d6black.svg', // You can change the icon path
+            img: 'icons/dice/d6black.svg', 
             system: {
               rank: { value: 1, max: 5 },
-              tiedAttribute: 'cha', // Example attribute, adjust as needed
+              tiedAttribute: 'cha', 
             }
           },
           {
             name: 'Stealth',
             type: 'skill',
-            img: 'icons/dice/d6black.svg', // You can change the icon path
+            img: 'icons/dice/d6black.svg', 
             system: {
               rank: { value: 1, max: 5 },
-              tiedAttribute: 'ref', // Example attribute, adjust as needed
+              tiedAttribute: 'ref', 
             }
           },
         ];
