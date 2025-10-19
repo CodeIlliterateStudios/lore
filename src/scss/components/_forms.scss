@@ -19,6 +19,30 @@
 
   .header-fields {
     flex: 1;
+    .document-name {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+
+      .name-stack {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+
+        .resource-label {
+          margin-bottom: 2px;
+        }
+
+        input[name='name'] {
+          flex: 1 1 auto;
+        }
+      }
+
+      .level-container {
+        flex: 0 0 auto;
+        width: 40px;
+      }
+    }
   }
 }
 

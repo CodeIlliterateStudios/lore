@@ -1,6 +1,6 @@
 {{! Sheet Header }}
 <header class='sheet-header grid grid-6col'>
-  <div class='left-header flexcol flex-center grid-span-1'>
+  <div class='left-header flexcol flex-center grid-span-2'>
     <img
       class='profile-img'
       src='{{actor.img}}'
@@ -10,28 +10,33 @@
       height='100'
       width='100'
     />
-    <div class='level-container'>
-      <label for='system.level' class='resource-label'>
-        {{localize 'LORE.Actor.base.FIELDS.level.label'}}
-      </label>
-      <div class='resource-content'>
-        <input
-          type='text'
-          name='system.level'
-          value='{{system.level.value}}'
-          data-dtype='Number'
-        />
-      </div>
-    </div>
   </div>
   <div class='header-fields grid-span-3'>
     <div class='document-name'>
-      <input
-        name='name'
-        type='text'
-        value='{{actor.name}}'
-        placeholder='Name'
-      />
+      <div class='name-stack'>
+        <label for='name' class='resource-label'>
+          {{localize 'LORE.SheetLabels.Name'}}
+        </label>
+        <input
+          name='name'
+          type='text'
+          value='{{actor.name}}'
+          placeholder='Name'
+        />
+      </div>
+      <div class='level-container'>
+        <label for='system.level' class='resource-label'>
+          {{localize 'LORE.Actor.base.FIELDS.level.label'}}
+        </label>
+        <div class='resource-content'>
+          <input
+            type='text'
+            name='system.level'
+            value='{{system.level.value}}'
+            data-dtype='Number'
+          />
+        </div>
+      </div>
     </div>
 
     <!-- Resources grid moved under name -->

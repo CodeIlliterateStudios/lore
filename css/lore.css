@@ -244,6 +244,26 @@
 .lore .sheet-header .header-fields {
   flex: 1;
 }
+.lore .sheet-header .header-fields .document-name {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.lore .sheet-header .header-fields .document-name .name-stack {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+.lore .sheet-header .header-fields .document-name .name-stack .resource-label {
+  margin-bottom: 2px;
+}
+.lore .sheet-header .header-fields .document-name .name-stack input[name=name] {
+  flex: 1 1 auto;
+}
+.lore .sheet-header .header-fields .document-name .level-container {
+  flex: 0 0 auto;
+  width: 40px;
+}
 .lore .sheet-tabs {
   flex: 0;
 }
@@ -537,8 +557,8 @@
 
 .window-app.lore-roll-popup .window-content > .lore-roll-popup .roll-popup-actions {
   /* Push actions to bottom and make them span full width */
-  margin-top: 0px; /* overrides earlier margin-top */
-  width: 0%;
+  margin-top: auto; /* overrides earlier margin-top */
+  width: 100%;
   /* Optional subtle separation from content above */
   padding-top: 8px;
   border-top: 1px solid var(--lore-c-faint);

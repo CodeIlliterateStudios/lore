@@ -12,7 +12,8 @@
       "Actor": "lore Actor Sheet",
       "Item": "lore Item Sheet",
       "Attribute": "Attribute",
-      "RollModifier": "Roll Modifier"
+      "RollModifier": "Roll Modifier",
+      "Name": "Name"
     },
     "Actor": {
       "Tabs": {
