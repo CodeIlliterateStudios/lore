@@ -2,6 +2,8 @@
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
+import { RollPopup } from '../apps/roll-popup.mjs';
+
 export class loreItem extends Item {
   /**
    * Return the default artwork for a new item, based on its type.
@@ -83,13 +85,32 @@ export class loreItem extends Item {
       }
 
 
-      let formula = rollData.formula;
-      formula = `${formula} + ${rollMod}+1d6x`;
+  let formula = rollData.formula;
+  // For most actors, add a final exploding d6. Pawns do NOT get this extra die.
+  const isPawn = this.actor?.type === 'pawn';
+  formula = `${formula} + ${rollMod}${isPawn ? '' : '+1d6x'}`;
+
+      // Show a popup to allow an additional modifier and confirmation
+      const popup = new RollPopup({ rollType: 'item', rollData: { formula }, label });
+      popup.render(true);
+      try {
+        await popup.awaitConfirm();
+      } catch (err) {
+        return null;
+      }
+
+      // Append user-entered modifier if any
+      const extra = Number(popup.modifier) || 0;
+      if (extra !== 0) {
+        const sign = extra >= 0 ? '+' : '-';
+        const abs = Math.abs(extra);
+        formula = `${formula} ${sign} ${abs}`;
+      }
 
       // Invoke the roll and submit it to chat.
       const roll = new Roll(formula, rollData.actor);
       await roll.evaluate();
-      roll.toMessage({
+      await roll.toMessage({
         speaker: speaker,
         rollMode: rollMode,
         flavor: label,

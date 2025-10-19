@@ -1,7 +1,9 @@
 <div class="lore-roll-popup">
-  <!-- Title is shown in the Window header via the Application title; keep content focused on controls -->
   
   <p class="roll-formula">{{rollData.formula}}</p>
+
+  <label for="modifier-input">Additional Modifier:</label>
+  <input type="number" id="modifier-input" class="modifier-input" value="" />
   {{#if options}}
     <div class="roll-options">
       {{#each options}}

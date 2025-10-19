@@ -443,12 +443,13 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     if (dataset.roll) {
       // Show a confirmation popup with roll data before executing the roll
       const label = dataset.label ?? '';
-      const roll = new Roll(dataset.roll, this.actor.getRollData());
+      const baseFormula = dataset.roll;
+      const roll = new Roll(baseFormula, this.actor.getRollData());
 
       // Prepare roll data for display in the popup
-      const rollData = roll.toJSON ? roll.toJSON() : { formula: dataset.roll };
+      const rollData = roll.toJSON ? roll.toJSON() : { formula: baseFormula };
 
-    const popup = new RollPopup({ rollType: 'attribute', rollData, label });
+      const popup = new RollPopup({ rollType: 'attribute', rollData, label });
       popup.render(true);
 
       // Await the user's confirmation before sending the roll
@@ -459,12 +460,23 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
         return null;
       }
 
-      await roll.toMessage({
+      // If a modifier was provided in the popup, append it to the roll formula
+      let finalRoll = roll;
+      const mod = Number(popup.modifier) || 0;
+      if (mod !== 0) {
+        const sign = mod >= 0 ? '+' : '-';
+        const abs = Math.abs(mod);
+        const newFormula = `${baseFormula} ${sign} ${abs}`;
+        finalRoll = new Roll(newFormula, this.actor.getRollData());
+        await finalRoll.evaluate();
+      }
+
+      await finalRoll.toMessage({
         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
         flavor: label,
         rollMode: game.settings.get('core', 'rollMode'),
       });
-      return roll;
+      return finalRoll;
     }
   }
 

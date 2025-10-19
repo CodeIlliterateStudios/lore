@@ -12,6 +12,8 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
   this.label = label;
     // Keep popup-specific options separate to avoid clobbering Application internals
     this.popupOptions = options || {};
+    // Track a simple numeric modifier entered by the user in the popup
+    this.modifier = 0;
   }
 
   /**
@@ -81,7 +83,35 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
     }
     // Attach listeners to the rendered DOM
     $el.find('.close-popup').off('click').on('click', () => this.close());
+    // Keep the modifier property in sync with the input field
+    const $mod = $el.find('#modifier-input');
+    const $formula = $el.find('.roll-formula');
+    const baseFormula = this.rollData?.formula ?? '';
+    const renderFormula = (base, mod) => {
+      const n = Number(mod) || 0;
+      if (n === 0) return base;
+      const sign = n >= 0 ? '+' : '-';
+      const abs = Math.abs(n);
+      return `${base} ${sign} ${abs}`;
+    };
+    const parseMod = (val) => {
+      const n = Number(val);
+      return Number.isFinite(n) ? Math.trunc(n) : 0;
+    };
+    if ($mod.length) {
+      // Initialize from current input value
+      this.modifier = parseMod($mod.val());
+      // Update the visual formula preview on open
+      if ($formula.length) $formula.text(renderFormula(baseFormula, this.modifier));
+      $mod.off('input change').on('input change', (ev) => {
+        this.modifier = parseMod(ev.currentTarget.value);
+        if ($formula.length) $formula.text(renderFormula(baseFormula, this.modifier));
+      });
+    }
+
     $el.find('.confirm-roll').off('click').on('click', () => {
+      // Ensure we capture the latest modifier value right before confirm
+      if ($mod.length) this.modifier = parseMod($mod.val());
       if (this._confirmResolve) this._confirmResolve(true);
       this.close();
     });
