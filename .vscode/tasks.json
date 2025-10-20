@@ -104,6 +104,20 @@
 				"build"
 			],
 			"isBackground": false
+		},
+		{
+			"label": "Build SCSS",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
 		}
 	]
 }

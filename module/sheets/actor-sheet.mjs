@@ -346,6 +346,44 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       cb.removeEventListener('change', this.#onFatigueCheckboxChangeBound);
       cb.addEventListener('change', this.#onFatigueCheckboxChangeBound);
     }
+
+    // Handle nested sub-tabs inside the Gear tab (List / Paper Doll)
+    try {
+      const subNav = this.element.querySelector('nav.tabs.sub-tabs[data-group="gear-sub"]');
+      if (subNav) {
+        const group = 'gear-sub';
+        // Remember selected sub-tab during this sheet's lifetime
+        const current = this.tabGroups?.[group] ?? 'list';
+        const sections = Array.from(this.element.querySelectorAll('.tab[data-group="gear-sub"]'));
+        const links = Array.from(subNav.querySelectorAll('a.item[data-tab]'));
+
+        const activate = (tabId) => {
+          // Update stored selection
+          if (this.tabGroups) this.tabGroups[group] = tabId;
+          // Toggle link active state
+          for (const a of links) a.classList.toggle('active', a.dataset.tab === tabId);
+          // Toggle section visibility
+          for (const s of sections) s.classList.toggle('active', s.dataset.tab === tabId);
+        };
+
+        // Delegate click handling; avoid stacking by removing prior handler if present
+        const handler = (e) => {
+          const a = e.target.closest('a.item[data-tab]');
+          if (!a) return;
+          e.preventDefault();
+          activate(a.dataset.tab);
+        };
+        // Remove previous handler if we stored one on the element
+        if (subNav._loreGearSubHandler) subNav.removeEventListener('click', subNav._loreGearSubHandler);
+        subNav.addEventListener('click', handler);
+        subNav._loreGearSubHandler = handler;
+
+        // Ensure correct initial state each render
+        activate(current);
+      }
+    } catch (e) {
+      console.warn('LORE | Failed to initialize Gear sub-tabs:', e);
+    }
   }
 
   /**************

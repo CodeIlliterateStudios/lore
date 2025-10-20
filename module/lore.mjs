@@ -232,84 +232,6 @@ Hooks.once('ready', function () {
       }
     }
   });
-
-  // One-time normalization: coerce legacy system.gearType 'weapons' -> 'weapon'
-  try {
-    const fixPromises = [];
-    // Update any existing Skill Items that still use the old default icon to the new D6 icon
-    const oldSkillIcons = new Set([
-      'icons/dice/d6black.svg',
-      '/assets/icons/D6Icon.svg',
-      'assets/icons/D6Icon.svg'
-    ]);
-    const newSkillIcon = 'systems/lore/assets/icons/D6Icon.svg';
-    for (const item of game.items ?? []) {
-      if (item.type === 'skill' && oldSkillIcons.has(item.img)) {
-        fixPromises.push(item.update({ img: newSkillIcon }));
-      }
-    }
-    for (const actor of game.actors ?? []) {
-      const toFixSkills = actor.items?.filter(i => i.type === 'skill' && oldSkillIcons.has(i.img)) ?? [];
-      if (toFixSkills.length > 0) {
-        const updates = toFixSkills.map(i => ({ _id: i.id, img: newSkillIcon }));
-        fixPromises.push(actor.updateEmbeddedDocuments('Item', updates));
-      }
-    }
-    for (const item of game.items ?? []) {
-      if (item.type === 'gear' && item.system?.gearType === 'weapons') {
-        fixPromises.push(item.update({ 'system.gearType': 'weapon' }));
-      }
-    }
-    // Also fix embedded items on actors
-    for (const actor of game.actors ?? []) {
-      const toFix = actor.items?.filter(i => i.type === 'gear' && i.system?.gearType === 'weapons') ?? [];
-      if (toFix.length > 0) {
-        const updates = toFix.map(i => ({ _id: i.id, 'system.gearType': 'weapon' }));
-        fixPromises.push(actor.updateEmbeddedDocuments('Item', updates));
-      }
-    }
-
-    // Strip legacy system.gearType. If gearType is 'weapon' or 'weapons', convert item to type 'weapon'.
-    for (const item of game.items ?? []) {
-      if (item.type === 'gear' && item.system?.gearType) {
-        const gt = String(item.system.gearType);
-        if (gt === 'weapon' || gt === 'weapons') {
-          fixPromises.push(item.update({ type: 'weapon', 'system.-=gearType': null }));
-        } else {
-          fixPromises.push(item.update({ 'system.-=gearType': null }));
-        }
-      }
-    }
-    for (const actor of game.actors ?? []) {
-      const toStrip = actor.items?.filter(i => i.type === 'gear' && i.system?.gearType) ?? [];
-      if (toStrip.length > 0) {
-        const updates = toStrip.map(i => {
-          const gt = String(i.system.gearType);
-          if (gt === 'weapon' || gt === 'weapons') return { _id: i.id, type: 'weapon', 'system.-=gearType': null };
-          else return { _id: i.id, 'system.-=gearType': null };
-        });
-        fixPromises.push(actor.updateEmbeddedDocuments('Item', updates));
-      }
-    }
-
-  // Convert legacy Item type 'armor' to 'gear' when possible
-    for (const item of game.items ?? []) {
-      if (item.type === 'armor') {
-        // Best-effort conversion
-        fixPromises.push(item.update({ type: 'gear' }));
-      }
-    }
-    for (const actor of game.actors ?? []) {
-      const toFixArmorType = actor.items?.filter(i => i.type === 'armor') ?? [];
-      if (toFixArmorType.length > 0) {
-        const updates = toFixArmorType.map(i => ({ _id: i.id, type: 'gear' }));
-        fixPromises.push(actor.updateEmbeddedDocuments('Item', updates));
-      }
-    }
-    if (fixPromises.length > 0) Promise.allSettled(fixPromises).catch(() => {});
-  } catch (e) {
-    console.warn('Lore | Failed to normalize legacy gearType values:', e);
-  }
 });
 
 /* -------------------------------------------- */
@@ -373,8 +295,13 @@ function rollItemMacro(itemUuid) {
       );
     }
 
+    // Do not roll for gear items
+    if (item.type === 'gear') {
+      return ui.notifications?.info?.(`${item.name} is gear and cannot be rolled.`);
+    }
+
     // Trigger the item roll and send it to chat directly (no popup)
-    const rollResult = await item.roll();
+  const rollResult = await item.roll();
     const roll = rollResult instanceof Roll ? rollResult : new Roll(rollResult?.formula || '');
     await roll.toMessage({
       speaker: ChatMessage.getSpeaker({ actor: item.parent }),

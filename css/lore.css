@@ -342,6 +342,33 @@
   font-weight: 600;
   opacity: 0.9;
 }
+.lore {
+  /* Weapons: enforce even columns with CSS grid */
+}
+.lore .items-list.items-weapons .items-header,
+.lore .items-list.items-weapons .item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto; /* Name | Roll | Mod | Range | Controls */
+  align-items: center;
+  column-gap: 8px;
+}
+.lore .items-list.items-weapons .item .item-name,
+.lore .items-list.items-weapons .items-header .item-name {
+  /* allow name to use the first grid column */
+  min-width: 0;
+}
+.lore .items-list.items-weapons .item .item-formula,
+.lore .items-list.items-weapons .items-header .item-formula,
+.lore .items-list.items-weapons .item .item-mod,
+.lore .items-list.items-weapons .item .item-range {
+  padding-right: 0.5em;
+  white-space: nowrap;
+}
+.lore .items-list.items-weapons .item .item-controls,
+.lore .items-list.items-weapons .items-header .item-controls {
+  justify-self: end;
+  padding-right: 1.25em;
+}
 .lore .item-sheet-header {
   width: 100%;
   display: flex;

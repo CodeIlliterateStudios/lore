@@ -13,14 +13,8 @@ export default class loreGear extends loreItemBase {
 
     // Note: Gear no longer has subtypes. Weapons are a separate Item type.
 
-    schema.quantity = new fields.NumberField({
-      ...requiredInteger,
-      initial: 1,
-      min: 1,
-    });
+    schema.quantity = new fields.NumberField({...requiredInteger, initial: 1, min: 1, });
     
-
-    // Removed: armor-like gear handling
 
     // Break down roll formula into three independent fields
     schema.roll = new fields.SchemaField({

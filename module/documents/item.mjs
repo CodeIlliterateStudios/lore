@@ -61,6 +61,16 @@ export class loreItem extends Item {
     const rollMode = game.settings.get('core', 'rollMode');
     const label = `[${item.type}] ${item.name}`;
 
+    // Gear items are not rollable; show description in chat instead
+    if (this.type === 'gear') {
+      return ChatMessage.create({
+        speaker: speaker,
+        rollMode: rollMode,
+        flavor: label,
+        content: item.system.description ?? ''
+      });
+    }
+
     // If there's no roll data, send a chat message.
     if (!this.system.formula) {
       ChatMessage.create({

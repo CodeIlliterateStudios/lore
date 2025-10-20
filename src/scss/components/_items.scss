@@ -59,6 +59,35 @@
 	opacity: 0.9;
 }
 
+/* Weapons: enforce even columns with CSS grid */
+.items-list.items-weapons .items-header,
+.items-list.items-weapons .item {
+	display: grid;
+	grid-template-columns: 2fr 1fr 1fr 1fr auto; /* Name | Roll | Mod | Range | Controls */
+	align-items: center;
+	column-gap: 8px;
+}
+
+.items-list.items-weapons .item .item-name,
+.items-list.items-weapons .items-header .item-name {
+	/* allow name to use the first grid column */
+	min-width: 0;
+}
+
+.items-list.items-weapons .item .item-formula,
+.items-list.items-weapons .items-header .item-formula,
+.items-list.items-weapons .item .item-mod,
+.items-list.items-weapons .item .item-range {
+	padding-right: 0.5em;
+	white-space: nowrap;
+}
+
+.items-list.items-weapons .item .item-controls,
+.items-list.items-weapons .items-header .item-controls {
+	justify-self: end;
+	padding-right: 1.25em;
+}
+
 .item-sheet-header {
 	width: 100%;
 	display: flex;
