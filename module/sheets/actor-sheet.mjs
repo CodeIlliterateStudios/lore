@@ -534,7 +534,14 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
           console.warn('LORE | Failed to roll/render LORE Die for attribute:', e);
         }
       }
-      const finalTotal = (Number(finalRoll.total) || 0) + loreTotal;
+      // Apply Morale as a final modifier after all dice are rolled
+      const morale = Number(this.actor?.system?.morale ?? 0);
+      if (morale !== 0) {
+        const sign = morale >= 0 ? '+' : '-';
+        const abs = Math.abs(morale);
+        content += `\n<div class="lore-morale-mod">Morale: ${sign}${abs}</div>`;
+      }
+      const finalTotal = (Number(finalRoll.total) || 0) + loreTotal + morale;
       content += `\n<div class="lore-final-total" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--color-border-light, #999);"><strong>Final Result:</strong> ${finalTotal}</div>`;
       await ChatMessage.create({
         speaker,

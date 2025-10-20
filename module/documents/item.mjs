@@ -87,6 +87,14 @@ export class loreItem extends Item {
           rollMod = (mod ?? 0).toString();
         }
       }
+      if (this.type === 'weapon') {
+        // Determine attack attribute based on weapon type
+        // melee -> Might (mig), ranged -> Reflex (ref)
+        const wType = this.system?.weaponType || 'melee';
+        const attrKey = wType === 'ranged' ? 'ref' : 'mig';
+        const mod = rollData.actor?.attributes?.[attrKey]?.mod;
+        rollMod = (mod ?? 0).toString();
+      }
 
 
   let formula = rollData.formula;
@@ -136,7 +144,14 @@ export class loreItem extends Item {
         console.warn('LORE | Failed to roll/render LORE Die for skill:', e);
       }
 
-      const finalTotal = (Number(roll.total) || 0) + loreTotal;
+      // Apply Morale as a final modifier after all dice are rolled
+      const morale = Number(this.actor?.system?.morale ?? 0);
+      if (morale !== 0) {
+        const sign = morale >= 0 ? '+' : '-';
+        const abs = Math.abs(morale);
+        content += `\n<div class=\"lore-morale-mod\">Morale: ${sign}${abs}</div>`;
+      }
+      const finalTotal = (Number(roll.total) || 0) + loreTotal + morale;
       content += `\n<div class=\"lore-final-total\" style=\"margin-top:6px;padding-top:6px;border-top:1px solid var(--color-border-light, #999);\"><strong>Final Result:</strong> ${finalTotal}</div>`;
 
       await ChatMessage.create({
