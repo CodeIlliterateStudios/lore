@@ -13,6 +13,14 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
   constructor(options = {}) {
     super(options);
     this.#dragDrop = this.#createDragDropHandlers();
+    // Bind handlers once to keep stable references across renders
+    this.#onAttributeContextMenuBound = (ev) => this.#onAttributeContextMenu(ev);
+    this.#onItemContextMenuBound = (ev) => this.#onItemContextMenu(ev);
+    this.#onSkillsHeaderContextMenuBound = (ev) => this.#onSkillsHeaderContextMenu(ev);
+    this.#onGearHeaderContextMenuBound = (ev) => this.#onGearHeaderContextMenu(ev);
+    // Bind wounds/fatigue handlers
+    this.#onWoundsCheckboxChangeBound = (ev) => this.#onWoundsCheckboxChange(ev);
+    this.#onFatigueCheckboxChangeBound = (ev) => this.#onFatigueCheckboxChange(ev);
   }
 
   /** @override */
@@ -221,15 +229,19 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // You can just use `this.document.itemTypes` instead
     // if you don't need to subdivide a given type like
     // this sheet does with magicks
-    const gear = [];
+  const gear = [];
+  const weapons = [];
     const skills = [];
     const magicks = [];
 
     // Iterate through items, allocating to containers
     for (let i of this.document.items) {
-      // Append to gear.
+      // Gear is now flat; weapons are their own item type
       if (i.type === 'gear') {
         gear.push(i);
+      }
+      else if (i.type === 'weapon') {
+        weapons.push(i);
       }
       // Append to skills.
       else if (i.type === 'skill') {
@@ -242,7 +254,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     }
 
     // Sort then assign
-    context.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+  context.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+  context.weapons = weapons.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.skills = skills.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.magicks = magicks.sort((a, b) => (a.sort || 0) - (b.sort || 0));
   }
@@ -256,92 +269,17 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
    * @override
    */
   _onRender(context, options) {
-    this.#dragDrop.forEach((d) => d.bind(this.element));
-    this.#disableOverrides();
-    // ...existing code...
-
-    // Context menu for attributes
-    const $attributes = $(this.element).find('.attribute');
-    $attributes.on('contextmenu', async (event) => {
-      event.preventDefault();
-      // Remove any existing menu
-      $('.lore-context-menu').remove();
-
-      // Example items for context menu, replace with your logic
-      const items = [
-        { action: 'info', label: 'Show Info' },
-        { action: 'edit', label: 'Edit Attribute' }
-      ];
-
-      // Render the context-menu.hbs template
-      const html = await renderTemplate('systems/lore/templates/context-menu.hbs', { items });
-      const $menu = $(html);
-      $('body').append($menu);
-      $menu.css({
-        top: event.pageY + 'px',
-        left: event.pageX + 'px',
-        position: 'absolute'
-      });
-
-      // Click outside to close
-      setTimeout(() => {
-        $(document).on('mousedown.loreContextMenu', (e) => {
-          if (!$menu.is(e.target) && $menu.has(e.target).length === 0) {
-            $menu.remove();
-            $(document).off('mousedown.loreContextMenu');
-          }
-        });
-      }, 0);
-    });
-
-    // ...existing code for wounds, fatigue, morale...
-    const woundsCheckboxes = $(this.element).find('.wounds-checkbox');
-    const woundsValue = this.actor.system.wounds?.value || 0;
-    woundsCheckboxes.each(function(i) {
-      this.checked = i < woundsValue;
-    });
-    woundsCheckboxes.on('change', (e) => {
-      const idx = woundsCheckboxes.index(e.target);
-      if (e.target.checked) {
-        woundsCheckboxes.each(function(i) {
-          if (i <= idx) this.checked = true;
-        });
-      } else {
-        woundsCheckboxes.each(function(i) {
-          if (i >= idx) this.checked = false;
-        });
+    // Ensure drag/drop is active so dropping Items/Effects onto the sheet works
+    if (Array.isArray(this.#dragDrop)) {
+      try {
+        this.#dragDrop.forEach((d) => d.bind?.(this.element));
+      } catch (e) {
+        console.warn('LORE | Failed to bind drag/drop handlers on actor sheet:', e);
       }
-      const newValue = woundsCheckboxes.filter(':checked').length;
-      this.actor.update({ 'system.wounds.value': newValue });
-      const woundsMax = this.actor.system.wounds?.max || 0;
-      if (newValue === woundsMax && woundsMax > 0) {
-        this.actor.update({ 'system.unconscious': true });
-      }
-    });
+    }
 
-    const fatigueCheckboxes = $(this.element).find('.fatigue-checkbox');
-    const fatigueValue = this.actor.system.fatigue?.value || 0;
-    fatigueCheckboxes.each(function(i) {
-      this.checked = i < fatigueValue;
-    });
-    fatigueCheckboxes.on('change', (e) => {
-      const idx = fatigueCheckboxes.index(e.target);
-      if (e.target.checked) {
-        fatigueCheckboxes.each(function(i) {
-          if (i <= idx) this.checked = true;
-        });
-      } else {
-        fatigueCheckboxes.each(function(i) {
-          if (i >= idx) this.checked = false;
-        });
-      }
-      const newValue = fatigueCheckboxes.filter(':checked').length;
-      this.actor.update({ 'system.fatigue.value': newValue });
-      const fatigueMax = this.actor.system.fatigue?.max || 0;
-      if (newValue === fatigueMax && fatigueMax > 0) {
-        this.actor.update({ 'system.incapacitated': true });
-      }
-    });
+    // Close any existing context menu on re-render
+    this.#closeContextMenu();
 
     const moraleInput = this.element.querySelector('.morale-input');
     const moraleValueEl = this.element.querySelector('.morale-value');
@@ -354,6 +292,59 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
         const newMorale = Number(moraleInput.value) || 0;
         await this.actor.update({ 'system.morale': newMorale });
       });
+    }
+
+    // Context menu: right-click on attribute rows
+    const attrRows = this.element.querySelectorAll('.attributes .attribute');
+    for (const row of attrRows) {
+      // Avoid stacking listeners by ensuring only one handler per element
+      row.removeEventListener('contextmenu', this.#onAttributeContextMenuBound);
+      row.addEventListener('contextmenu', this.#onAttributeContextMenuBound);
+    }
+
+    // Context menu: right-click on item rows
+    const itemRows = this.element.querySelectorAll('.items-list li.item[data-document-class="Item"]');
+    for (const row of itemRows) {
+      row.removeEventListener('contextmenu', this.#onItemContextMenuBound);
+      row.addEventListener('contextmenu', this.#onItemContextMenuBound);
+    }
+
+    // Context menu: right-click on the Skills header to create new Skill
+    const skillsHeader = this.element.querySelector('.tab.skills .items-header');
+    if (skillsHeader) {
+      skillsHeader.removeEventListener('contextmenu', this.#onSkillsHeaderContextMenuBound);
+      skillsHeader.addEventListener('contextmenu', this.#onSkillsHeaderContextMenuBound);
+    }
+
+    // Context menu: right-click on Gear tab headers to create new items
+    const gearHeaders = this.element.querySelectorAll('.tab.gear .items-header');
+    for (const header of gearHeaders) {
+      header.removeEventListener('contextmenu', this.#onGearHeaderContextMenuBound);
+      header.addEventListener('contextmenu', this.#onGearHeaderContextMenuBound);
+    }
+
+    // Initialize and wire wounds checkboxes to reflect and update system.wounds.value
+    const woundsValue = Number(this.actor.system?.wounds?.value ?? 0);
+    const woundsMax = Number(this.actor.system?.wounds?.max ?? 3);
+    const woundBoxes = this.element.querySelectorAll('input.wounds-checkbox');
+    for (const cb of woundBoxes) {
+      const idx = Math.max(1, Math.min(Number(cb.value) || 0, woundsMax));
+      // Reflect current state
+      cb.checked = idx <= woundsValue;
+      // Avoid form auto-submit for these synthetic controls by stopping bubbling
+      cb.removeEventListener('change', this.#onWoundsCheckboxChangeBound);
+      cb.addEventListener('change', this.#onWoundsCheckboxChangeBound);
+    }
+
+    // Initialize and wire fatigue checkboxes to reflect and update system.fatigue.value
+    const fatigueValue = Number(this.actor.system?.fatigue?.value ?? 0);
+    const fatigueMax = Number(this.actor.system?.fatigue?.max ?? 3);
+    const fatigueBoxes = this.element.querySelectorAll('input.fatigue-checkbox');
+    for (const cb of fatigueBoxes) {
+      const idx = Math.max(1, Math.min(Number(cb.value) || 0, fatigueMax));
+      cb.checked = idx <= fatigueValue;
+      cb.removeEventListener('change', this.#onFatigueCheckboxChangeBound);
+      cb.addEventListener('change', this.#onFatigueCheckboxChangeBound);
     }
   }
 
@@ -429,12 +420,20 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // Retrieve the configured document class for Item or ActiveEffect
     const docCls = getDocumentClass(target.dataset.documentClass);
     // Prepare the document creation data by initializing it a default name.
+    let defaultName;
+    if (target.dataset.documentClass === 'Item') {
+      const baseType = target.dataset.type;
+      if (baseType === 'weapon') defaultName = 'New Weapon';
+      else if (baseType === 'gear') defaultName = 'New Gear';
+    }
     const docData = {
-      name: docCls.defaultName({
-        // defaultName handles an undefined type gracefully
-        type: target.dataset.type,
-        parent: this.actor,
-      }),
+      name:
+        defaultName ??
+        docCls.defaultName({
+          // defaultName handles an undefined type gracefully
+          type: target.dataset.type,
+          parent: this.actor,
+        }),
     };
     // Loop through the dataset and add it to our docData
     for (const [dataKey, value] of Object.entries(target.dataset)) {
@@ -603,7 +602,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
    * @protected
    */
   async _onDrop(event) {
-  const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
     const actor = this.actor;
     const allowed = Hooks.call('dropActorSheetData', actor, this, data);
     if (allowed === false) return;
@@ -720,7 +719,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
    */
   async _onDropItem(event, data) {
     if (!this.actor.isOwner) return false;
-    const item = await Item.implementation.fromDropData(data);
+    const ItemCls = getDocumentClass('Item');
+    const item = await ItemCls.fromDropData(data);
 
     // Handle item sorting within the same Actor
     if (this.actor.uuid === item.parent?.uuid)
@@ -740,12 +740,14 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
    */
   async _onDropFolder(event, data) {
     if (!this.actor.isOwner) return [];
-    const folder = await Folder.implementation.fromDropData(data);
+    const FolderCls = getDocumentClass('Folder');
+    const folder = await FolderCls.fromDropData(data);
     if (folder.type !== 'Item') return [];
     const droppedItemData = await Promise.all(
       folder.contents.map(async (item) => {
         if (!(document instanceof Item)) item = await fromUuid(item.uuid);
-        return item;
+        // Always convert to source data for creation
+        return item?.toObject?.() ?? item;
       })
     );
     return this._onDropItemCreate(droppedItemData, event);
@@ -760,8 +762,10 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
    * @private
    */
   async _onDropItemCreate(itemData, event) {
-    itemData = itemData instanceof Array ? itemData : [itemData];
-    return this.actor.createEmbeddedDocuments('Item', itemData);
+    const arr = Array.isArray(itemData) ? itemData : [itemData];
+    // Normalize to plain source objects
+    const sources = arr.map((it) => (it?.toObject?.() ? it.toObject() : it));
+    return this.actor.createEmbeddedDocuments('Item', sources);
   }
 
   /**
@@ -817,6 +821,549 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
   // for subclasses or external hooks to mess with it directly
   #dragDrop;
 
+  // Active context menu DOM element and cleanup handlers
+  #contextMenuEl = null;
+  #outsidePointerHandler = null;
+  #escKeyHandler = null;
+  #wheelHandler = null;
+  #onAttributeContextMenuBound;
+  #onItemContextMenuBound;
+  #onSkillsHeaderContextMenuBound;
+  #onGearHeaderContextMenuBound;
+  #onWoundsCheckboxChangeBound;
+  #onFatigueCheckboxChangeBound;
+
+  /**
+   * Handle right-click on an attribute row to open a contextual menu.
+   * @param {MouseEvent} event
+   * @private
+   */
+  async #onAttributeContextMenu(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    // Ensure any previous menu is closed
+    this.#closeContextMenu();
+
+    const row = event.target.closest('.attribute');
+    if (!row) return;
+    const attributeKey = row.dataset.attribute;
+
+    // Define menu items; wire your real actions via data-action
+    const items = [
+      { action: 'roll', label: game.i18n?.localize?.('Roll') ?? 'Roll' },
+    ];
+    if (this.isEditable) items.push({ action: 'edit', label: game.i18n?.localize?.('Edit') ?? 'Edit' });
+
+    // Render the menu template using namespaced API (V13+)
+    let html = '';
+    try {
+      html = await foundry.applications.handlebars.renderTemplate('systems/lore/templates/context-menu.hbs', { items });
+    } catch (err) {
+      console.error('Failed to render context menu template:', err);
+      return;
+    }
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = html.trim();
+    const menu = wrapper.firstElementChild;
+    if (!menu) return;
+
+    // Attach behavior for clicks on menu items
+    menu.addEventListener('click', (e) => {
+      const itemEl = e.target.closest('.lore-context-menu-item');
+      if (!itemEl) return;
+      const action = itemEl.dataset.action;
+      try {
+        this.#handleAttributeMenuAction(action, attributeKey, row);
+      } finally {
+        // Do not force-close here for actions that replace the menu content (like edit)
+        if (action !== 'edit') this.#closeContextMenu();
+      }
+    });
+
+    // Add to DOM first to measure
+    document.body.appendChild(menu);
+    // Position near cursor, clamped to viewport
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const rect = menu.getBoundingClientRect();
+    let x = event.clientX ?? 0;
+    let y = event.clientY ?? 0;
+    if (x + rect.width > vw) x = Math.max(4, vw - rect.width - 4);
+    if (y + rect.height > vh) y = Math.max(4, vh - rect.height - 4);
+    menu.style.left = `${x}px`;
+    menu.style.top = `${y}px`;
+
+    // Store reference and set up dismissal behaviors
+    this.#contextMenuEl = menu;
+    this.#outsidePointerHandler = (e) => {
+      if (!this.#contextMenuEl) return;
+      if (!this.#contextMenuEl.contains(e.target)) this.#closeContextMenu();
+    };
+    this.#escKeyHandler = (e) => {
+      if (e.key === 'Escape') this.#closeContextMenu();
+    };
+    this.#wheelHandler = () => this.#closeContextMenu();
+
+    // Use capture to get the event before other handlers potentially stop it
+    document.addEventListener('pointerdown', this.#outsidePointerHandler, { capture: true });
+    document.addEventListener('keydown', this.#escKeyHandler, { capture: true });
+    // Close on scroll/wheel to mimic native context menus
+    document.addEventListener('wheel', this.#wheelHandler, { passive: true, capture: true });
+  }
+
+  /**
+   * Handle right-click on an item row to open a contextual menu.
+   * @param {MouseEvent} event
+   * @private
+   */
+  async #onItemContextMenu(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    // Ensure any previous menu is closed
+    this.#closeContextMenu();
+
+    const row = event.target.closest('li.item[data-document-class="Item"]');
+    if (!row) return;
+    const doc = this._getEmbeddedDocument(row);
+    if (!doc) return;
+
+    // Build menu items based on availability
+    const items = [];
+    
+    items.push({ action: 'view', label: game.i18n?.localize?.('Edit') ?? 'Edit' });
+    if (this.isEditable) items.push({ action: 'delete', label: game.i18n?.localize?.('Delete') ?? 'Delete' });
+
+    // Render the menu template
+    let html = '';
+    try {
+      html = await foundry.applications.handlebars.renderTemplate('systems/lore/templates/context-menu.hbs', { items });
+    } catch (err) {
+      console.error('Failed to render context menu template:', err);
+      return;
+    }
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = html.trim();
+    const menu = wrapper.firstElementChild;
+    if (!menu) return;
+
+    // Attach behavior for clicks on menu items
+    menu.addEventListener('click', async (e) => {
+      const itemEl = e.target.closest('.lore-context-menu-item');
+      if (!itemEl) return;
+      const action = itemEl.dataset.action;
+      try {
+        await this.#handleItemMenuAction(action, row, doc);
+      } finally {
+        this.#closeContextMenu();
+      }
+    });
+
+    // Add to DOM first to measure
+    document.body.appendChild(menu);
+    // Position near cursor, clamped to viewport
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const rect = menu.getBoundingClientRect();
+    let x = event.clientX ?? 0;
+    let y = event.clientY ?? 0;
+    if (x + rect.width > vw) x = Math.max(4, vw - rect.width - 4);
+    if (y + rect.height > vh) y = Math.max(4, vh - rect.height - 4);
+    menu.style.left = `${x}px`;
+    menu.style.top = `${y}px`;
+
+    // Store reference and set up dismissal behaviors
+    this.#contextMenuEl = menu;
+    this.#outsidePointerHandler = (e) => {
+      if (!this.#contextMenuEl) return;
+      if (!this.#contextMenuEl.contains(e.target)) this.#closeContextMenu();
+    };
+    this.#escKeyHandler = (e) => {
+      if (e.key === 'Escape') this.#closeContextMenu();
+    };
+    this.#wheelHandler = () => this.#closeContextMenu();
+
+    document.addEventListener('pointerdown', this.#outsidePointerHandler, { capture: true });
+    document.addEventListener('keydown', this.#escKeyHandler, { capture: true });
+    document.addEventListener('wheel', this.#wheelHandler, { passive: true, capture: true });
+  }
+
+  /**
+   * Handle right-click on the Skills list header to offer creation.
+   * @param {MouseEvent} event
+   * @private
+   */
+  async #onSkillsHeaderContextMenu(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    // Ensure any previous menu is closed
+    this.#closeContextMenu();
+
+    // Only for editable sheets
+    if (!this.isEditable) return;
+
+    const items = [
+      { action: 'create-skill', label: 'New Skill' }
+    ];
+
+    // Render the menu template
+    let html = '';
+    try {
+      html = await foundry.applications.handlebars.renderTemplate('systems/lore/templates/context-menu.hbs', { items });
+    } catch (err) {
+      console.error('Failed to render context menu template:', err);
+      return;
+    }
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = html.trim();
+    const menu = wrapper.firstElementChild;
+    if (!menu) return;
+
+    menu.addEventListener('click', async (e) => {
+      const itemEl = e.target.closest('.lore-context-menu-item');
+      if (!itemEl) return;
+      const action = itemEl.dataset.action;
+      try {
+        if (action === 'create-skill') {
+          const docCls = getDocumentClass('Item');
+          const name = docCls.defaultName({ type: 'skill', parent: this.actor });
+          await docCls.create({ name, type: 'skill' }, { parent: this.actor });
+        }
+      } finally {
+        this.#closeContextMenu();
+      }
+    });
+
+    document.body.appendChild(menu);
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const rect = menu.getBoundingClientRect();
+    let x = event.clientX ?? 0;
+    let y = event.clientY ?? 0;
+    if (x + rect.width > vw) x = Math.max(4, vw - rect.width - 4);
+    if (y + rect.height > vh) y = Math.max(4, vh - rect.height - 4);
+    menu.style.left = `${x}px`;
+    menu.style.top = `${y}px`;
+
+    this.#contextMenuEl = menu;
+    this.#outsidePointerHandler = (e) => {
+      if (!this.#contextMenuEl) return;
+      if (!this.#contextMenuEl.contains(e.target)) this.#closeContextMenu();
+    };
+    this.#escKeyHandler = (e) => { if (e.key === 'Escape') this.#closeContextMenu(); };
+    this.#wheelHandler = () => this.#closeContextMenu();
+    document.addEventListener('pointerdown', this.#outsidePointerHandler, { capture: true });
+    document.addEventListener('keydown', this.#escKeyHandler, { capture: true });
+    document.addEventListener('wheel', this.#wheelHandler, { passive: true, capture: true });
+  }
+
+  /**
+   * Handle right-click on the Gear list headers to offer creation.
+   * Reads data-gear-type from the header to decide what to create.
+   * @param {MouseEvent} event
+   * @private
+   */
+  async #onGearHeaderContextMenu(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    // Ensure any previous menu is closed
+    this.#closeContextMenu();
+
+    // Only for editable sheets
+    if (!this.isEditable) return;
+
+  const header = event.currentTarget?.closest('.items-header');
+  const gearType = header?.dataset?.gearType ?? 'gear';
+
+    // Provide creation options; for now a single action depending on header
+  let label = 'New Item';
+  if (gearType === 'weapon') label = 'New Weapon';
+  else label = 'New Gear';
+
+    const items = [ { action: 'create-gear', label } ];
+
+    // Render the menu template
+  let html = '';
+    try {
+      html = await foundry.applications.handlebars.renderTemplate('systems/lore/templates/context-menu.hbs', { items });
+    } catch (err) {
+      console.error('Failed to render context menu template:', err);
+      return;
+    }
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = html.trim();
+    const menu = wrapper.firstElementChild;
+    if (!menu) return;
+
+    menu.addEventListener('click', async (e) => {
+      const itemEl = e.target.closest('.lore-context-menu-item');
+      if (!itemEl) return;
+      const action = itemEl.dataset.action;
+      try {
+        if (action === 'create-gear') {
+          const docCls = getDocumentClass('Item');
+          const type = gearType === 'weapon' ? 'weapon' : 'gear';
+          const name = docCls.defaultName({ type, parent: this.actor });
+          await docCls.create({ type, name }, { parent: this.actor });
+        }
+      } finally {
+        this.#closeContextMenu();
+      }
+    });
+
+    document.body.appendChild(menu);
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const rect = menu.getBoundingClientRect();
+    let x = event.clientX ?? 0;
+    let y = event.clientY ?? 0;
+    if (x + rect.width > vw) x = Math.max(4, vw - rect.width - 4);
+    if (y + rect.height > vh) y = Math.max(4, vh - rect.height - 4);
+    menu.style.left = `${x}px`;
+    menu.style.top = `${y}px`;
+
+    this.#contextMenuEl = menu;
+    this.#outsidePointerHandler = (e) => {
+      if (!this.#contextMenuEl) return;
+      if (!this.#contextMenuEl.contains(e.target)) this.#closeContextMenu();
+    };
+    this.#escKeyHandler = (e) => { if (e.key === 'Escape') this.#closeContextMenu(); };
+    this.#wheelHandler = () => this.#closeContextMenu();
+    document.addEventListener('pointerdown', this.#outsidePointerHandler, { capture: true });
+    document.addEventListener('keydown', this.#escKeyHandler, { capture: true });
+    document.addEventListener('wheel', this.#wheelHandler, { passive: true, capture: true });
+  }
+
+  /**
+   * Close and cleanup the active context menu if present.
+   * @private
+   */
+  #closeContextMenu() {
+    if (this.#contextMenuEl?.parentElement) {
+      this.#contextMenuEl.parentElement.removeChild(this.#contextMenuEl);
+    }
+    this.#contextMenuEl = null;
+    if (this.#outsidePointerHandler) {
+      document.removeEventListener('pointerdown', this.#outsidePointerHandler, { capture: true });
+      this.#outsidePointerHandler = null;
+    }
+    if (this.#escKeyHandler) {
+      document.removeEventListener('keydown', this.#escKeyHandler, { capture: true });
+      this.#escKeyHandler = null;
+    }
+    if (this.#wheelHandler) {
+      document.removeEventListener('wheel', this.#wheelHandler, { capture: true });
+      this.#wheelHandler = null;
+    }
+  }
+
+  /**
+   * Handle change on wounds checkboxes, mapping to system.wounds.value
+   * Prevents the default bubbling change so the form doesn't auto-submit separately.
+   * @param {Event} event
+   * @private
+   */
+  async #onWoundsCheckboxChange(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const input = event.currentTarget;
+    const idx = Math.max(1, Number(input.value) || 1);
+    const current = Number(this.actor.system?.wounds?.value ?? 0);
+    const max = Number(this.actor.system?.wounds?.max ?? 3);
+    let next = current;
+    if (input.checked) {
+      next = idx; // checking sets value to that index
+    } else {
+      // unchecking the highest checked index decrements by one
+      next = Math.min(current, idx - 1);
+    }
+    next = Math.max(0, Math.min(next, max));
+    if (next !== current) await this.actor.update({ 'system.wounds.value': next });
+    // Update visual state immediately (the sheet will re-render after update too)
+    const boxes = this.element.querySelectorAll('input.wounds-checkbox');
+    for (const cb of boxes) {
+      const v = Math.max(1, Number(cb.value) || 1);
+      cb.checked = v <= next;
+    }
+  }
+
+  /**
+   * Handle change on fatigue checkboxes, mapping to system.fatigue.value
+   * Prevents the default bubbling change so the form doesn't auto-submit separately.
+   * @param {Event} event
+   * @private
+   */
+  async #onFatigueCheckboxChange(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const input = event.currentTarget;
+    const idx = Math.max(1, Number(input.value) || 1);
+    const current = Number(this.actor.system?.fatigue?.value ?? 0);
+    const max = Number(this.actor.system?.fatigue?.max ?? 3);
+    let next = current;
+    if (input.checked) {
+      next = idx;
+    } else {
+      next = Math.min(current, idx - 1);
+    }
+    next = Math.max(0, Math.min(next, max));
+    if (next !== current) await this.actor.update({ 'system.fatigue.value': next });
+    const boxes = this.element.querySelectorAll('input.fatigue-checkbox');
+    for (const cb of boxes) {
+      const v = Math.max(1, Number(cb.value) || 1);
+      cb.checked = v <= next;
+    }
+  }
+
+  /**
+   * Handle actions triggered from the attribute context menu.
+   * Replace these with real behaviors as desired.
+   * @param {string} action
+   * @param {string} attributeKey
+   * @param {HTMLElement} rowEl
+   * @private
+   */
+  async #handleAttributeMenuAction(action, attributeKey, rowEl) {
+    switch (action) {
+      case 'roll': {
+        // Simulate clicking the rollable label inside the row
+        const rollTarget = rowEl.querySelector('.attribute-roll-label[data-action="roll"]');
+        if (rollTarget) {
+          // Create a synthetic click to reuse existing roll logic
+          const evt = new MouseEvent('click', { bubbles: true, cancelable: true });
+          rollTarget.dispatchEvent(evt);
+        }
+        break;
+      }
+      case 'edit': {
+        // Transform the context menu into an inline editor for the attribute rank
+        this.#openAttributeEditMenu(attributeKey);
+        break;
+      }
+      default:
+        console.debug('Unhandled attribute menu action:', action, attributeKey);
+    }
+  }
+
+  /**
+   * Replace the current context menu content with an input to edit the attribute rank.
+   * Enter saves, Escape cancels, clicking outside cancels.
+   * @param {string} attributeKey
+   * @private
+   */
+  #openAttributeEditMenu(attributeKey) {
+    const menu = this.#contextMenuEl;
+    if (!menu) return;
+
+    // Get current value from the actor system
+    const path = `system.attributes.${attributeKey}.value`;
+    const current = Number(foundry.utils.getProperty(this.actor, path) ?? 0);
+
+    // Clear existing content
+    menu.innerHTML = '';
+
+    // Build editor UI
+  const wrap = document.createElement('div');
+    wrap.style.display = 'flex';
+    wrap.style.alignItems = 'center';
+    wrap.style.gap = '6px';
+    wrap.style.padding = '4px 8px';
+
+  const label = document.createElement('div');
+  const attrNameKey = CONFIG?.LORE?.attributes?.[attributeKey];
+  const attrName = (attrNameKey && game.i18n?.localize?.(attrNameKey)) || attributeKey;
+  label.textContent = `${attrName} rank:`;
+    label.style.opacity = '0.8';
+    label.style.fontSize = '12px';
+
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.value = String(current);
+    input.min = '0';
+    input.step = '1';
+    input.style.width = '64px';
+    input.style.textAlign = 'right';
+  input.setAttribute('aria-label', `Edit ${attrName} rank`);
+
+    const saveBtn = document.createElement('button');
+    saveBtn.textContent = game.i18n?.localize?.('Save') ?? 'Save';
+    saveBtn.classList.add('lore-context-menu-save');
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = game.i18n?.localize?.('Cancel') ?? 'Cancel';
+    cancelBtn.classList.add('lore-context-menu-cancel');
+
+    wrap.appendChild(label);
+    wrap.appendChild(input);
+    wrap.appendChild(saveBtn);
+    wrap.appendChild(cancelBtn);
+    menu.appendChild(wrap);
+
+    // Focus input ASAP
+    setTimeout(() => input.focus(), 0);
+
+    const save = async () => {
+      if (!this.isEditable) { this.#closeContextMenu(); return; }
+      let v = Number(input.value);
+      if (!Number.isFinite(v)) v = current;
+      v = Math.max(0, Math.round(v));
+      await this.actor.update({ [path]: v });
+      this.#closeContextMenu();
+    };
+
+    const cancel = () => this.#closeContextMenu();
+
+    saveBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); save(); });
+    cancelBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); cancel(); });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); save(); }
+      else if (e.key === 'Escape') { e.preventDefault(); cancel(); }
+    });
+    // Prevent clicks inside the editor from closing the menu
+    menu.addEventListener('pointerdown', (e) => e.stopPropagation(), { capture: true, once: false });
+  }
+
+  /**
+   * Execute selected item context-menu action.
+   * @param {string} action
+   * @param {HTMLElement} rowEl The LI element for the item row
+   * @param {Item} doc The embedded item document
+   * @private
+   */
+  async #handleItemMenuAction(action, rowEl, doc) {
+    switch (action) {
+      case 'roll': {
+        // Prefer clicking the existing rollable anchor to reuse logic
+        const rollTarget = rowEl.querySelector('.rollable[data-action="roll"]');
+        if (rollTarget) {
+          const evt = new MouseEvent('click', { bubbles: true, cancelable: true });
+          rollTarget.dispatchEvent(evt);
+        } else if (doc?.roll) {
+          try { await doc.roll(); } catch (e) { console.error(e); }
+        }
+        break;
+      }
+      case 'view': {
+        doc?.sheet?.render(true);
+        break;
+      }
+      case 'delete': {
+        if (!this.isEditable) return;
+        await doc?.delete();
+        break;
+      }
+      default:
+        console.debug('Unhandled item menu action:', action, doc);
+    }
+  }
+
   /**
    * Create drag-and-drop workflow handlers for this Application
    * @returns {DragDrop[]}     An array of DragDrop handlers
@@ -833,7 +1380,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
         dragover: this._onDragOver.bind(this),
         drop: this._onDrop.bind(this),
       };
-      return new foundry.applications.ux.DragDrop.implementation(d);
+      // Use DragDrop directly; using .implementation prevents handlers from binding on some versions
+      return new foundry.applications.ux.DragDrop(d);
     });
   }
 

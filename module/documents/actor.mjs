@@ -13,6 +13,55 @@ export class loreActor extends Actor {
   }
 
   /** @override */
+  async _preUpdate(changed, options, userId) {
+    // If wounds are changing, automatically toggle unconscious when reaching max
+    try {
+      const hasWoundsUpdate = foundry.utils.hasProperty(
+        changed,
+        'system.wounds.value'
+      );
+      const hasFatigueUpdate = foundry.utils.hasProperty(
+        changed,
+        'system.fatigue.value'
+      );
+      if (hasWoundsUpdate) {
+        const newWounds = Number(
+          foundry.utils.getProperty(changed, 'system.wounds.value')
+        );
+        // Fall back to current if new value is not a number (shouldn't happen, but be safe)
+        const targetWounds = Number.isFinite(newWounds)
+          ? newWounds
+          : Number(this.system?.wounds?.value ?? 0);
+        const maxWounds = Number(this.system?.wounds?.max ?? 3);
+        // Only auto-SET unconscious when reaching/exceeding max; never auto-clear.
+        // Also, if this same update explicitly sets system.unconscious, respect that.
+        const explicitUncChange = foundry.utils.hasProperty(changed, 'system.unconscious');
+        if (!explicitUncChange && targetWounds >= maxWounds && !this.system?.unconscious) {
+          foundry.utils.setProperty(changed, 'system.unconscious', true);
+        }
+      }
+
+      // If fatigue is changing, automatically set incapacitated when reaching max; never auto-clear.
+      if (hasFatigueUpdate) {
+        const newFatigue = Number(
+          foundry.utils.getProperty(changed, 'system.fatigue.value')
+        );
+        const targetFatigue = Number.isFinite(newFatigue)
+          ? newFatigue
+          : Number(this.system?.fatigue?.value ?? 0);
+        const maxFatigue = Number(this.system?.fatigue?.max ?? 3);
+        const explicitIncChange = foundry.utils.hasProperty(changed, 'system.incapacitated');
+        if (!explicitIncChange && targetFatigue >= maxFatigue && !this.system?.incapacitated) {
+          foundry.utils.setProperty(changed, 'system.incapacitated', true);
+        }
+      }
+    } catch (err) {
+      console.warn('LORE: Failed to auto-toggle unconscious on wounds change', err);
+    }
+    return super._preUpdate(changed, options, userId);
+  }
+
+  /** @override */
   prepareBaseData() {
     // Data modifications in this step occur before processing embedded
     // documents or derived data.

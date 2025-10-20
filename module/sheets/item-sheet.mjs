@@ -52,6 +52,9 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
     detailsGear: {
       template: 'systems/lore/templates/item/detail-parts/gear.hbs',
     },
+    detailsWeapon: {
+      template: 'systems/lore/templates/item/detail-parts/weapon.hbs',
+    },
     detailsMagick: {
       template: 'systems/lore/templates/item/detail-parts/magick.hbs',
     },
@@ -74,6 +77,9 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
         break;
       case 'gear':
         options.parts.push('detailsGear');
+        break;
+      case 'weapon':
+        options.parts.push('detailsWeapon');
         break;
       case 'magick':
         options.parts.push('detailsMagick');
@@ -112,6 +118,7 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
     switch (partId) {
       case 'detailsSkill':
       case 'detailsGear':
+      case 'detailsWeapon':
       case 'detailsMagick':
         // Necessary for preserving active tab on re-render
         context.tab = context.tabs[partId];
@@ -173,6 +180,7 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
           break;
         case 'detailsSkill':
         case 'detailsGear':
+        case 'detailsWeapon':
         case 'detailsMagick':
           tab.id = 'details';
           tab.label += 'Details';
@@ -386,7 +394,7 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
    * @protected
    */
   async _onDrop(event) {
-    const data = TextEditor.getDragEventData(event);
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
     const item = this.item;
     const allowed = Hooks.call('dropItemSheetData', item, this, data);
     if (allowed === false) return;

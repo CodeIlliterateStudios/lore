@@ -17,12 +17,16 @@
                     >
                         {{localize (lookup @root.config.attributes key)}}
                     </label>
-                    <label
-                        class='attribute-formula-label roll-summary align-right'
-                        data-label='{{localize (lookup @root.config.attributes key)}}'
-                    >
-                        {{attribute.value}}d6{{numberFormat attribute.mod decimals=0 sign=true}}
-                    </label>
+                    {{#if (eq ../editingAttribute key)}}
+                        <input type='number' class='attribute-rank-input' value='{{attribute.value}}' min='0' style='width:3em;text-align:right;' data-key='{{key}}'>
+                    {{else}}
+                        <label
+                            class='attribute-formula-label roll-summary align-right'
+                            data-label='{{localize (lookup @root.config.attributes key)}}'
+                        >
+                            {{attribute.value}}d6{{numberFormat attribute.mod decimals=0 sign=true}}
+                        </label>
+                    {{/if}}
                 </div>
             {{/each}}
         </div>

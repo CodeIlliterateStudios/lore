@@ -2,7 +2,7 @@
   
   <p class="roll-formula">{{rollData.formula}}</p>
 
-  <label for="modifier-input">Additional Modifier:</label>
+  <label for="modifier-input" class="modifier-input-label">{{localize "LORE.SheetLabels.AdditionalMod" }}:</label>
   <input type="number" id="modifier-input" class="modifier-input" value="" />
   {{#if options}}
     <div class="roll-options">
@@ -11,7 +11,7 @@
       {{/each}}
     </div>
   {{/if}}
-  <div class="roll-popup-actions">
+  <div class="roll-popup-actions grid grid-2col">
     <button class="confirm-roll">Confirm</button>
     <button class="close-popup">Close</button>
   </div>

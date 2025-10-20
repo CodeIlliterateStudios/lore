@@ -1,42 +1,7 @@
 {{! Details Tab }}
-<section
-  class='tab details {{tab.cssClass}}'
-  data-group='primary'
-  data-tab='details'
->
-  {{! As you add new fields, add them in here! }}
+<section class='tab details {{tab.cssClass}}' data-group='primary' data-tab='details'>
+  {{! Generic gear has no specialized fields for now }}
   <div class='resource'>
-    <label class='resource-label'>{{localize 'LORE.Item.Gear.FIELDS.rollFormula.label'}}:</label>
-    <span>{{system.formula}}</span>
-    <div class='grid grid-4col'>
-      <div class='grid-span-1'>
-        <label class='resource-label'>{{localize 'LORE.Item.Gear.FIELDS.numDice.label'}}</label>
-        <input
-          type='text'
-          name='system.roll.diceNum'
-          value='{{system.roll.diceNum}}'
-          data-dtype='Number'
-        />
-      </div>
-      <div class='grid-span-1'>
-        <label class='resource-label'>{{localize 'LORE.Item.Gear.FIELDS.dieSize.label'}}</label>
-        <input
-          type='text'
-          name='system.roll.diceSize'
-          value='{{system.roll.diceSize}}'
-          data-dtype='String'
-        />
-      </div>
-      <div class='grid-span-2'>
-        <label class='resource-label'>{{localize 'LORE.Item.Gear.FIELDS.rollMod.label'}}</label>
-        <input
-          type='text'
-          name='system.roll.diceBonus'
-          value='{{system.roll.diceBonus}}'
-          data-dtype='String'
-        />
-      </div>
-    </div>
-
+    <p class='notes'>{{localize 'LORE.Item.Gear.FIELDS.genericDetailsHint'}}</p>
   </div>
 </section>

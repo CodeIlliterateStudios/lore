@@ -15,8 +15,9 @@ export class loreItem extends Item {
     // You can customize these paths as needed
     const defaultImages = {
       gear: "icons/svg/coins.svg",
+      weapon: "icons/svg/sword.svg",
       magick: "systems/lore/assets/default-magick.png",
-      skill: "icons/dice/d6black.svg",
+      skill: "systems/lore/assets/icons/D6Icon.svg",
       default: "systems/lore/assets/default-item.png"
     };
     return { img: defaultImages[type] || defaultImages.default };
@@ -75,20 +76,23 @@ export class loreItem extends Item {
       const rollData = this.getRollData();
 
       // Optionally, modify the formula string before creating the Roll object
+      // Skills use tiedAttribute and special case for Untrained; others default to 0 mod here
       let rollMod = '0';
-      if(this.name == 'Untrained') {
-        rollMod = '-3';
-      } 
-      else
-      {
-        rollMod = rollData.actor.attributes[this.system.tiedAttribute].mod;
+      if (this.type === 'skill') {
+        if (this.name === 'Untrained') {
+          rollMod = '-3';
+        } else {
+          const tied = this.system?.tiedAttribute;
+          const mod = tied ? rollData.actor?.attributes?.[tied]?.mod : undefined;
+          rollMod = (mod ?? 0).toString();
+        }
       }
 
 
   let formula = rollData.formula;
   // For most actors, add a final exploding d6. Pawns do NOT get this extra die.
   const isPawn = this.actor?.type === 'pawn';
-  formula = `${formula} + ${rollMod}${isPawn ? '' : '+1d6x'}`;
+  formula = `${formula} + ${rollMod}${isPawn ? '' : ' + 1d6x'}`;
 
       // Show a popup to allow an additional modifier and confirmation
       const popup = new RollPopup({ rollType: 'item', rollData: { formula }, label });

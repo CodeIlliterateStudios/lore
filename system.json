@@ -10,26 +10,15 @@
   ],
   "documentTypes": {
     "Actor": {
-        "player": {
-            "htmlFields": ["biography"]
-        },
-        "pawn": {
-            "htmlFields": ["biography"]
-        },
-        "professional": {
-            "htmlFields": ["biography"]
-        }
+      "player": {},
+      "pawn": {},
+      "professional": {}
     },
     "Item": {
-        "skill": {
-            "htmlFields": ["description"]
-        },
-        "gear": {
-            "htmlFields": ["description"]
-        },
-        "magick": {
-            "htmlFields": ["description"]
-        }
+      "gear": {},
+      "weapon": {},
+      "skill": {},
+      "magick": {}
     }
   },
   "flags": {

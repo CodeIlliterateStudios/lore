@@ -87,7 +87,7 @@ export default class loreActorBase extends foundry.abstract
     // Handle Toughness calculation.
     this.toughness = toughness;
 
-    // Do armor calculation here once implemented.
+  // Do defense calculation here once implemented.
   }
   
 

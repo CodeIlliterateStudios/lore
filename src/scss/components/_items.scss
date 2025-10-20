@@ -1,0 +1,98 @@
+
+.items-list,
+.items-list .item {
+	width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.items-list .item .item-name {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	/* Let the name grow to fill remaining space */
+	flex: 1 1 auto;
+	min-width: 0; /* allow text to shrink/ellipsis within flex container */
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.items-list .item .item-image {
+	flex: 0 0 auto;
+}
+
+.items-list .item .item-image img {
+	width: 24px;
+	height: 24px;
+	object-fit: cover;
+	border: none;
+}
+
+.items-list .items-header {
+    background-color: var(--lore-c-faint);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+
+.items-list .items-header .item-name {
+	flex: 1 1 auto;
+    
+}
+
+.item-controls {
+    gap: 4px;
+    flex: 0 0 auto;
+    padding-right: 1.25em;
+}
+
+.items-list .item .item-formula {
+	flex: 0 0 auto;
+	margin-left: auto;
+	padding-right: 1.25em;
+	white-space: nowrap;
+	color: var(--color-text-dark-5, #555);
+}
+
+.items-list .items-header .item-formula {
+	font-weight: 600;
+	opacity: 0.9;
+}
+
+.item-sheet-header {
+	width: 100%;
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+}
+
+/* Ensure item sheets use full-width content and are not placed in a grid */
+&.item {
+	&.application .window-content,
+	&.window-app .window-content {
+		display: block; /* revert any grid from actor layout */
+	}
+}
+
+/* Image + fields layout inside item header */
+.item-sheet-header .profile-img {
+	flex: 0 0 auto;
+	width: 64px;
+	height: 64px;
+	object-fit: cover;
+	border: 1px solid var(--color-tabs-border);
+}
+
+.item-sheet-header .header-fields {
+	flex: 1 1 auto;
+	min-width: 0; /* allow input to shrink as needed */
+}
+
+.item-sheet-header .document-name {
+	margin-bottom: 8px;
+}
+
+.item-sheet-header .name-input {
+	width: 100%;
+	box-sizing: border-box;
+}

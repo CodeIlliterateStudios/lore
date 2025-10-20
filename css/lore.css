@@ -230,6 +230,7 @@
   padding: 4px 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1333333333);
   min-width: 120px;
+  background-color: black;
 }
 
 .lore-context-menu-item {
@@ -237,32 +238,132 @@
   cursor: pointer;
 }
 
+.roll-formula {
+  font-weight: bold;
+  text-align: center;
+}
+
+.modifier-input-label {
+  text-align: center;
+  margin-right: 10px;
+}
+
+.modifier-input {
+  width: 50px;
+}
+
 /* Styles limited to lore sheets */
 .lore.application .window-content, .lore.window-app .window-content {
   padding: 0;
+}
+.lore .items-list,
+.lore .items-list .item {
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+.lore .items-list .item .item-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* Let the name grow to fill remaining space */
+  flex: 1 1 auto;
+  min-width: 0; /* allow text to shrink/ellipsis within flex container */
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.lore .items-list .item .item-image {
+  flex: 0 0 auto;
+}
+.lore .items-list .item .item-image img {
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  border: none;
+}
+.lore .items-list .items-header {
+  background-color: var(--lore-c-faint);
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+.lore .items-list .items-header .item-name {
+  flex: 1 1 auto;
+}
+.lore .item-controls {
+  gap: 4px;
+  flex: 0 0 auto;
+  padding-right: 1.25em;
+}
+.lore .items-list .item .item-formula {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding-right: 1.25em;
+  white-space: nowrap;
+  color: var(--color-text-dark-5, #555);
+}
+.lore .items-list .items-header .item-formula {
+  font-weight: 600;
+  opacity: 0.9;
+}
+.lore .item-sheet-header {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.lore {
+  /* Ensure item sheets use full-width content and are not placed in a grid */
+}
+.lore.item.application .window-content, .lore.item.window-app .window-content {
+  display: block; /* revert any grid from actor layout */
+}
+.lore {
+  /* Image + fields layout inside item header */
+}
+.lore .item-sheet-header .profile-img {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border: 1px solid var(--color-tabs-border);
+}
+.lore .item-sheet-header .header-fields {
+  flex: 1 1 auto;
+  min-width: 0; /* allow input to shrink as needed */
+}
+.lore .item-sheet-header .document-name {
+  margin-bottom: 8px;
+}
+.lore .item-sheet-header .name-input {
+  width: 100%;
+  box-sizing: border-box;
 }
 .lore .lore-sidebar {
   width: 160px;
   border-right: 1px solid var(--color-tabs-border);
 }
-.lore.application .window-content, .lore.window-app .window-content {
+.lore {
+  /* Scope the sidebar grid layout to ACTOR sheets only to avoid affecting Item sheets */
+}
+.lore.actor.application .window-content, .lore.actor.window-app .window-content {
   display: grid;
   grid-template-columns: 160px 1fr; /* match .lore-sidebar width */
   /* Explicit rows prevent the first row (header) from expanding to the sidebar's height */
   grid-template-rows: auto auto 1fr; /* row 1: header, row 2: tabs, row 3: content */
   align-items: start;
 }
-.lore.application .window-content > .lore-sidebar, .lore.window-app .window-content > .lore-sidebar {
+.lore.actor.application .window-content > .lore-sidebar, .lore.actor.window-app .window-content > .lore-sidebar {
   grid-column: 1;
   grid-row: 1/-1;
 }
-.lore.application .window-content > :not(.lore-sidebar), .lore.window-app .window-content > :not(.lore-sidebar) {
+.lore.actor.application .window-content > :not(.lore-sidebar), .lore.actor.window-app .window-content > :not(.lore-sidebar) {
   grid-column: 2;
 }
-.lore.application .window-content > nav.tabs, .lore.window-app .window-content > nav.tabs {
+.lore.actor.application .window-content > nav.tabs, .lore.actor.window-app .window-content > nav.tabs {
   grid-row: 2;
 }
-.lore.application .window-content > .tab, .lore.window-app .window-content > .tab {
+.lore.actor.application .window-content > .tab, .lore.actor.window-app .window-content > .tab {
   grid-row: 3;
   min-height: 0; /* Allow scrolling within the content area if needed */
   overflow: auto;
@@ -356,6 +457,69 @@
   position: relative;
   display: inline-block;
 }
+.lore {
+  /* Custom circle checkboxes: show hollow when unchecked, filled when checked */
+}
+.lore .middle-header .wounds-content label,
+.lore .middle-header .fatigue-content label,
+.lore .middle-header .condition-item label {
+  /* Make the label the click target area */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+.lore .middle-header input[type=checkbox] {
+  position: absolute;
+  inset: 0; /* stretch to label to keep keyboard focus and clicks */
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0; /* hide native checkbox */
+  cursor: pointer;
+}
+.lore .middle-header .custom-circle {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border: 2px solid var(--color-tabs-border);
+  background-color: transparent; /* hollow by default */
+  transition: background-color 120ms ease, border-color 120ms ease, transform 60ms ease;
+  pointer-events: none; /* ensure clicks go to the label/input */
+}
+.lore {
+  /* Filled when checked */
+}
+.lore .middle-header input[type=checkbox]:checked + .custom-circle {
+  background-color: var(--lore-c-dark);
+  border-color: var(--lore-c-dark);
+}
+.lore {
+  /* Hover and active feedback */
+}
+.lore .middle-header label:hover .custom-circle {
+  border-color: var(--lore-c-tan);
+}
+.lore .middle-header input[type=checkbox]:active + .custom-circle {
+  transform: scale(0.95);
+}
+.lore {
+  /* Focus visible for keyboard users */
+}
+.lore .middle-header input[type=checkbox]:focus-visible + .custom-circle {
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25), 0 0 0 4px var(--lore-c-tan);
+}
+.lore {
+  /* Disabled state if used */
+}
+.lore .middle-header input[type=checkbox]:disabled + .custom-circle {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 .lore .morale-label {
   display: block;
   width: 100%;
@@ -366,6 +530,44 @@
   padding-left: 30px;
   padding-right: 30px;
   padding-bottom: 10px;
+}
+.lore {
+  /* Morale slider + ticks */
+}
+.lore .morale-slider {
+  position: relative;
+}
+.lore .morale-input {
+  width: 100%;
+}
+.lore {
+  /* Visual tick marks from -6 to 6 (13 steps) */
+}
+.lore .morale-ticks {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8px;
+  bottom: -6px; /* a little below the slider */
+  /* Evenly spaced ticks: one 1px line per step, tiled 12 times (12 intervals from -6 to 6) */
+  background-image: linear-gradient(to right, var(--color-tabs-border) 1px, transparent 1px);
+  background-size: 8.3333333333% 100%;
+  background-repeat: repeat-x;
+  background-position: left bottom;
+  opacity: 0.6;
+  pointer-events: none;
+}
+.lore {
+  /* Ensure the rightmost edge also shows a tick */
+}
+.lore .morale-ticks::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--color-tabs-border);
 }
 .lore .biography {
   padding: 10px;

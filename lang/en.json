@@ -12,7 +12,8 @@
       "Actor": "lore Actor Sheet",
       "Item": "lore Item Sheet",
       "Attributes": "Attributes",
-      "RollModifier": "Roll Modifier",
+      "RollMod": "Roll Mod",
+      "AdditionalMod": "Additional Mod",
       "Name": "Name"
     },
     "Actor": {
@@ -26,7 +27,6 @@
       "base": {
         "FIELDS": {
           "level": {"label": "Level"},
-          
           "Ancestry": {"label": "Ancestry"},
           "Gender": {"label": "Gender"},
           "Age": {"label": "Age"},
@@ -56,14 +56,10 @@
         }
       },
       "Pawn": {
-        "FIELDS": {
-          
-        }
+        "FIELDS": { }
       },
       "Professional": {
-        "FIELDS": {
-          
-        }
+        "FIELDS": { }
       }
     },
     "Item": {
@@ -75,21 +71,24 @@
       "Skill": {
         "Rank": "Rank"
       },
-      "Boons": {
-        "label": "Boons"
-      },
-      "Banes": {
-        "label": "Banes"
-      },
+      "Boons": { "label": "Boons" },
+      "Banes": { "label": "Banes" },
       "Gear": {
         "FIELDS": {
-          "gearType": {"label": "Gear Type", "gear": "Gear", "weapon": "Weapon", "armor": "Armor"},
           "rollFormula": {"label": "Roll Formula"},
           "numDice": {"label": "Number of Dice"},
           "dieSize": {"label": "Die Size"},
           "rollMod": {"label": "Roll Modifier"},
           "quantity": {"label": "Quantity"},
-          "weight": {"label": "Weight"}
+          "weight": {"label": "Weight"},
+          "genericDetailsHint": "No additional details for this gear."
+        }
+      },
+      "Weapon": {
+        "FIELDS": {
+          "attackFormula": {"label": "Attack Formula"},
+          "damageFormula": {"label": "Damage Formula"},
+          "damageDice": {"label": "Damage Dice"}
         }
       }
     },
@@ -109,6 +108,7 @@
     },
     "Item": {
       "gear": "Gear",
+      "weapon": "Weapon",
       "skill": "Skill",
       "magick": "Magick"
     }

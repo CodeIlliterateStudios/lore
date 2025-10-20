@@ -43,23 +43,21 @@ Hooks.once('init', function () {
     decimals: 2,
   };
 
-  // Define custom Document and DataModel classes
   CONFIG.Actor.documentClass = loreActor;
-
-  // Note that you don't need to declare a DataModel
-  // for the base actor/item classes - they are included
-  // with the Player/Pawn as part of super.defineSchema()
   CONFIG.Actor.dataModels = {
     player: models.lorePlayer,
     pawn: models.lorePawn,
     professional: models.loreProfessional,
   };
+  
   CONFIG.Item.documentClass = loreItem;
   CONFIG.Item.dataModels = {
     gear: models.loreGear,
+    weapon: models.loreWeapon,
     skill: models.loreSkill,
     magick: models.loreMagick,
   };
+ 
 
   // Active Effects are never copied to the Actor,
   // but will still apply to the Actor from within the Item
@@ -68,16 +66,32 @@ Hooks.once('init', function () {
 
   // Register sheet application classes after confirming existence
   if (loreActorSheet && loreItemSheet) {
-    foundry.documents.collections.Actors.unregisterSheet('core', foundry.appv1.sheets.ActorSheet);
-    foundry.documents.collections.Actors.registerSheet('lore', loreActorSheet, {
-      makeDefault: true,
-      label: 'LORE.SheetLabels.Actor',
-    });
-    foundry.documents.collections.Items.unregisterSheet('core', foundry.appv1.sheets.ItemSheet);
-    foundry.documents.collections.Items.registerSheet('lore', loreItemSheet, {
-      makeDefault: true,
-      label: 'LORE.SheetLabels.Item',
-    });
+    try {
+      const ActorsColl = foundry.documents?.collections?.Actors ?? Actors;
+      const ItemsColl = foundry.documents?.collections?.Items ?? Items;
+      const CoreActorSheetV1 = foundry.appv1?.sheets?.ActorSheet;
+      const CoreItemSheetV1 = foundry.appv1?.sheets?.ItemSheet;
+      // Best-effort unregister of the core sheets if available
+      if (ActorsColl && CoreActorSheetV1) {
+        try { ActorsColl.unregisterSheet('core', CoreActorSheetV1); } catch {}
+      }
+      if (ItemsColl && CoreItemSheetV1) {
+        try { ItemsColl.unregisterSheet('core', CoreItemSheetV1); } catch {}
+      }
+      // Register V2 sheets as default for our system
+      ActorsColl?.registerSheet?.('lore', loreActorSheet, {
+        makeDefault: true,
+        label: 'LORE.SheetLabels.Actor',
+        types: game.system?.documentTypes?.Actor ?? Object.keys(CONFIG.Actor.dataModels ?? {}),
+      });
+      ItemsColl?.registerSheet?.('lore', loreItemSheet, {
+        makeDefault: true,
+        label: 'LORE.SheetLabels.Item',
+        types: game.system?.documentTypes?.Item ?? Object.keys(CONFIG.Item.dataModels ?? {}),
+      });
+    } catch (e) {
+      console.error('Lore | Failed to register sheets:', e);
+    }
   } else {
     console.error('Lore sheet classes not found for registration.');
   }
@@ -160,7 +174,7 @@ Hooks.once('ready', function () {
         {
           name: 'Untrained',
           type: 'skill',
-          img: 'icons/dice/d6black.svg', 
+          img: 'systems/lore/assets/icons/D6Icon.svg', 
           system: {
             rank: { value: 1, max: 5 },
             tiedAttribute: 'ref', 
@@ -169,34 +183,34 @@ Hooks.once('ready', function () {
         {
           name: 'Athletics',
           type: 'skill',
-          img: 'icons/dice/d6black.svg', 
-          system: {
-            rank: { value: 1, max: 5 },
-            tiedAttribute: 'mig', 
-          }
-        },
-        {
-          name: 'Knowledge',
-          type: 'skill',
-          img: 'icons/dice/d6black.svg', 
-          system: {
-            rank: { value: 1, max: 5 },
-            tiedAttribute: 'int', 
-          }
-        },
-        {
-          name: 'Notice',
-          type: 'skill',
-          img: 'icons/dice/d6black.svg', 
+          img: 'systems/lore/assets/icons/D6Icon.svg', 
           system: {
             rank: { value: 1, max: 5 },
             tiedAttribute: 'ref', 
           }
         },
         {
+          name: 'Basic Knowledge',
+          type: 'skill',
+          img: 'systems/lore/assets/icons/D6Icon.svg', 
+          system: {
+            rank: { value: 1, max: 5 },
+            tiedAttribute: 'int', 
+          }
+        },
+        {
+          name: 'Insight',
+          type: 'skill',
+          img: 'systems/lore/assets/icons/D6Icon.svg', 
+          system: {
+            rank: { value: 1, max: 5 },
+            tiedAttribute: 'int', 
+          }
+        },
+        {
           name: 'Persuasion',
           type: 'skill',
-          img: 'icons/dice/d6black.svg', 
+          img: 'systems/lore/assets/icons/D6Icon.svg', 
           system: {
             rank: { value: 1, max: 5 },
             tiedAttribute: 'cha', 
@@ -205,7 +219,7 @@ Hooks.once('ready', function () {
         {
           name: 'Stealth',
           type: 'skill',
-          img: 'icons/dice/d6black.svg', 
+          img: 'systems/lore/assets/icons/D6Icon.svg', 
           system: {
             rank: { value: 1, max: 5 },
             tiedAttribute: 'ref', 
@@ -218,6 +232,84 @@ Hooks.once('ready', function () {
       }
     }
   });
+
+  // One-time normalization: coerce legacy system.gearType 'weapons' -> 'weapon'
+  try {
+    const fixPromises = [];
+    // Update any existing Skill Items that still use the old default icon to the new D6 icon
+    const oldSkillIcons = new Set([
+      'icons/dice/d6black.svg',
+      '/assets/icons/D6Icon.svg',
+      'assets/icons/D6Icon.svg'
+    ]);
+    const newSkillIcon = 'systems/lore/assets/icons/D6Icon.svg';
+    for (const item of game.items ?? []) {
+      if (item.type === 'skill' && oldSkillIcons.has(item.img)) {
+        fixPromises.push(item.update({ img: newSkillIcon }));
+      }
+    }
+    for (const actor of game.actors ?? []) {
+      const toFixSkills = actor.items?.filter(i => i.type === 'skill' && oldSkillIcons.has(i.img)) ?? [];
+      if (toFixSkills.length > 0) {
+        const updates = toFixSkills.map(i => ({ _id: i.id, img: newSkillIcon }));
+        fixPromises.push(actor.updateEmbeddedDocuments('Item', updates));
+      }
+    }
+    for (const item of game.items ?? []) {
+      if (item.type === 'gear' && item.system?.gearType === 'weapons') {
+        fixPromises.push(item.update({ 'system.gearType': 'weapon' }));
+      }
+    }
+    // Also fix embedded items on actors
+    for (const actor of game.actors ?? []) {
+      const toFix = actor.items?.filter(i => i.type === 'gear' && i.system?.gearType === 'weapons') ?? [];
+      if (toFix.length > 0) {
+        const updates = toFix.map(i => ({ _id: i.id, 'system.gearType': 'weapon' }));
+        fixPromises.push(actor.updateEmbeddedDocuments('Item', updates));
+      }
+    }
+
+    // Strip legacy system.gearType. If gearType is 'weapon' or 'weapons', convert item to type 'weapon'.
+    for (const item of game.items ?? []) {
+      if (item.type === 'gear' && item.system?.gearType) {
+        const gt = String(item.system.gearType);
+        if (gt === 'weapon' || gt === 'weapons') {
+          fixPromises.push(item.update({ type: 'weapon', 'system.-=gearType': null }));
+        } else {
+          fixPromises.push(item.update({ 'system.-=gearType': null }));
+        }
+      }
+    }
+    for (const actor of game.actors ?? []) {
+      const toStrip = actor.items?.filter(i => i.type === 'gear' && i.system?.gearType) ?? [];
+      if (toStrip.length > 0) {
+        const updates = toStrip.map(i => {
+          const gt = String(i.system.gearType);
+          if (gt === 'weapon' || gt === 'weapons') return { _id: i.id, type: 'weapon', 'system.-=gearType': null };
+          else return { _id: i.id, 'system.-=gearType': null };
+        });
+        fixPromises.push(actor.updateEmbeddedDocuments('Item', updates));
+      }
+    }
+
+  // Convert legacy Item type 'armor' to 'gear' when possible
+    for (const item of game.items ?? []) {
+      if (item.type === 'armor') {
+        // Best-effort conversion
+        fixPromises.push(item.update({ type: 'gear' }));
+      }
+    }
+    for (const actor of game.actors ?? []) {
+      const toFixArmorType = actor.items?.filter(i => i.type === 'armor') ?? [];
+      if (toFixArmorType.length > 0) {
+        const updates = toFixArmorType.map(i => ({ _id: i.id, type: 'gear' }));
+        fixPromises.push(actor.updateEmbeddedDocuments('Item', updates));
+      }
+    }
+    if (fixPromises.length > 0) Promise.allSettled(fixPromises).catch(() => {});
+  } catch (e) {
+    console.warn('Lore | Failed to normalize legacy gearType values:', e);
+  }
 });
 
 /* -------------------------------------------- */

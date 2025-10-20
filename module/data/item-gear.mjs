@@ -11,12 +11,7 @@ export default class loreGear extends loreItemBase {
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = super.defineSchema();
 
-    // New: Add gearType field for Gear, Weapon, Armor
-    schema.gearType = new fields.StringField({
-      required: true,
-      initial: 'gear', // default to Gear
-      choices: ['gear', 'weapon', 'armor'],
-    });
+    // Note: Gear no longer has subtypes. Weapons are a separate Item type.
 
     schema.quantity = new fields.NumberField({
       ...requiredInteger,
@@ -30,6 +25,8 @@ export default class loreGear extends loreItemBase {
       min: 0,
     });
 
+    // Removed: armor-like gear handling
+
     // Break down roll formula into three independent fields
     schema.roll = new fields.SchemaField({
       diceNum: new fields.NumberField({
@@ -37,9 +34,9 @@ export default class loreGear extends loreItemBase {
         initial: 1,
         min: 1,
       }),
-      diceSize: new fields.StringField({ initial: 'd20' }),
+      diceSize: new fields.StringField({ initial: 'd6' }),
       diceBonus: new fields.StringField({
-        initial: '+@str.mod+ceil(@lvl / 2)',
+        initial: '',
       }),
     });
 

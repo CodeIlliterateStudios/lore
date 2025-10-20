@@ -42,24 +42,7 @@
               </div>
               <div>{{item.name}}</div>
             </div>
-            <div class='item-controls'>
-              <a
-                class='item-control item-edit'
-                title='{{localize "DOCUMENT.Update" type='magick'}}'
-                data-action='viewDoc'
-              >
-                <i class='fas fa-edit'></i>
-              </a>
-              {{#if @root.editable}}
-                <a
-                  class='item-control item-delete'
-                  title='{{localize "DOCUMENT.Delete" type='magick'}}'
-                  data-action='deleteDoc'
-                >
-                  <i class='fas fa-trash'></i>
-                </a>
-              {{/if}}
-            </div>
+            {{!-- Controls moved to context menu --}}
           </li>
         {{/each}}
   </ol>
