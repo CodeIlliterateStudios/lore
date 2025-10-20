@@ -12,7 +12,7 @@
                     <label
                         class='attribute-roll-label rollable align-left'
                         data-action='roll'
-                        data-roll='{{attribute.value}}d6khx+@attributes.{{key}}.mod{{#unless (eq @root.actor.type "pawn")}}+1d6x{{/unless}}'
+                        data-roll='{{attribute.value}}d6khx+@attributes.{{key}}.mod'
                         data-label='{{localize (lookup @root.config.attributes key)}}'
                     >
                         {{localize (lookup @root.config.attributes key)}}

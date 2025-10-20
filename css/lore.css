@@ -420,6 +420,10 @@
   width: 50px;
   text-align: center;
 }
+.lore .quantity-input, .lore .cost-input, .lore .weight-input {
+  width: 40px;
+  text-align: center;
+}
 .lore .horizontal-line {
   width: 100%;
   height: 1px;

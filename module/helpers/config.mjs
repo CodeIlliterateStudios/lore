@@ -34,3 +34,11 @@ LORE.attributeTypes = {
   phy: 'physical',
   cha: 'mental',
 };
+
+/**
+ * Weapon type options
+ */
+LORE.weaponTypes = {
+  melee: 'LORE.Item.Weapon.Types.melee',
+  ranged: 'LORE.Item.Weapon.Types.ranged',
+};

@@ -10,20 +10,57 @@
     <div class='document-name'>
       <input class='name-input' name='name' type='text' value='{{item.name}}' placeholder='Name' />
     </div>
+    
     {{#if (eq item.type 'gear')}}
-      <div class='grid grid-2col'>
+      <div class='grid grid-3col'>
         <div class='resource'>
-          <label class='resource-label'>{{localize 'LORE.Item.Gear.FIELDS.quantity.label'}}</label>
+          <label class='resource-label'>{{localize 'LORE.Item.Gear.FIELDS.cost.label'}}</label>
           <input
+            class='cost-input'
             type='text'
-            name='system.quantity'
-            value='{{system.quantity}}'
+            name='system.cost'
+            value='{{system.cost}}'
             data-dtype='Number'
           />
         </div>
         <div class='resource'>
           <label class='resource-label'>{{localize 'LORE.Item.Gear.FIELDS.weight.label'}}</label>
           <input
+            class='weight-input'
+            type='text'
+            name='system.weight'
+            value='{{system.weight}}'
+            data-dtype='Number'
+          />
+        </div>
+        <div class='resource'>
+          <label class='resource-label'>{{localize 'LORE.Item.Gear.FIELDS.quantity.label'}}</label>
+          <input
+            class='quantity-input'
+            type='text'
+            name='system.quantity'
+            value='{{system.quantity}}'
+            data-dtype='Number'
+          />
+        </div>
+      </div>
+    {{/if}}
+    {{#if (eq item.type 'weapon')}}
+      <div class='grid grid-3col'>
+        <div class='resource'>
+          <label class='resource-label'>{{localize 'LORE.Item.Gear.FIELDS.cost.label'}}</label>
+          <input
+            class='cost-input'
+            type='text'
+            name='system.cost'
+            value='{{system.cost}}'
+            data-dtype='Number'
+          />
+        </div>
+        <div class='resource'>
+          <label class='resource-label'>{{localize 'LORE.Item.Gear.FIELDS.weight.label'}}</label>
+          <input
+            class='weight-input'
             type='text'
             name='system.weight'
             value='{{system.weight}}'
@@ -32,5 +69,12 @@
         </div>
       </div>
     {{/if}}
+    {{#if (eq item.type 'magick')}}
+      <div class='grid grid-3col'>
+        
+      </div>
+    {{/if}}
+    
+    
   </div>
 </header>

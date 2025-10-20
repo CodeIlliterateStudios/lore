@@ -18,12 +18,7 @@ export default class loreGear extends loreItemBase {
       initial: 1,
       min: 1,
     });
-    schema.weight = new fields.NumberField({
-      required: true,
-      nullable: false,
-      initial: 0,
-      min: 0,
-    });
+    
 
     // Removed: armor-like gear handling
 

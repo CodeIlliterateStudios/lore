@@ -69,7 +69,8 @@
         "Effects": "Effects"
       },
       "Skill": {
-        "Rank": "Rank"
+        "Rank": "Rank",
+        "Attribute": "Attribute"
       },
       "Boons": { "label": "Boons" },
       "Banes": { "label": "Banes" },
@@ -80,6 +81,7 @@
           "dieSize": {"label": "Die Size"},
           "rollMod": {"label": "Roll Modifier"},
           "quantity": {"label": "Quantity"},
+          "cost": {"label": "Cost"},
           "weight": {"label": "Weight"},
           "genericDetailsHint": "No additional details for this gear."
         }
@@ -88,7 +90,18 @@
         "FIELDS": {
           "attackFormula": {"label": "Attack Formula"},
           "damageFormula": {"label": "Damage Formula"},
-          "damageDice": {"label": "Damage Dice"}
+          "damageDice": {"label": "Damage Dice"},
+          "type": {"label": "Weapon Type"},
+          "range": {
+            "short": {"label": "Short Range"},
+            "medium": {"label": "Medium Range"},
+            "long": {"label": "Long Range"},
+            "units": {"label": "Units"}
+          }
+        },
+        "Types": {
+          "melee": "Melee",
+          "ranged": "Ranged"
         }
       }
     },

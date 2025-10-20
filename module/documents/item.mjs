@@ -14,9 +14,9 @@ export class loreItem extends Item {
     const type = itemData.type || "default";
     // You can customize these paths as needed
     const defaultImages = {
-      gear: "icons/svg/coins.svg",
+      gear: "icons/svg/item-bag.svg",
       weapon: "icons/svg/sword.svg",
-      magick: "systems/lore/assets/default-magick.png",
+      magick: "icons/svg/book.svg",
       skill: "systems/lore/assets/icons/D6Icon.svg",
       default: "systems/lore/assets/default-item.png"
     };
@@ -92,7 +92,7 @@ export class loreItem extends Item {
   let formula = rollData.formula;
   // For most actors, add a final exploding d6. Pawns do NOT get this extra die.
   const isPawn = this.actor?.type === 'pawn';
-  formula = `${formula} + ${rollMod}${isPawn ? '' : ' + 1d6x'}`;
+  formula = `${formula} + ${rollMod}`;
 
       // Show a popup to allow an additional modifier and confirmation
       const popup = new RollPopup({ rollType: 'item', rollData: { formula }, label });

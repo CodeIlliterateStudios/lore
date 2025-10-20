@@ -1,7 +1,36 @@
 {{! Weapon Details Tab }}
 <section class='tab details {{tab.cssClass}}' data-group='primary' data-tab='details'>
   <div class='resource'>
-    
+    <div class='grid grid-4col'>
+      <div class='grid-span-1'>
+        <label class='resource-label'>{{localize 'LORE.Item.Weapon.FIELDS.type.label'}}</label>
+        <select name='system.weaponType'>
+          <option value='melee' {{#if (eq system.weaponType 'melee')}}selected{{/if}}>{{localize 'LORE.Item.Weapon.Types.melee'}}</option>
+          <option value='ranged' {{#if (eq system.weaponType 'ranged')}}selected{{/if}}>{{localize 'LORE.Item.Weapon.Types.ranged'}}</option>
+        </select>
+      </div>
+    </div>
+    {{!-- Show range options only for ranged weapons --}}
+    {{#if (eq system.weaponType 'ranged')}}
+    <div class='grid grid-4col'>
+      <div class='grid-span-1'>
+        <label class='resource-label'>{{localize 'LORE.Item.Weapon.FIELDS.range.short.label'}}</label>
+        <input type='number' name='system.range.short' value='{{system.range.short}}' data-dtype='Number' min='0' />
+      </div>
+      <div class='grid-span-1'>
+        <label class='resource-label'>{{localize 'LORE.Item.Weapon.FIELDS.range.medium.label'}}</label>
+        <input type='number' name='system.range.medium' value='{{system.range.medium}}' data-dtype='Number' min='0' />
+      </div>
+      <div class='grid-span-1'>
+        <label class='resource-label'>{{localize 'LORE.Item.Weapon.FIELDS.range.long.label'}}</label>
+        <input type='number' name='system.range.long' value='{{system.range.long}}' data-dtype='Number' min='0' />
+      </div>
+      <div class='grid-span-1'>
+        <label class='resource-label'>{{localize 'LORE.Item.Weapon.FIELDS.range.units.label'}}</label>
+        <input type='text' name='system.range.units' value='{{system.range.units}}' />
+      </div>
+    </div>
+    {{/if}}
     <span>{{system.formula}}</span>
     <div class='grid grid-4col'>
       <div class='grid-span-1'>

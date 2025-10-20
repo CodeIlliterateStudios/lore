@@ -11,17 +11,10 @@ export default class loreWeapon extends loreItemBase {
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = super.defineSchema();
 
-    schema.quantity = new fields.NumberField({
-      ...requiredInteger,
-      initial: 1,
-      min: 1,
-    });
-
-    schema.weight = new fields.NumberField({
-      required: true,
-      nullable: false,
-      initial: 0,
-      min: 0,
+    // weapon category/type
+    schema.weaponType = new fields.StringField({
+      initial: 'melee',
+      choices: ['melee', 'ranged'],
     });
 
     // basic weapon roll parts
@@ -44,6 +37,18 @@ export default class loreWeapon extends loreItemBase {
 
     schema.formula = new fields.StringField({ blank: true });
     schema.damageFormula = new fields.StringField({ blank: true });
+
+    // Provides optional reach for melee and range bands for ranged weapons
+    schema.range = new fields.SchemaField({
+      // Melee reach distance (grid units); 0 means standard adjacent only
+      reach: new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 }),
+      // Range bands for ranged/thrown weapons; 0 indicates not applicable/unused
+      short: new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 }),
+      medium: new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 }),
+      long: new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 }),
+      // Free-text units label (e.g., 'ft', 'm', 'sq'); purely descriptive for now
+      units: new fields.StringField({ initial: 'ft' }),
+    });
 
     return schema;
   }

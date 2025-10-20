@@ -73,7 +73,7 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
     // Control which parts show based on document subtype
     switch (this.document.type) {
       case 'skill':
-        options.parts.push('detailsSkill', 'effects');
+        options.parts.push('detailsSkill');
         break;
       case 'gear':
         options.parts.push('detailsGear');
