@@ -111,14 +111,42 @@ export class loreItem extends Item {
         formula = `${formula} ${sign} ${abs}`;
       }
 
-      // Invoke the roll and submit it to chat.
+      // Invoke the roll and merge with optional LORE Die into a single chat card.
       const roll = new Roll(formula, rollData.actor);
       await roll.evaluate();
-      await roll.toMessage({
+
+  let content = await roll.render();
+  /** @type {Roll[]} */
+  const rolls = [roll];
+  let loreTotal = 0;
+
+      // LORE Die: skills only, for players and professionals (pawns do not roll a LORE Die)
+      try {
+        const actorType = this.actor?.type ?? '';
+        const qualifies = (this.type === 'skill') && (actorType === 'player' || actorType === 'professional');
+        if (qualifies) {
+          const loreRoll = new Roll('1d6');
+          await loreRoll.evaluate();
+          const loreHtml = await loreRoll.render();
+          content += `\n<div class=\"lore-die\">LORE Die${loreHtml}</div>`;
+          rolls.push(loreRoll);
+          loreTotal = Number(loreRoll.total) || 0;
+        }
+      } catch (e) {
+        console.warn('LORE | Failed to roll/render LORE Die for skill:', e);
+      }
+
+      const finalTotal = (Number(roll.total) || 0) + loreTotal;
+      content += `\n<div class=\"lore-final-total\" style=\"margin-top:6px;padding-top:6px;border-top:1px solid var(--color-border-light, #999);\"><strong>Final Result:</strong> ${finalTotal}</div>`;
+
+      await ChatMessage.create({
         speaker: speaker,
         rollMode: rollMode,
         flavor: label,
+        content,
+        rolls,
       });
+
       return roll;
     }
   }

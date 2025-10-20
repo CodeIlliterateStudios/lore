@@ -252,6 +252,11 @@
   width: 50px;
 }
 
+.lore-die {
+  text-align: center;
+  margin-top: 10px;
+}
+
 /* Styles limited to lore sheets */
 .lore.application .window-content, .lore.window-app .window-content {
   padding: 0;

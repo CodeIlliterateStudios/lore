@@ -513,10 +513,35 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
         await finalRoll.evaluate();
       }
 
-      await finalRoll.toMessage({
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      // Merge both rolls into a single chat card (separate displays), pawns excluded
+      const speaker = ChatMessage.getSpeaker({ actor: this.actor });
+      const rollMode = game.settings.get('core', 'rollMode');
+      let content = await finalRoll.render();
+      const actorType = this.actor?.type ?? '';
+      const qualifies = actorType === 'player' || actorType === 'professional';
+      /** @type {Roll[]} */
+      const rolls = [finalRoll];
+      let loreTotal = 0;
+      if (qualifies) {
+        try {
+          const loreRoll = new Roll('1d6');
+          await loreRoll.evaluate();
+          const loreHtml = await loreRoll.render();
+          content += `\n<div class="lore-die">LORE Die${loreHtml}</div>`;
+          rolls.push(loreRoll);
+          loreTotal = Number(loreRoll.total) || 0;
+        } catch (e) {
+          console.warn('LORE | Failed to roll/render LORE Die for attribute:', e);
+        }
+      }
+      const finalTotal = (Number(finalRoll.total) || 0) + loreTotal;
+      content += `\n<div class="lore-final-total" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--color-border-light, #999);"><strong>Final Result:</strong> ${finalTotal}</div>`;
+      await ChatMessage.create({
+        speaker,
         flavor: label,
-        rollMode: game.settings.get('core', 'rollMode'),
+        rollMode,
+        content,
+        rolls,
       });
       return finalRoll;
     }
