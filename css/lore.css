@@ -1,18 +1,3 @@
-/* Lore Default Background for No Scene */
-#lore-default-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
-  background-image: url("../assets/lore-logo.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  opacity: 0.95;
-  pointer-events: none;
-}
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 :root {
   --lore-c-dark: #191813;
@@ -236,6 +221,20 @@
 .align-center {
   justify-content: center;
   text-align: center;
+}
+
+.lore-context-menu {
+  position: absolute;
+  z-index: 1000;
+  border: 1px solid #888;
+  padding: 4px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1333333333);
+  min-width: 120px;
+}
+
+.lore-context-menu-item {
+  padding: 4px 16px;
+  cursor: pointer;
 }
 
 /* Styles limited to lore sheets */

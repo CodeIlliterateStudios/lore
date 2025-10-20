@@ -8,7 +8,7 @@
         <div class='attributes flexcol'>
             <label class='attribute-label'>{{localize 'LORE.SheetLabels.Attributes'}}</label>
             {{#each system.attributes as |attribute key|}}
-                <div class='attribute flexrow flex-between'>
+                <div class='attribute flexrow flex-between' data-attribute='{{key}}'>
                     <label
                         class='attribute-roll-label rollable align-left'
                         data-action='roll'

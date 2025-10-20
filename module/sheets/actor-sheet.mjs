@@ -258,18 +258,48 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
   _onRender(context, options) {
     this.#dragDrop.forEach((d) => d.bind(this.element));
     this.#disableOverrides();
-    // You may want to add other special handling here
-    // Foundry comes with a large number of utility classes, e.g. SearchFilter
-    // That you may want to implement yourself.
+    // ...existing code...
 
-    // Wounds checkboxes health bar logic
+    // Context menu for attributes
+    const $attributes = $(this.element).find('.attribute');
+    $attributes.on('contextmenu', async (event) => {
+      event.preventDefault();
+      // Remove any existing menu
+      $('.lore-context-menu').remove();
+
+      // Example items for context menu, replace with your logic
+      const items = [
+        { action: 'info', label: 'Show Info' },
+        { action: 'edit', label: 'Edit Attribute' }
+      ];
+
+      // Render the context-menu.hbs template
+      const html = await renderTemplate('systems/lore/templates/context-menu.hbs', { items });
+      const $menu = $(html);
+      $('body').append($menu);
+      $menu.css({
+        top: event.pageY + 'px',
+        left: event.pageX + 'px',
+        position: 'absolute'
+      });
+
+      // Click outside to close
+      setTimeout(() => {
+        $(document).on('mousedown.loreContextMenu', (e) => {
+          if (!$menu.is(e.target) && $menu.has(e.target).length === 0) {
+            $menu.remove();
+            $(document).off('mousedown.loreContextMenu');
+          }
+        });
+      }, 0);
+    });
+
+    // ...existing code for wounds, fatigue, morale...
     const woundsCheckboxes = $(this.element).find('.wounds-checkbox');
-    // Set checked state based on actor's wounds.value
     const woundsValue = this.actor.system.wounds?.value || 0;
     woundsCheckboxes.each(function(i) {
       this.checked = i < woundsValue;
     });
-
     woundsCheckboxes.on('change', (e) => {
       const idx = woundsCheckboxes.index(e.target);
       if (e.target.checked) {
@@ -281,24 +311,19 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
           if (i >= idx) this.checked = false;
         });
       }
-      // Update wounds.value in actor data
       const newValue = woundsCheckboxes.filter(':checked').length;
-        this.actor.update({ 'system.wounds.value': newValue });
-        // Automatically set unconscious to true if wounds.value equals wounds.max
-        const woundsMax = this.actor.system.wounds?.max || 0;
-        if (newValue === woundsMax && woundsMax > 0) {
-          this.actor.update({ 'system.unconscious': true });
-        }
+      this.actor.update({ 'system.wounds.value': newValue });
+      const woundsMax = this.actor.system.wounds?.max || 0;
+      if (newValue === woundsMax && woundsMax > 0) {
+        this.actor.update({ 'system.unconscious': true });
+      }
     });
 
-    // Fatigue checkboxes health bar logic
     const fatigueCheckboxes = $(this.element).find('.fatigue-checkbox');
-    // Set checked state based on actor's fatigue.value
     const fatigueValue = this.actor.system.fatigue?.value || 0;
     fatigueCheckboxes.each(function(i) {
       this.checked = i < fatigueValue;
     });
-
     fatigueCheckboxes.on('change', (e) => {
       const idx = fatigueCheckboxes.index(e.target);
       if (e.target.checked) {
@@ -310,21 +335,17 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
           if (i >= idx) this.checked = false;
         });
       }
-      // Update fatigue.value in actor data
       const newValue = fatigueCheckboxes.filter(':checked').length;
-        this.actor.update({ 'system.fatigue.value': newValue });
-        // Automatically set incapacitated to true if fatigue.value equals fatigue.max
-        const fatigueMax = this.actor.system.fatigue?.max || 0;
-        if (newValue === fatigueMax && fatigueMax > 0) {
-          this.actor.update({ 'system.incapacitated': true });
-        }
+      this.actor.update({ 'system.fatigue.value': newValue });
+      const fatigueMax = this.actor.system.fatigue?.max || 0;
+      if (newValue === fatigueMax && fatigueMax > 0) {
+        this.actor.update({ 'system.incapacitated': true });
+      }
     });
 
-    // Morale slider live value and persistence
     const moraleInput = this.element.querySelector('.morale-input');
     const moraleValueEl = this.element.querySelector('.morale-value');
     if (moraleInput && moraleValueEl) {
-      // Initialize display
       moraleValueEl.textContent = String(this.actor.system.morale ?? 0);
       moraleInput.addEventListener('input', (e) => {
         moraleValueEl.textContent = moraleInput.value;
@@ -334,7 +355,6 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
         await this.actor.update({ 'system.morale': newMorale });
       });
     }
-    
   }
 
   /**************
