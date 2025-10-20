@@ -20,7 +20,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     classes: ['lore', 'actor'],
     position: {
       width: 600,
-      height: 600,
+      height: 580,
     },
     actions: {
       onEditImage: this._onEditImage,
@@ -39,6 +39,9 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
 
   /** @override */
   static PARTS = {
+    sidebar: {
+      template: 'systems/lore/templates/actor/sidebar.hbs',
+    },
     header: {
       template: 'systems/lore/templates/actor/header.hbs',
     },
@@ -67,7 +70,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
   _configureRenderOptions(options) {
     super._configureRenderOptions(options);
     // Not all parts always render
-    options.parts = ['header', 'tabs', 'biography'];
+    options.parts = ['sidebar', 'header', 'tabs', 'biography'];
     // Don't show the other tabs if only limited view
     if (this.document.limited) return;
     // Control which parts show based on document subtype
@@ -159,8 +162,12 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
   _getTabs(parts) {
     // If you have sub-tabs this is necessary to change
     const tabGroup = 'primary';
-    // Default tab for first time it's rendered this session
-    if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = 'skills';
+    // Determine a sensible default tab based on available parts
+    const candidateOrder = ['skills', 'gear', 'magicks', 'effects', 'biography'];
+    if (!this.tabGroups[tabGroup]) {
+      const firstAvailable = candidateOrder.find((p) => parts.includes(p));
+      this.tabGroups[tabGroup] = firstAvailable ?? 'biography';
+    }
     return parts.reduce((tabs, partId) => {
       const tab = {
         cssClass: '',
@@ -175,6 +182,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       switch (partId) {
         case 'header':
         case 'tabs':
+        case 'sidebar':
           return tabs;
         case 'skills':
           tab.id = 'skills';
@@ -311,6 +319,21 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
           this.actor.update({ 'system.incapacitated': true });
         }
     });
+
+    // Morale slider live value and persistence
+    const moraleInput = this.element.querySelector('.morale-input');
+    const moraleValueEl = this.element.querySelector('.morale-value');
+    if (moraleInput && moraleValueEl) {
+      // Initialize display
+      moraleValueEl.textContent = String(this.actor.system.morale ?? 0);
+      moraleInput.addEventListener('input', (e) => {
+        moraleValueEl.textContent = moraleInput.value;
+      });
+      moraleInput.addEventListener('change', async (e) => {
+        const newMorale = Number(moraleInput.value) || 0;
+        await this.actor.update({ 'system.morale': newMorale });
+      });
+    }
     
   }
 

@@ -1,0 +1,72 @@
+{{! Left Sidebar }}
+<aside class="lore-sidebar">
+    <div class="sidebar-inner">
+        <div class="portrait">
+            <img class="profile-img" src="{{actor.img}}" data-edit="img" data-action="onEditImage" title="{{actor.name}}" />
+        </div>
+
+        <div class='attributes flexcol'>
+            <label class='attribute-label'>{{localize 'LORE.SheetLabels.Attributes'}}</label>
+            {{#each system.attributes as |attribute key|}}
+                <div class='attribute flexrow flex-between'>
+                    <label
+                        class='attribute-roll-label rollable align-left'
+                        data-action='roll'
+                        data-roll='{{attribute.value}}d6khx+@attributes.{{key}}.mod{{#unless (eq @root.actor.type "pawn")}}+1d6x{{/unless}}'
+                        data-label='{{localize (lookup @root.config.attributes key)}}'
+                    >
+                        {{localize (lookup @root.config.attributes key)}}
+                    </label>
+                    <label
+                        class='attribute-formula-label roll-summary align-right'
+                        data-label='{{localize (lookup @root.config.attributes key)}}'
+                    >
+                        {{attribute.value}}d6{{numberFormat attribute.mod decimals=0 sign=true}}
+                    </label>
+                </div>
+            {{/each}}
+        </div>
+        <div class="horizontal-line"></div>
+
+        <div class='stats-container'>
+            <div class='stat-container grid grid-2col'>
+                <label for='system.movement' class='stat-label'>
+	                {{localize 'LORE.Actor.base.FIELDS.movement.label'}}
+                </label>
+                <input
+                    class='stat-input text-center'
+		            type='text'
+		            name='system.movement'
+		            value='{{system.movement}}'
+		            data-dtype='Number'
+	            />
+            </div>
+            <div class='stat-container grid grid-2col'>
+                <label for='system.parry' class='stat-label'>
+	                {{localize 'LORE.Actor.base.FIELDS.parry.label'}}
+                </label>
+                <input
+                    class='stat-input text-center'
+		            type='text'
+		            name='system.parry'
+		            value='{{system.parry}}'
+		            data-dtype='Number'
+	            />
+            </div>
+            <div class='stat-container grid grid-2col'>
+                <label for='system.toughness' class='stat-label'>
+	                {{localize 'LORE.Actor.base.FIELDS.toughness.label'}}
+                </label>
+                <input
+                    class='stat-input text-center'
+		            type='text'
+		            name='system.toughness'
+		            value='{{system.toughness}}'
+		            data-dtype='Number'
+	            />
+            </div>
+        </div>
+
+        
+    </div>
+</aside>

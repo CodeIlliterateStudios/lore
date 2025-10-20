@@ -1,3 +1,18 @@
+/* Lore Default Background for No Scene */
+#lore-default-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  background-image: url("../assets/lore-logo.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.95;
+  pointer-events: none;
+}
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 :root {
   --lore-c-dark: #191813;
@@ -224,424 +239,139 @@
 }
 
 /* Styles limited to lore sheets */
-.lore .item-form {
-  font-family: "Roboto", sans-serif;
+.lore.application .window-content, .lore.window-app .window-content {
+  padding: 0;
 }
-.window-app.lore .window-content {
+.lore .lore-sidebar {
+  width: 160px;
+  border-right: 1px solid var(--color-tabs-border);
+}
+.lore.application .window-content, .lore.window-app .window-content {
+  display: grid;
+  grid-template-columns: 160px 1fr; /* match .lore-sidebar width */
+  /* Explicit rows prevent the first row (header) from expanding to the sidebar's height */
+  grid-template-rows: auto auto 1fr; /* row 1: header, row 2: tabs, row 3: content */
+  align-items: start;
+}
+.lore.application .window-content > .lore-sidebar, .lore.window-app .window-content > .lore-sidebar {
+  grid-column: 1;
+  grid-row: 1/-1;
+}
+.lore.application .window-content > :not(.lore-sidebar), .lore.window-app .window-content > :not(.lore-sidebar) {
+  grid-column: 2;
+}
+.lore.application .window-content > nav.tabs, .lore.window-app .window-content > nav.tabs {
+  grid-row: 2;
+}
+.lore.application .window-content > .tab, .lore.window-app .window-content > .tab {
+  grid-row: 3;
+  min-height: 0; /* Allow scrolling within the content area if needed */
+  overflow: auto;
+}
+.lore .profile-img {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--color-tabs-border);
+}
+.lore .attributes {
+  padding: 10px;
+}
+.lore .attribute {
+  margin: 0px;
+  height: 30px;
+}
+.lore .attribute-label {
+  font-weight: bold;
+  text-align: center;
+  display: block;
+}
+.lore .stats-container {
+  padding: 10px;
+}
+.lore .stat-container {
+  padding: 0px;
+}
+.lore .stat-label {
+  padding-right: 20px;
+}
+.lore .stat-input {
+  width: 50px;
+  text-align: center;
+}
+.lore.application .window-content > .sheet-header, .lore.window-app .window-content > .sheet-header {
+  grid-row: 1;
+  align-self: start; /* Don't stretch to row height */
+}
+.lore .name-input {
+  border: none;
+  border-right: 1px solid var(--color-tabs-border);
+  border-radius: 0px;
+  background: none;
+  font-weight: bold;
+  font-size: 1.5em;
+  box-shadow: none;
+  margin: none;
+}
+.lore .level-label {
+  padding-right: 10px;
+}
+.lore .level-input {
+  width: 50px;
+  text-align: center;
+}
+.lore .horizontal-line {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-tabs-border);
+  margin: 8px 0;
+}
+.lore .middle-header .wounds-container, .lore .middle-header .fatigue-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
-.lore .sheet-header {
-  flex: 0 auto;
-  overflow: hidden;
+.lore .middle-header .wounds-label, .lore .middle-header .fatigue-label {
+  font-weight: 600;
+}
+.lore .middle-header .wounds-content, .lore .middle-header .fatigue-content {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  margin-bottom: 10px;
+  gap: 12px;
 }
-.lore .sheet-header .profile-img {
-  flex: 0 0 100px;
-  height: 100px;
-  margin-right: 10px;
-}
-.lore .sheet-header .header-fields {
-  flex: 1;
-}
-.lore .sheet-header .header-fields .document-name {
+.lore .middle-header .condition-container {
   display: flex;
+  justify-content: space-between;
   align-items: flex-start;
   gap: 8px;
 }
-.lore .sheet-header .header-fields .document-name .name-stack {
+.lore .middle-header .condition-item {
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;
-}
-.lore .sheet-header .header-fields .document-name .name-stack .resource-label {
-  margin-bottom: 2px;
-}
-.lore .sheet-header .header-fields .document-name .name-stack input[name=name] {
-  flex: 1 1 auto;
-}
-.lore .sheet-header .header-fields .document-name .level-container {
-  flex: 0 0 auto;
-  width: 40px;
-}
-.lore .sheet-tabs {
-  flex: 0;
-}
-.lore .sheet-body {
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-.lore .sheet-body .tab {
-  flex: 1 1 auto;
-  min-height: 0;
-}
-.lore .sheet-body .tab .editor {
-  height: 100%;
-}
-.lore .sheet-body .tab {
-  padding-right: 8px;
-  scrollbar-gutter: stable;
-}
-.lore .tab.biography {
-  flex: 1;
-  margin-top: 8px;
-  /* Allow scrolling when biography content exceeds available space */
-  overflow-y: auto;
-  /* Keep a little space between content and the right scrollbar */
-  padding-right: 8px;
-  /* Reserve space to prevent layout shift when scrollbar appears (where supported) */
-  scrollbar-gutter: stable;
-  min-height: 0; /* ensure flex child can shrink to enable overflow */
-}
-.lore .tab.biography .editor {
-  height: 100%;
-}
-.lore .tox .tox-editor-container {
-  background: var(--lore-c-white);
-}
-.lore .tox .tox-edit-area {
-  padding: 0 8px;
-}
-.lore .resource-label {
-  font-weight: bold;
-}
-.lore .attribute {
-  margin-bottom: 2px;
-}
-.lore .attribute-score,
-.lore .attribute-mod {
-  flex: 0 0 44px;
-}
-.lore .attribute-input {
-  width: 44px;
-  text-align: center;
-}
-.lore .items-header {
-  height: 28px;
-  margin: 2px 0;
-  padding: 0;
   align-items: center;
-  background: rgba(0, 0, 0, 0.05);
-  border: 2px groove var(--lore-c-groove);
-  font-weight: bold;
+  gap: 2px; /* replaces inline margin-bottom on labels */
 }
-.lore .items-header > * {
-  font-size: 14px;
-  text-align: center;
+.lore .middle-header .wounds-content label,
+.lore .middle-header .fatigue-content label,
+.lore .middle-header .condition-item label {
+  position: relative;
+  display: inline-block;
 }
-.lore .items-header .item-name {
-  font-weight: bold;
-  padding-left: 5px;
-  text-align: left;
-  display: flex;
-}
-.lore .tab.gear,
-.lore .tab.magicks,
-.lore .tab.effects {
-  min-height: 0;
-}
-.lore .tab.gear.active,
-.lore .tab.magicks.active,
-.lore .tab.effects.active {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.lore .tab.gear > .items-list,
-.lore .tab.gear > .effects-list,
-.lore .tab.gear > ol,
-.lore .tab.magicks > .items-list,
-.lore .tab.magicks > .effects-list,
-.lore .tab.magicks > ol,
-.lore .tab.effects > .items-list,
-.lore .tab.effects > .effects-list,
-.lore .tab.effects > ol {
-  flex: 1 1 auto;
-  min-height: 0;
-  max-height: 100%;
-  overflow-y: auto;
-  padding-right: 8px;
-  scrollbar-gutter: stable;
-}
-.lore .items-list {
-  list-style: none;
-  margin: 0;
-  padding: 0 8px 0 0; /* right gutter so text doesn't touch scrollbar */
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-gutter: stable;
-  color: var(--lore-c-tan);
-}
-.lore .items-list .item-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.lore .items-list .item-name {
-  flex: 2;
-  margin: 0;
-  overflow: hidden;
-  font-size: 13px;
-  text-align: left;
-  align-items: center;
-  display: flex;
-}
-.lore .items-list .item-name h3, .lore .items-list .item-name h4 {
-  margin: 0;
-  white-space: nowrap;
-  overflow-x: hidden;
-}
-.lore .items-list .item-controls {
-  display: flex;
-  flex: 0 0 100px;
-  justify-content: flex-end;
-}
-.lore .items-list .item-controls a {
-  font-size: 12px;
-  text-align: center;
-  margin: 0 6px;
-}
-.lore .items-list .item {
-  align-items: center;
-  padding: 0 2px;
-  border-bottom: 1px solid var(--lore-c-faint);
-}
-.lore .items-list .item:last-child {
-  border-bottom: none;
-}
-.lore .items-list .item .item-name {
-  color: var(--lore-c-dark);
-}
-.lore .items-list .item .item-name .item-image {
-  flex: 0 0 30px;
-  height: 30px;
-  background-size: 30px;
-  border: none;
-  margin-right: 5px;
-}
-.lore .items-list .item-prop {
-  text-align: center;
-  border-left: 1px solid #c9c7b8;
-  border-right: 1px solid #c9c7b8;
-  font-size: 12px;
-}
-.lore .items-list .items-header {
-  height: 28px;
-  margin: 2px 0;
-  padding: 0;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.05);
-  border: 2px groove var(--lore-c-groove);
-  font-weight: bold;
-}
-.lore .items-list .items-header > * {
-  font-size: 12px;
-  text-align: center;
-}
-.lore .items-list .items-header .item-name {
-  padding-left: 5px;
-  text-align: left;
-}
-.lore .item-formula {
-  flex: 0 0 200px;
-  padding: 0 8px;
-}
-.lore .tab.skills {
-  min-height: 0;
-}
-.lore .tab.skills.active {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.lore .tab.skills .grid {
-  flex: 1 1 auto;
-  min-height: 0;
-}
-.lore .tab.skills .sidebar {
-  overflow-y: auto;
-  padding-right: 8px;
-  min-height: 0;
-}
-.lore .tab.skills .main {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-.lore .tab.skills .main .items-list,
-.lore .tab.skills .main > ol {
-  flex: 1 1 auto;
-  min-height: 0;
-  max-height: 100%;
-}
-.lore .effects-header {
-  height: 28px;
-  margin: 2px 0;
-  padding: 0;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.05);
-  border: 2px groove var(--lore-c-groove);
-  font-weight: bold;
-}
-.lore .effects-header > * {
-  font-size: 14px;
-  text-align: center;
-}
-.lore .effects-header .effect-name {
-  font-weight: bold;
-  padding-left: 5px;
-  text-align: left;
-  display: flex;
-}
-.lore .effects-list {
-  list-style: none;
-  margin: 0;
-  padding: 0 8px 0 0; /* right gutter so text doesn't touch scrollbar */
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-gutter: stable;
-  color: var(--lore-c-tan);
-}
-.lore .effects-list .effect-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.lore .effects-list .effect-name {
-  flex: 2;
-  margin: 0;
-  overflow: hidden;
-  font-size: 13px;
-  text-align: left;
-  align-items: center;
-  display: flex;
-}
-.lore .effects-list .effect-name h3, .lore .effects-list .effect-name h4 {
-  margin: 0;
-  white-space: nowrap;
-  overflow-x: hidden;
-}
-.lore .effects-list .effect-controls {
-  display: flex;
-  flex: 0 0 100px;
-  justify-content: flex-end;
-}
-.lore .effects-list .effect-controls a {
-  font-size: 12px;
-  text-align: center;
-  margin: 0 6px;
-}
-.lore .effects-list .effect {
-  align-items: center;
-  padding: 0 2px;
-  border-bottom: 1px solid var(--lore-c-faint);
-}
-.lore .effects-list .effect:last-child {
-  border-bottom: none;
-}
-.lore .effects-list .effect .effect-name {
-  color: var(--lore-c-dark);
-}
-.lore .effects-list .effect .effect-name .effect-image {
-  flex: 0 0 30px;
-  height: 30px;
-  background-size: 30px;
-  border: none;
-  margin-right: 5px;
-}
-.lore .effects-list .effect-prop {
-  text-align: center;
-  border-left: 1px solid #c9c7b8;
-  border-right: 1px solid #c9c7b8;
-  font-size: 12px;
-}
-.lore .effects-list .effects-header {
-  height: 28px;
-  margin: 2px 0;
-  padding: 0;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.05);
-  border: 2px groove var(--lore-c-groove);
-  font-weight: bold;
-}
-.lore .effects-list .effects-header > * {
-  font-size: 12px;
-  text-align: center;
-}
-.lore .effects-list .effects-header .effect-name {
-  padding-left: 5px;
-  text-align: left;
-}
-.lore .effect-formula {
-  flex: 0 0 200px;
-  padding: 0 8px;
-}
-.lore .effects .item .effect-source,
-.lore .effects .item .effect-duration,
-.lore .effects .item .effect-controls {
-  text-align: center;
-  border-left: 1px solid #c9c7b8;
-  border-right: 1px solid #c9c7b8;
-  font-size: 12px;
-}
-.lore .effects .item .effect-controls {
-  border: none;
-}
-
-/* Roll popup */
-.lore-roll-popup {
-  text-align: center;
-}
-.lore-roll-popup .roll-options,
-.lore-roll-popup .roll-popup-actions {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 8px;
-}
-.lore-roll-popup .roll-popup-actions {
-  justify-content: center;
-}
-.lore-roll-popup .roll-options {
-  justify-content: center;
-}
-.lore-roll-popup .roll-options .roll-option,
-.lore-roll-popup .roll-popup-actions button {
-  flex: 0 0 auto; /* keep buttons sized to content, side-by-side */
-}
-
-/* Make the action bar full-bleed to window sides/bottom and stick to bottom */
-.window-app.lore-roll-popup .window-content {
-  /* Remove default padding on sides and bottom for this popup */
-  padding-left: 0;
-  padding-right: 0;
-  padding-bottom: 0;
-  /* Make the content area a flex column to allow sticky footer */
-  display: flex;
-  flex-direction: column;
-}
-
-.window-app.lore-roll-popup .window-content > .lore-roll-popup {
-  /* Use flex and let this fill the available space */
-  min-height: 100%;
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.window-app.lore-roll-popup .window-content > .lore-roll-popup .roll-popup-actions {
-  /* Push actions to bottom and make them span full width */
-  margin-top: auto; /* overrides earlier margin-top */
+.lore .morale-label {
+  display: block;
   width: 100%;
-  /* Optional subtle separation from content above */
-  padding-top: 8px;
-  border-top: 1px solid var(--lore-c-faint);
+  text-align: center;
+}
+.lore .morale-slider-container {
+  width: 100%;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-bottom: 10px;
+}
+.lore .biography {
+  padding: 10px;
+}
+.lore .biography-content {
+  background: none;
+  border: none;
 }

@@ -1,0 +1,69 @@
+.lore-sidebar {
+        width: 160px;
+        border-right: 1px solid var(--color-tabs-border);
+}
+
+&.application .window-content,
+&.window-app .window-content {
+    display: grid;
+        grid-template-columns: 160px 1fr; /* match .lore-sidebar width */
+        /* Explicit rows prevent the first row (header) from expanding to the sidebar's height */
+        grid-template-rows: auto auto 1fr; /* row 1: header, row 2: tabs, row 3: content */
+        align-items: start;
+}
+
+&.application .window-content > .lore-sidebar,
+&.window-app .window-content > .lore-sidebar {
+    grid-column: 1;
+        grid-row: 1 / -1;
+}
+
+&.application .window-content > :not(.lore-sidebar),
+&.window-app .window-content > :not(.lore-sidebar) {
+    grid-column: 2;
+}
+
+
+
+&.application .window-content > nav.tabs,
+&.window-app .window-content > nav.tabs {
+    grid-row: 2;
+}
+
+&.application .window-content > .tab,
+&.window-app .window-content > .tab {
+    grid-row: 3;
+    min-height: 0; /* Allow scrolling within the content area if needed */
+    overflow: auto;
+}
+.profile-img {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--color-tabs-border);
+}
+.attributes {
+    padding: 10px;
+}
+.attribute {
+    margin: 0px;
+    height: 30px;
+}
+.attribute-label {
+    font-weight: bold;
+    text-align: center;
+    display: block;
+}
+.stats-container {
+    padding: 10px;
+}
+.stat-container {
+    padding: 0px;
+}
+.stat-label {
+    padding-right: 20px;
+}
+.stat-input {
+    width: 50px;
+    text-align: center;
+}

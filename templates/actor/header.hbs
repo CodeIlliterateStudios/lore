@@ -1,138 +1,118 @@
 {{! Sheet Header }}
-<header class='sheet-header grid grid-6col'>
-  <div class='left-header flexcol flex-center grid-span-2'>
-    <img
-      class='profile-img'
-      src='{{actor.img}}'
-      data-edit='img'
-      data-action='onEditImage'
-      title='{{actor.name}}'
-      height='100'
-      width='100'
-    />
-  </div>
-  <div class='header-fields grid-span-3'>
-    <div class='document-name'>
-      <div class='name-stack'>
-        <label for='name' class='resource-label'>
-          {{localize 'LORE.SheetLabels.Name'}}
-        </label>
-        <input
-          name='name'
-          type='text'
-          value='{{actor.name}}'
-          placeholder='Name'
-        />
-      </div>
-      <div class='level-container'>
-        <label for='system.level' class='resource-label'>
-          {{localize 'LORE.Actor.base.FIELDS.level.label'}}
-        </label>
-        <div class='resource-content'>
-          <input
-            type='text'
-            name='system.level'
-            value='{{system.level.value}}'
-            data-dtype='Number'
-          />
-        </div>
-      </div>
+<header class='sheet-header'>
+
+  <div class='top-header grid grid-4col flex-center'>
+    <div class='name-container grid-span-3'>
+      <label for='name' class='resource-label hidden'>
+	      {{localize 'LORE.SheetLabels.Name'}}
+      </label>
+      <input
+	      name='name'
+        class='name-input'
+	      type='text'
+	      value='{{actor.name}}'
+	      placeholder='Name'
+      />
     </div>
-
-    <!-- Resources grid moved under name -->
-    <div class='resources grid grid-9col center-text' style='margin-top: 8px;'>
-      <!-- Health (Wounds) on the left -->
-      <div class='resource flexcol flex-center grid-span-3'>
-        <label class='resource-label center-text'>
-          {{localize 'LORE.Actor.base.FIELDS.wounds.value.label'}}
-        </label>
-        <div class='resource-content flexrow flex-center flex-between grid-span-3 center-text'>
-          <label style="position:relative;display:inline-block;">
-            <input type='checkbox' name='system.wounds.checkboxes' value='1' class='wounds-checkbox'/><span class='custom-circle'></span>
-          </label>
-          <label style="position:relative;display:inline-block;">
-            <input type='checkbox' name='system.wounds.checkboxes' value='2' class='wounds-checkbox'/><span class='custom-circle'></span>
-          </label>
-          <label style="position:relative;display:inline-block;">
-            <input type='checkbox' name='system.wounds.checkboxes' value='3' class='wounds-checkbox'/><span class='custom-circle'></span>
-          </label>
-        </div>
-      </div>
-
-      <!-- Statuses in the center (horizontal) -->
-      <div class='resource flexrow flex-center grid-span-3'>
-        <div class='resource flexcol flex-center' style='margin-right: 12px;'>
-          <span class='resource-label center-text' style='margin-bottom: 2px;'>
-            {{localize 'LORE.Actor.base.FIELDS.unconscious.label'}}
-          </span>
-          <label style="position:relative;display:inline-block;">
-            <input type='checkbox' name='system.unconscious' {{#if system.unconscious}}checked{{/if}} class='status-checkbox'/><span class='custom-circle'></span>
-          </label>
-        </div>
-        <div class='resource flexcol flex-center' style='margin-right: 12px;'>
-          <span class='resource-label center-text' style='margin-bottom: 2px;'>
-            {{localize 'LORE.Actor.base.FIELDS.stunned.label'}}
-          </span>
-          <label style="position:relative;display:inline-block;">
-            <input type='checkbox' name='system.stunned' {{#if system.stunned}}checked{{/if}} class='status-checkbox'/><span class='custom-circle'></span>
-          </label>
-        </div>
-        <div class='resource flexcol flex-center'>
-          <span class='resource-label center-text' style='margin-bottom: 2px;'>
-            {{localize 'LORE.Actor.base.FIELDS.incapacitated.label'}}
-          </span>
-          <label style="position:relative;display:inline-block;">
-            <input type='checkbox' name='system.incapacitated' {{#if system.incapacitated}}checked{{/if}} class='status-checkbox'/><span class='custom-circle'></span>
-          </label>
-        </div>
-      </div>
-
-      <!-- Fatigue on the right -->
-      <div class='resource flexcol flex-center grid-span-3'>
-        <label for='system.fatigue.value' class='resource-label'>
-          {{localize 'LORE.Actor.base.FIELDS.fatigue.value.label'}}
-        </label>
-        <div class='resource-content flexrow flex-between grid-span-3 center-text'>
-          <label style="position:relative;display:inline-block;">
-            <input type='checkbox' name='system.fatigue.checkboxes' value='1' class='fatigue-checkbox'/><span class='custom-circle'></span>
-          </label>
-          <label style="position:relative;display:inline-block;">
-            <input type='checkbox' name='system.fatigue.checkboxes' value='2' class='fatigue-checkbox'/><span class='custom-circle'></span>
-          </label>
-          <label style="position:relative;display:inline-block;">
-            <input type='checkbox' name='system.fatigue.checkboxes' value='3' class='fatigue-checkbox'/><span class='custom-circle'></span>
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <!-- New row for Movement, Parry, Toughness -->
-    <div class='resources grid grid-9col center-text' style='margin-top: 8px;'>
-      <div class='resource flexcol flex-center grid-span-3'>
-        <label for='system.movement' class='resource-label'>
-          {{localize 'LORE.Actor.base.FIELDS.movement.label'}}
-        </label>
-        <div class='resource-content flexrow flex-center'>
-          <input type='text' name='system.movement' value='{{system.movement}}' data-dtype='Number' class='center-text' />
-        </div>
-      </div>
-      <div class='resource flexcol flex-center grid-span-3'>
-        <label for='system.parry' class='resource-label'>
-          {{localize 'LORE.Actor.base.FIELDS.parry.label'}}
-        </label>
-        <div class='resource-content flexrow flex-center'>
-          <input type='text' name='system.parry' value='{{system.parry}}' data-dtype='Number' class='center-text' />
-        </div>
-      </div>
-      <div class='resource flexcol flex-center grid-span-3'>
-        <label for='system.toughness' class='resource-label'>
-          {{localize 'LORE.Actor.base.FIELDS.toughness.label'}}
-        </label>
-        <div class='resource-content flexrow flex-center'>
-          <input type='text' name='system.toughness' value='{{system.toughness}}' data-dtype='Number' class='center-text' />
-        </div>
-      </div>
+    <div class='level-container'>
+      <label for='system.level' class='level-label'>
+	      {{localize 'LORE.Actor.base.FIELDS.level.label'}}
+      </label>
+      <input
+        class='level-input text-center'
+		    type='text'
+		    name='system.level'
+		    value='{{system.level.value}}'
+		    data-dtype='Number'
+	    />
     </div>
   </div>
-  
+
+  <div class='horizontal-line'></div>
+
+  <div class='middle-header grid grid-9col flex-center'>
+    <div class='wounds-container grid-span-3'>
+      <label class='wounds-label center-text'>
+	      {{localize 'LORE.Actor.base.FIELDS.wounds.value.label'}}
+      </label>
+      <div class='wounds-content flexrow flex-center flex-between center-text'>
+	      <label style="position:relative;display:inline-block;">
+		      <input type='checkbox' name='system.wounds.checkboxes' value='1' class='wounds-checkbox'/><span class='custom-circle'></span>
+	      </label>
+	      <label style="position:relative;display:inline-block;">
+		      <input type='checkbox' name='system.wounds.checkboxes' value='2' class='wounds-checkbox'/><span class='custom-circle'></span>
+	      </label>
+	      <label style="position:relative;display:inline-block;">
+		      <input type='checkbox' name='system.wounds.checkboxes' value='3' class='wounds-checkbox'/><span class='custom-circle'></span>
+	      </label>
+      </div>
+    </div>
+
+    <div class='condition-container grid-span-3'>
+      <div class='condition-item center-text' style='display:flex;flex-direction:column;align-items:center;gap:2px;'>
+        <span class='resource-label'>
+	        {{localize 'LORE.Actor.base.FIELDS.unconscious.label'}}
+        </span>
+        <label>
+	        <input type='checkbox' name='system.unconscious' {{#if system.unconscious}}checked{{/if}} class='status-checkbox'/><span class='custom-circle'></span>
+        </label>
+      </div>
+      <div class='condition-item center-text'>
+        <span class='resource-label'>
+	        {{localize 'LORE.Actor.base.FIELDS.stunned.label'}}
+        </span>
+        <label>
+	        <input type='checkbox' name='system.stunned' {{#if system.stunned}}checked{{/if}} class='status-checkbox'/><span class='custom-circle'></span>
+        </label>
+      </div>
+      <div class='condition-item center-text'>
+        <span class='resource-label'>
+	        {{localize 'LORE.Actor.base.FIELDS.incapacitated.label'}}
+        </span>
+        <label>
+	        <input type='checkbox' name='system.incapacitated' {{#if system.incapacitated}}checked{{/if}} class='status-checkbox'/><span class='custom-circle'></span>
+        </label>
+      </div>
+    </div>
+
+    <div class='fatigue-container grid-span-3'>
+      <label class='fatigue-label center-text'>
+	      {{localize 'LORE.Actor.base.FIELDS.fatigue.value.label'}}
+      </label>
+      <div class='fatigue-content flexrow flex-center flex-between center-text'>
+	      <label style="position:relative;display:inline-block;">
+		      <input type='checkbox' name='system.fatigue.checkboxes' value='1' class='fatigue-checkbox'/><span class='custom-circle'></span>
+	      </label>
+	      <label style="position:relative;display:inline-block;">
+		      <input type='checkbox' name='system.fatigue.checkboxes' value='2' class='fatigue-checkbox'/><span class='custom-circle'></span>
+	      </label>
+	      <label style="position:relative;display:inline-block;">
+		      <input type='checkbox' name='system.fatigue.checkboxes' value='3' class='fatigue-checkbox'/><span class='custom-circle'></span>
+	      </label>
+      </div>
+    </div>
+
+  </div>
+
+  <div class='morale-slider-container'>
+    <label for='system.morale' class='morale-label'>
+      {{localize 'LORE.Actor.base.FIELDS.morale.label'}}: {{system.morale}}
+    </label>
+    
+    <div class='morale-slider flexrow flex-center' style='gap: 8px;'>
+      <input
+        type='range'
+        class='morale-input'
+        name='system.morale'
+        value='{{system.morale}}'
+        min='-6'
+        max='6'
+        step='1'
+        data-dtype='Number'
+        aria-label='{{localize "LORE.Actor.base.FIELDS.morale.label"}}'
+      />
+    </div>
+    
+  </div>
+
 </header>

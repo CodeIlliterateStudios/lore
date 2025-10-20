@@ -11,7 +11,7 @@
     "SheetLabels": {
       "Actor": "lore Actor Sheet",
       "Item": "lore Item Sheet",
-      "Attribute": "Attribute",
+      "Attributes": "Attributes",
       "RollModifier": "Roll Modifier",
       "Name": "Name"
     },
@@ -46,7 +46,8 @@
           "stunned": {"label": "Stn"},
           "movement": {"label": "Movement"},
           "toughness": {"label": "Toughness"},
-          "parry": {"label": "Parry"}
+          "parry": {"label": "Parry"},
+          "morale": {"label": "Morale"}
         }
       },
       "Player": {

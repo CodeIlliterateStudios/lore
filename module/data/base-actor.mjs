@@ -31,6 +31,8 @@ export default class loreActorBase extends foundry.abstract
     schema.parry = new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 });
     schema.toughness = new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 });
 
+    schema.morale = new fields.NumberField({ ...requiredInteger, initial: 0, min: -6, max: 6 });
+
     // Iterate over attribute names and create a new SchemaField for each.
     schema.attributes = new fields.SchemaField(
       Object.keys(CONFIG.LORE.attributes).reduce((obj, attribute) => {

@@ -117,81 +117,107 @@ Handlebars.registerHelper('range', function (start, end) {
 Hooks.once('ready', function () {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on('hotbarDrop', (bar, data, slot) => createDocMacro(data, slot));
-    // Automatically add default skills to new actors
-    Hooks.on('createActor', async function(actor, options, userId) {
-      // Only add if actor is owned by the current user
-      if (actor.isOwner) {
-        // For newly created Player actors, default the prototype token disposition to Friendly
-        if (actor.type === 'player' && actor.prototypeToken) {
-          try {
-            await actor.prototypeToken.update({ disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY });
-          } catch (err) {
-            console.error('Lore | Failed to set default token disposition to Friendly:', err);
-          }
-        }
 
-        const defaultSkills = [
-          {
-            name: 'Untrained',
-            type: 'skill',
-            img: 'icons/dice/d6black.svg', 
-            system: {
-              rank: { value: 1, max: 5 },
-              tiedAttribute: 'ref', 
-            }
-          },
-          {
-            name: 'Athletics',
-            type: 'skill',
-            img: 'icons/dice/d6black.svg', 
-            system: {
-              rank: { value: 1, max: 5 },
-              tiedAttribute: 'mig', 
-            }
-          },
-          {
-            name: 'Knowledge',
-            type: 'skill',
-            img: 'icons/dice/d6black.svg', 
-            system: {
-              rank: { value: 1, max: 5 },
-              tiedAttribute: 'int', 
-            }
-          },
-          {
-            name: 'Notice',
-            type: 'skill',
-            img: 'icons/dice/d6black.svg', 
-            system: {
-              rank: { value: 1, max: 5 },
-              tiedAttribute: 'ref', 
-            }
-          },
-          {
-            name: 'Persuasion',
-            type: 'skill',
-            img: 'icons/dice/d6black.svg', 
-            system: {
-              rank: { value: 1, max: 5 },
-              tiedAttribute: 'cha', 
-            }
-          },
-          {
-            name: 'Stealth',
-            type: 'skill',
-            img: 'icons/dice/d6black.svg', 
-            system: {
-              rank: { value: 1, max: 5 },
-              tiedAttribute: 'ref', 
-            }
-          },
-        ];
-        // Create each skill item for the actor
-        for (let skillData of defaultSkills) {
-          await actor.createEmbeddedDocuments('Item', [skillData]);
+  // Function to show/hide the default background based on scene state
+  function updateDefaultBackground() {
+    const hasActiveScene = !!game.scenes?.active;
+    const bg = document.getElementById('lore-default-background');
+    if (!hasActiveScene) {
+      if (!bg) {
+        const newBg = document.createElement('div');
+        newBg.id = 'lore-default-background';
+        newBg.className = 'lore-default-background';
+        document.body.appendChild(newBg);
+      }
+    } else {
+      if (bg) bg.remove();
+    }
+  }
+
+  // Initial check on ready
+  updateDefaultBackground();
+
+  // Listen for scene activation/deactivation
+  Hooks.on('canvasReady', updateDefaultBackground);
+  Hooks.on('updateScene', updateDefaultBackground);
+  Hooks.on('createScene', updateDefaultBackground);
+  Hooks.on('deleteScene', updateDefaultBackground);
+
+  // Automatically add default skills to new actors
+  Hooks.on('createActor', async function(actor, options, userId) {
+    // Only add if actor is owned by the current user
+    if (actor.isOwner) {
+      // For newly created Player actors, default the prototype token disposition to Friendly
+      if (actor.type === 'player' && actor.prototypeToken) {
+        try {
+          await actor.prototypeToken.update({ disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY });
+        } catch (err) {
+          console.error('Lore | Failed to set default token disposition to Friendly:', err);
         }
       }
-    });
+
+      const defaultSkills = [
+        {
+          name: 'Untrained',
+          type: 'skill',
+          img: 'icons/dice/d6black.svg', 
+          system: {
+            rank: { value: 1, max: 5 },
+            tiedAttribute: 'ref', 
+          }
+        },
+        {
+          name: 'Athletics',
+          type: 'skill',
+          img: 'icons/dice/d6black.svg', 
+          system: {
+            rank: { value: 1, max: 5 },
+            tiedAttribute: 'mig', 
+          }
+        },
+        {
+          name: 'Knowledge',
+          type: 'skill',
+          img: 'icons/dice/d6black.svg', 
+          system: {
+            rank: { value: 1, max: 5 },
+            tiedAttribute: 'int', 
+          }
+        },
+        {
+          name: 'Notice',
+          type: 'skill',
+          img: 'icons/dice/d6black.svg', 
+          system: {
+            rank: { value: 1, max: 5 },
+            tiedAttribute: 'ref', 
+          }
+        },
+        {
+          name: 'Persuasion',
+          type: 'skill',
+          img: 'icons/dice/d6black.svg', 
+          system: {
+            rank: { value: 1, max: 5 },
+            tiedAttribute: 'cha', 
+          }
+        },
+        {
+          name: 'Stealth',
+          type: 'skill',
+          img: 'icons/dice/d6black.svg', 
+          system: {
+            rank: { value: 1, max: 5 },
+            tiedAttribute: 'ref', 
+          }
+        },
+      ];
+      // Create each skill item for the actor
+      for (let skillData of defaultSkills) {
+        await actor.createEmbeddedDocuments('Item', [skillData]);
+      }
+    }
+  });
 });
 
 /* -------------------------------------------- */
