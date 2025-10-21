@@ -56,8 +56,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       template: 'systems/lore/templates/actor/header.hbs',
     },
     tabs: {
-      // Foundry-provided generic template
-      template: 'templates/generic/tab-navigation.hbs',
+      // Use local template to ensure availability
+      template: 'systems/lore/templates/tab-navigation.hbs',
     },
     skills: {
       template: 'systems/lore/templates/actor/skills.hbs',
@@ -465,6 +465,39 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       }
     } catch (e) {
       console.warn('LORE | Failed to initialize Gear sub-tabs:', e);
+    }
+
+    // Initialize PRIMARY tabs (skills, gear, magicks, effects, biography)
+    try {
+      const primaryGroup = 'primary';
+      const nav = this.element.querySelector(`nav.tabs[data-group="${primaryGroup}"]`);
+      if (nav) {
+        const sections = Array.from(this.element.querySelectorAll(`.tab[data-group="${primaryGroup}"]`));
+        const links = Array.from(nav.querySelectorAll('a.item[data-tab]'));
+
+        const activate = (tabId) => {
+          if (this.tabGroups) this.tabGroups[primaryGroup] = tabId;
+          for (const a of links) a.classList.toggle('active', a.dataset.tab === tabId);
+          for (const s of sections) s.classList.toggle('active', s.dataset.tab === tabId);
+        };
+
+        // Delegate click handling; avoid stacking listeners across renders
+        const handler = (e) => {
+          const a = e.target.closest('a.item[data-tab]');
+          if (!a) return;
+          e.preventDefault();
+          activate(a.dataset.tab);
+        };
+        if (nav._lorePrimaryHandler) nav.removeEventListener('click', nav._lorePrimaryHandler);
+        nav.addEventListener('click', handler);
+        nav._lorePrimaryHandler = handler;
+
+        // Apply initial activation on each render to keep state in sync
+        const current = this.tabGroups?.[primaryGroup] ?? sections[0]?.dataset?.tab ?? 'biography';
+        activate(current);
+      }
+    } catch (e) {
+      console.warn('LORE | Failed to initialize primary tabs:', e);
     }
   }
 

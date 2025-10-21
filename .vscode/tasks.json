@@ -195,6 +195,17 @@
 			],
 			"isBackground": false,
 			"group": "build"
+		},
+		{
+			"label": "Build SCSS",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"group": "build"
 		}
 	]
 }

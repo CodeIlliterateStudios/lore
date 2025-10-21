@@ -3,6 +3,13 @@
     grid-row: 1;
     align-self: start;
 }
+/* Support when header is inside a wrapper (e.g., form) */
+&.application .window-content .sheet-header,
+&.window-app .window-content .sheet-header {
+    grid-row: 1;
+    grid-column: 2;
+    align-self: start;
+}
 
 .name-input {
     border: none;
