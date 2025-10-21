@@ -25,7 +25,14 @@
                 <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
               </a>
             </div>
-            <div>{{item.name}}</div>
+            <label
+              class='weapon-skill-roll roll-summary align-left'
+              data-item-id='{{item.id}}'
+              data-weapon-type='{{item.system.weaponType}}'
+              style='cursor:pointer;user-select:none;'
+            >
+              {{item.name}}
+            </label>
           </div>
           <div class='item-formula item-prop'>{{item.system.formula}}</div>
           {{!-- Modifier and attribute source --}}

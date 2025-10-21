@@ -375,6 +375,30 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       cb.addEventListener('change', this.#onFatigueCheckboxChangeBound);
     }
 
+      // Add click handler for weapon skill rolls in gear list
+      const weaponSkillLinks = this.element.querySelectorAll('.weapon-skill-roll');
+      for (const link of weaponSkillLinks) {
+        link.addEventListener('click', async (event) => {
+          event.preventDefault();
+          const itemId = link.dataset.itemId;
+          const weaponType = link.dataset.weaponType;
+          // Find the correct skill name
+          let skillName = weaponType === 'ranged' ? 'shooting' : 'fighting';
+          // Try to find the skill item on the actor
+          let skillItem = this.actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === skillName);
+          // If not found, fall back to untrained
+          if (!skillItem) {
+            skillName = 'untrained';
+            skillItem = this.actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === 'untrained');
+          }
+          if (skillItem && skillItem.roll) {
+            // Use the same roll popup as other rolls
+            await skillItem.roll();
+          } else {
+            ui.notifications?.warn(`No skill found for ${skillName}`);
+          }
+        });
+      }
     // Handle nested sub-tabs inside the Gear tab (List / Paper Doll)
     try {
       const subNav = this.element.querySelector('nav.tabs.sub-tabs[data-group="gear-sub"]');
