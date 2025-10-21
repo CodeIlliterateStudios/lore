@@ -1,8 +1,11 @@
 // main: "../lore.less", out: false
 
+// Sidebar should not scroll; only tab/window content should scroll
 .lore-sidebar {
-        width: 160px;
-        border-right: 1px solid var(--color-tabs-border);
+    width: 160px;
+    border-right: 1px solid var(--color-tabs-border);
+    height: 100%;
+    overflow: visible;
 }
 
 &.actor {
@@ -12,6 +15,7 @@
         grid-template-columns: 160px 1fr;
         grid-template-rows: auto auto minmax(0, 1fr);
         align-items: start;
+        height: 100%;
     }
 
     &.application .window-content > .lore-sidebar,
@@ -36,6 +40,7 @@
     &.application .window-content > form,
     &.window-app .window-content > form {
         display: contents;
+        height: 100%;
     }
 
     
@@ -43,21 +48,16 @@
     &.window-app .window-content > .tab.gear {
         overflow: hidden;
     }
-    .tab.gear .tab.active {
-        height: 100%;
+    .tab.gear .sub-tab.active {
+        flex: 1 1 auto;
         min-height: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
     }
-    .tab.gear .tab[data-group='gear-sub'] { display: none; }
-    .tab.gear .tab[data-group='gear-sub'].active { display: block; }
-    &.application .window-content > .tab.gear.active .tab.active,
-    &.window-app .window-content > .tab.gear.active .tab.active {
-        height: 100%;
+    .tab.gear .sub-tab[data-group='gear-sub'] { display: none; }
+    .tab.gear .sub-tab[data-group='gear-sub'].active { display: block; }
+    &.application .window-content > .tab.gear.active .sub-tab.active,
+    &.window-app .window-content > .tab.gear.active .sub-tab.active {
+        flex: 1 1 auto;
         min-height: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
     }
 }
 .profile-img {

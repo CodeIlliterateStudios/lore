@@ -234,6 +234,24 @@
 .window-app .window-content {
   padding: 0;
 }
+.item-armor {
+  padding-right: 10px;
+}
+.items-sub-header {
+  background-color: var(--lore-c-faint);
+  height: 30px;
+  margin-left: 5px;
+}
+.items-sublist {
+  margin-left: 5px;
+  list-style: none;
+}
+.items-sublist ul,
+.items-sublist ol {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
 .items-list,
 .items-list .item {
   width: 100%;
@@ -252,6 +270,13 @@
 .items-list .item .item-image {
   flex: 0 0 auto;
 }
+.items-list .item .item-image .items-list .item .item-armor {
+  margin-left: auto;
+  justify-content: flex-end;
+  text-align: right;
+  display: flex;
+  align-items: center;
+}
 .items-list .item .item-image img {
   width: 24px;
   height: 24px;
@@ -259,7 +284,7 @@
   border: none;
 }
 .items-list .items-header {
-  background-color: var(--lore-c-faint);
+  background-color: #1e1927;
   padding-top: 5px;
   padding-bottom: 5px;
   margin-bottom: 5px;
@@ -374,6 +399,28 @@
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
+.actor.application .window-content,
+.actor.window-app .window-content {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.actor.application .window-content > .tab.gear,
+.actor.window-app .window-content > .tab.gear {
+  min-height: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  /* overflow: hidden; removed to allow child scrolling */
+}
+.actor.application .window-content > .tab.gear.active,
+.actor.window-app .window-content > .tab.gear.active {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  /* overflow: hidden; removed to allow child scrolling */
+}
 .actor.application .window-content > nav.tabs.main-tabs,
 .actor.window-app .window-content > nav.tabs.main-tabs {
   grid-row: 2;
@@ -423,7 +470,9 @@
 .actor.window-app .window-content > .tab {
   grid-row: 3;
   min-height: 0;
-  overflow: auto;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .actor.application .window-content > .tab[data-group='primary'],
 .actor.window-app .window-content > .tab[data-group='primary'] {
@@ -451,6 +500,8 @@
 .lore-sidebar {
   width: 160px;
   border-right: 1px solid var(--color-tabs-border);
+  height: 100%;
+  overflow: visible;
 }
 .actor.application .window-content,
 .actor.window-app .window-content {
@@ -458,6 +509,7 @@
   grid-template-columns: 160px 1fr;
   grid-template-rows: auto auto minmax(0, 1fr);
   align-items: start;
+  height: 100%;
 }
 .actor.application .window-content > .lore-sidebar,
 .actor.window-app .window-content > .lore-sidebar {
@@ -480,30 +532,26 @@
 .actor.application .window-content > form,
 .actor.window-app .window-content > form {
   display: contents;
+  height: 100%;
 }
 .actor.application .window-content > .tab.gear,
 .actor.window-app .window-content > .tab.gear {
   overflow: hidden;
 }
-.actor .tab.gear .tab.active {
-  height: 100%;
+.actor .tab.gear .sub-tab.active {
+  flex: 1 1 auto;
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
 }
-.actor .tab.gear .tab[data-group='gear-sub'] {
+.actor .tab.gear .sub-tab[data-group='gear-sub'] {
   display: none;
 }
-.actor .tab.gear .tab[data-group='gear-sub'].active {
+.actor .tab.gear .sub-tab[data-group='gear-sub'].active {
   display: block;
 }
-.actor.application .window-content > .tab.gear.active .tab.active,
-.actor.window-app .window-content > .tab.gear.active .tab.active {
-  height: 100%;
+.actor.application .window-content > .tab.gear.active .sub-tab.active,
+.actor.window-app .window-content > .tab.gear.active .sub-tab.active {
+  flex: 1 1 auto;
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 .profile-img {
   width: 160px;
@@ -712,30 +760,14 @@
   height: 100%;
   overflow-y: auto;
 }
-/* TEMP: Diagnostic flexbox fix for gear ancestors */
-.gear,
-.gear-content,
-.gear * {
-  box-sizing: border-box;
-}
-body,
-html,
-.gear,
-.gear-content {
-  height: 100%;
-}
-.gear {
-  display: flex;
-  flex-direction: column;
-}
 .gear {
   padding: 10px;
-  overflow: auto;
-  /* TEMP: Add overflow for debugging */
+  height: 100%;
+  overflow: hidden;
 }
 .gear-content {
   background: none;
-  border: 2px dashed red;
-  /* TEMP: Debug border */
+  border: none;
+  height: 100%;
   overflow-y: auto;
 }

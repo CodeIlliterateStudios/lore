@@ -1,0 +1,30 @@
+// main: "../lore.less", out: false
+
+.items-list.items-armor .items-header,
+.items-list.items-armor .item {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.items-list.items-armor .item .item-name,
+.items-list.items-armor .items-header .item-name {
+  min-width: 0;
+}
+
+.items-list.items-armor .item .item-formula,
+.items-list.items-armor .items-header .item-formula {
+  padding-right: 0.5em;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.items-list.items-armor .item .item-formula {
+  font-weight: bold;
+}
+
+.items-list.items-armor .item .item-armor {
+  justify-self: end;
+  text-align: right;
+}

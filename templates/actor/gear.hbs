@@ -1,13 +1,14 @@
 {{! Gear Tab }}
 <section class='tab gear {{tab.cssClass}}' data-group='primary' data-tab='gear'>
-  {{!-- Sub-tabs navigation for Gear --}}
-  <nav class='tabs sub-tabs' data-group='gear-sub'>
-    <a class='item active' data-tab='list'>List</a>
-    <a class='item' data-tab='paper-doll'>Paper Doll</a>
-  </nav>
+  <div class="gear-content">
+    {{!-- Sub-tabs navigation for Gear --}}
+    <nav class='tabs sub-tabs' data-group='gear-sub'>
+      <a class='item active' data-tab='list'>List</a>
+      <a class='item' data-tab='paper-doll'>Paper Doll</a>
+    </nav>
 
-  {{!-- LIST SUB-TAB --}}
-  <section class='tab list active' data-group='gear-sub' data-tab='list'>
+    {{!-- LIST SUB-TAB --}}
+    <section class='sub-tab list active' data-group='gear-sub' data-tab='list'>
     {{!-- Weapons Section --}}
     <ol class='items-list items-weapons'>
       <li class='item flexrow items-header' data-gear-type='weapon'>
@@ -61,14 +62,13 @@
     <ol class='items-list items-armor'>
       <li class='item flexrow items-header' data-gear-type='armor'>
         <div class='item-name'>{{localize 'TYPES.Item.armor'}}</div>
-        <div class='item-formula'></div>
       </li>
       {{!-- Head Armor --}}
       <li class='items-sublist'>
         <ol class='items-list items-armor-sub'>
-          <li class='item flexrow items-header' data-gear-type='armor-head'>
+          <li class='item flexrow items-sub-header' data-gear-type='armor-head'>
             <div class='item-name'>{{localize 'LORE.Item.Armor.Types.head'}}</div>
-            <div class='item-formula'></div>
+            <div class='item-armor align-right'>{{localize 'LORE.Item.Armor.FIELDS.value.label'}}</div>
           </li>
           {{#each armorByType.head as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
@@ -80,22 +80,20 @@
                 </div>
                 <div>{{item.name}}</div>
               </div>
+              <div class='item-armor align-center'>
+                {{item.system.armorValue}}
+              </div>
             </li>
           {{/each}}
-          {{#unless armorByType.head.[0]}}
-            <li class='item flexrow empty'>
-              <div class='item-name'>— None —</div>
-            </li>
-          {{/unless}}
         </ol>
       </li>
 
       {{!-- Body Armor --}}
       <li class='items-sublist'>
         <ol class='items-list items-armor-sub'>
-          <li class='item flexrow items-header' data-gear-type='armor-body'>
+          <li class='item flexrow items-sub-header' data-gear-type='armor-body'>
             <div class='item-name'>{{localize 'LORE.Item.Armor.Types.body'}}</div>
-            <div class='item-formula'></div>
+            <div class='item-armor align-right'>{{localize 'LORE.Item.Armor.FIELDS.value.label'}}</div>
           </li>
           {{#each armorByType.body as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
@@ -107,22 +105,20 @@
                 </div>
                 <div>{{item.name}}</div>
               </div>
+              <div class='item-armor align-center'>
+                {{item.system.armorValue}}
+              </div>
             </li>
           {{/each}}
-          {{#unless armorByType.body.[0]}}
-            <li class='item flexrow empty'>
-              <div class='item-name'>— None —</div>
-            </li>
-          {{/unless}}
         </ol>
       </li>
 
       {{!-- Arms Armor --}}
       <li class='items-sublist'>
         <ol class='items-list items-armor-sub'>
-          <li class='item flexrow items-header' data-gear-type='armor-arms'>
+          <li class='item flexrow items-sub-header' data-gear-type='armor-arms'>
             <div class='item-name'>{{localize 'LORE.Item.Armor.Types.arms'}}</div>
-            <div class='item-formula'></div>
+            <div class='item-armor align-right'>{{localize 'LORE.Item.Armor.FIELDS.value.label'}}</div>
           </li>
           {{#each armorByType.arms as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
@@ -134,22 +130,20 @@
                 </div>
                 <div>{{item.name}}</div>
               </div>
+              <div class='item-armor align-center'>
+                {{item.system.armorValue}}
+              </div>
             </li>
           {{/each}}
-          {{#unless armorByType.arms.[0]}}
-            <li class='item flexrow empty'>
-              <div class='item-name'>— None —</div>
-            </li>
-          {{/unless}}
         </ol>
       </li>
 
       {{!-- Hands Armor --}}
       <li class='items-sublist'>
         <ol class='items-list items-armor-sub'>
-          <li class='item flexrow items-header' data-gear-type='armor-hands'>
+          <li class='item flexrow items-sub-header' data-gear-type='armor-hands'>
             <div class='item-name'>{{localize 'LORE.Item.Armor.Types.hands'}}</div>
-            <div class='item-formula'></div>
+            <div class='item-armor align-right'>{{localize 'LORE.Item.Armor.FIELDS.value.label'}}</div>
           </li>
           {{#each armorByType.hands as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
@@ -161,22 +155,20 @@
                 </div>
                 <div>{{item.name}}</div>
               </div>
+              <div class='item-armor align-center'>
+                {{item.system.armorValue}}
+              </div>
             </li>
           {{/each}}
-          {{#unless armorByType.hands.[0]}}
-            <li class='item flexrow empty'>
-              <div class='item-name'>— None —</div>
-            </li>
-          {{/unless}}
         </ol>
       </li>
 
       {{!-- Legs Armor --}}
       <li class='items-sublist'>
         <ol class='items-list items-armor-sub'>
-          <li class='item flexrow items-header' data-gear-type='armor-legs'>
+          <li class='item flexrow items-sub-header' data-gear-type='armor-legs'>
             <div class='item-name'>{{localize 'LORE.Item.Armor.Types.legs'}}</div>
-            <div class='item-formula'></div>
+            <div class='item-armor align-right'>{{localize 'LORE.Item.Armor.FIELDS.value.label'}}</div>
           </li>
           {{#each armorByType.legs as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
@@ -188,22 +180,20 @@
                 </div>
                 <div>{{item.name}}</div>
               </div>
+              <div class='item-armor align-center'>
+                {{item.system.armorValue}}
+              </div>
             </li>
           {{/each}}
-          {{#unless armorByType.legs.[0]}}
-            <li class='item flexrow empty'>
-              <div class='item-name'>— None —</div>
-            </li>
-          {{/unless}}
         </ol>
       </li>
 
       {{!-- Feet Armor --}}
       <li class='items-sublist'>
         <ol class='items-list items-armor-sub'>
-          <li class='item flexrow items-header' data-gear-type='armor-feet'>
+          <li class='item flexrow items-sub-header' data-gear-type='armor-feet'>
             <div class='item-name'>{{localize 'LORE.Item.Armor.Types.feet'}}</div>
-            <div class='item-formula'></div>
+            <div class='item-armor align-right'>{{localize 'LORE.Item.Armor.FIELDS.value.label'}}</div>
           </li>
           {{#each armorByType.feet as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
@@ -215,13 +205,11 @@
                 </div>
                 <div>{{item.name}}</div>
               </div>
+              <div class='item-armor align-center'>
+                {{item.system.armorValue}}
+              </div>
             </li>
           {{/each}}
-          {{#unless armorByType.feet.[0]}}
-            <li class='item flexrow empty'>
-              <div class='item-name'>— None —</div>
-            </li>
-          {{/unless}}
         </ol>
       </li>
     </ol>
@@ -245,13 +233,13 @@
         </li>
       {{/each}}
     </ol>
-  </section>
+    </section>
 
-  {{!-- PAPER DOLL SUB-TAB --}}
-  <section class='tab paper-doll' data-group='gear-sub' data-tab='paper-doll'>
-    <div class='paper-doll-placeholder' style='opacity:0.7; text-align:center; padding: 1rem;'>
-      Paper Doll coming soon
-    </div>
-  </section>
-
+    {{!-- PAPER DOLL SUB-TAB --}}
+    <section class='sub-tab paper-doll' data-group='gear-sub' data-tab='paper-doll'>
+      <div class='paper-doll-placeholder' style='opacity:0.7; text-align:center; padding: 1rem;'>
+        Paper Doll coming soon
+      </div>
+    </section>
+  </div>
 </section>

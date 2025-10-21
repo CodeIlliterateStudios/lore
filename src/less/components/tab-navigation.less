@@ -1,3 +1,28 @@
+// Fix for scroll cutoff: ensure all parent containers allow flex children to shrink
+&.actor {
+    &.application .window-content,
+    &.window-app .window-content {
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    &.application .window-content > .tab.gear,
+    &.window-app .window-content > .tab.gear {
+        min-height: 0;
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        /* overflow: hidden; removed to allow child scrolling */
+    }
+    &.application .window-content > .tab.gear.active,
+    &.window-app .window-content > .tab.gear.active {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-height: 0;
+        /* overflow: hidden; removed to allow child scrolling */
+    }
+}
 // main: "../lore.less", out: false
 
 // Navigation tabs and tab content layout
@@ -60,7 +85,9 @@
     &.window-app .window-content > .tab {
         grid-row: 3;
         min-height: 0;
-        overflow: auto;
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
     // Only show the active primary tab
@@ -91,4 +118,6 @@
         min-height: 0;
         overflow: auto;
     }
+
+    
 }

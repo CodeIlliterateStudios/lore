@@ -1,7 +1,6 @@
-import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
-import { RollPopup } from '../apps/roll-popup.mjs';
 
 const { api, sheets } = foundry.applications;
+import { RollPopup } from "../apps/roll-popup.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -12,18 +11,21 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
 ) {
   constructor(options = {}) {
     super(options);
-    this.#dragDrop = this.#createDragDropHandlers();
-    // Bind handlers once to keep stable references across renders
-    this.#onAttributeContextMenuBound = (ev) => this.#onAttributeContextMenu(ev);
-    this.#onItemContextMenuBound = (ev) => this.#onItemContextMenu(ev);
-    this.#onSkillsHeaderContextMenuBound = (ev) => this.#onSkillsHeaderContextMenu(ev);
-    this.#onGearHeaderContextMenuBound = (ev) => this.#onGearHeaderContextMenu(ev);
-    // Bind wounds/fatigue handlers
-    this.#onWoundsCheckboxChangeBound = (ev) => this.#onWoundsCheckboxChange(ev);
-    this.#onFatigueCheckboxChangeBound = (ev) => this.#onFatigueCheckboxChange(ev);
-    // Track collapsed lists for this sheet instance so state persists across re-renders
-    this.#collapsedLists = new Set();
+  this.#dragDrop = this.#createDragDropHandlers();
+  // Bind handlers once to keep stable references across renders
+  this.#onAttributeContextMenuBound = (ev) => this.#onAttributeContextMenu(ev);
+  this.#onItemContextMenuBound = (ev) => this.#onItemContextMenu(ev);
+  this.#onSkillsHeaderContextMenuBound = (ev) => this.#onSkillsHeaderContextMenu(ev);
+  this.#onGearHeaderContextMenuBound = (ev) => this.#onGearHeaderContextMenu(ev);
+  // Bind wounds/fatigue handlers
+  this.#onWoundsCheckboxChangeBound = (ev) => this.#onWoundsCheckboxChange(ev);
+  this.#onFatigueCheckboxChangeBound = (ev) => this.#onFatigueCheckboxChange(ev);
   }
+  
+
+
+
+
 
   /** @override */
   static DEFAULT_OPTIONS = {
@@ -231,9 +233,9 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // You can just use `this.document.itemTypes` instead
     // if you don't need to subdivide a given type like
     // this sheet does with magicks
-  const gear = [];
-  const weapons = [];
-  const armor = [];
+    const gear = [];
+    const weapons = [];
+    const armor = [];
     const skills = [];
     const magicks = [];
 
@@ -286,6 +288,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
    * @override
    */
   _onRender(context, options) {
+    // (Collapsing/scroll state logic removed)
     // Ensure drag/drop is active so dropping Items/Effects onto the sheet works
     if (Array.isArray(this.#dragDrop)) {
       try {
@@ -333,77 +336,20 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       skillsHeader.addEventListener('contextmenu', this.#onSkillsHeaderContextMenuBound);
     }
 
-    // Context menu: right-click on Gear tab headers to create new items
-    // EXCEPTION: Disable right-click on the parent Armor list header (data-gear-type="armor")
-    const gearHeaders = this.element.querySelectorAll('.tab.gear .items-header');
+    // Context menu: right-click on Gear tab headers to create new items (collapsing logic removed)
+    // Attach to both main headers and sub-headers (for armor types)
+    // Only attach to .items-header if not the main armor header, and always to .items-sub-header
+    const gearHeaders = this.element.querySelectorAll('.tab.gear .items-header, .tab.gear .items-sub-header');
     for (const header of gearHeaders) {
-      // Always remove our menu handler first to avoid stacking
+      // Remove from main armor header only
+      if (header.classList.contains('items-header') && header.dataset.gearType === 'armor') continue;
       header.removeEventListener('contextmenu', this.#onGearHeaderContextMenuBound);
-
-      const gearType = header?.dataset?.gearType;
-      const isParentArmorHeader = gearType === 'armor';
-
-      // Clean up any previous preventer if present
-      if (header._loreCtxPrevent) {
-        header.removeEventListener('contextmenu', header._loreCtxPrevent);
-        header._loreCtxPrevent = null;
-      }
-
-      if (isParentArmorHeader) {
-        // For the parent Armor header only, block context menu entirely
-        const prevent = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-        };
-        header.addEventListener('contextmenu', prevent);
-        // Store reference to remove cleanly on re-render
-        header._loreCtxPrevent = prevent;
-      } else {
-        // For all other headers (weapons, gear, armor sublists), keep the menu
-        header.addEventListener('contextmenu', this.#onGearHeaderContextMenuBound);
-      }
+      header.addEventListener('contextmenu', this.#onGearHeaderContextMenuBound);
     }
 
-    // Left-click to collapse/expand any items-list; right-click remains context menu
-    try {
-      const headers = this.element.querySelectorAll('.items-list > li.items-header');
-      for (const header of headers) {
-        // Visual cue
-        header.classList.add('is-collapsible');
+    // (Collapsing click logic removed)
 
-        // Stable key to persist state
-        const listKey = this.#getListKeyForHeader(header);
-        if (listKey) header.dataset.listKey = listKey;
-
-        // Apply persisted state
-        const listEl = header.closest('ol.items-list');
-        if (listEl && listKey && this.#collapsedLists.has(listKey)) {
-          listEl.classList.add('collapsed');
-        }
-
-        // Avoid stacking listeners across renders
-        if (header._loreCollapseHandler) header.removeEventListener('click', header._loreCollapseHandler);
-        const collapseHandler = (e) => {
-          // Only primary button; ignore clicks on interactive elements inside header
-          if (e.button !== 0) return;
-          if (e.target.closest('a, button, [data-action], .item-controls')) return;
-          const list = header.closest('ol.items-list');
-          if (!list) return;
-          const key = header.dataset.listKey || this.#getListKeyForHeader(header);
-          const willCollapse = !list.classList.contains('collapsed');
-          list.classList.toggle('collapsed', willCollapse);
-          if (key) {
-            if (willCollapse) this.#collapsedLists.add(key);
-            else this.#collapsedLists.delete(key);
-          }
-        };
-        header.addEventListener('click', collapseHandler);
-        header._loreCollapseHandler = collapseHandler;
-      }
-    } catch (e) {
-      console.warn('LORE | Failed to initialize collapsible lists:', e);
-    }
+    // (Scroll position save logic removed)
 
     // Initialize and wire wounds checkboxes to reflect and update system.wounds.value
     const woundsValue = Number(this.actor.system?.wounds?.value ?? 0);
@@ -436,7 +382,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
         const group = 'gear-sub';
         // Remember selected sub-tab during this sheet's lifetime
         const current = this.tabGroups?.[group] ?? 'list';
-        const sections = Array.from(this.element.querySelectorAll('.tab[data-group="gear-sub"]'));
+  const sections = Array.from(this.element.querySelectorAll('.sub-tab[data-group="gear-sub"]'));
         const links = Array.from(subNav.querySelectorAll('a.item[data-tab]'));
 
         const activate = (tabId) => {
@@ -1017,7 +963,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
   #onGearHeaderContextMenuBound;
   #onWoundsCheckboxChangeBound;
   #onFatigueCheckboxChangeBound;
-  #collapsedLists;
+
 
   /**
    * Handle right-click on an attribute row to open a contextual menu.
@@ -1264,7 +1210,12 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // Only for editable sheets
     if (!this.isEditable) return;
 
-  const header = event.currentTarget?.closest('.items-header');
+  // Support both .items-header and .items-sub-header
+  let header = event.currentTarget;
+  // If not a header, try to find the closest header or sub-header
+  if (!header.classList.contains('items-header') && !header.classList.contains('items-sub-header')) {
+    header = header.closest('.items-header, .items-sub-header');
+  }
   const gearType = header?.dataset?.gearType ?? 'gear';
 
     // Provide creation options; for now a single action depending on header
@@ -1306,6 +1257,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
           let type = 'gear';
           /** @type {Record<string, any>} */
           const createData = {};
+          let armorType = undefined;
           if (gearType === 'weapon') {
             type = 'weapon';
           } else if (gearType === 'armor' || (typeof gearType === 'string' && gearType.startsWith('armor'))) {
@@ -1317,10 +1269,15 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
               const valid = ['head', 'body', 'arms', 'hands', 'legs', 'feet'];
               if (valid.includes(subtype)) {
                 createData.system = { armorType: subtype };
+                armorType = subtype;
               }
             }
           }
-          const name = docCls.defaultName({ type, parent: this.actor });
+          let name = docCls.defaultName({ type, parent: this.actor });
+          // If creating armor and armorType is set, use it as the name
+          if (type === 'armor' && armorType) {
+            name = armorType.charAt(0).toUpperCase() + armorType.slice(1);
+          }
           await docCls.create({ type, name, ...createData }, { parent: this.actor });
         }
       } finally {
@@ -1616,30 +1573,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     await this.document.update(submitData);
   }
 
-  /**
-   * Compute a stable key for a list header to persist collapse state during this sheet's lifetime.
-   * Keys are shaped like `${tabId}:${sub}` where sub identifies multiple lists in a tab.
-   * @param {HTMLElement} header
-   * @returns {string}
-   * @private
-   */
-  #getListKeyForHeader(header) {
-    try {
-      const tabEl = header.closest('.tab');
-      const tabId = tabEl?.dataset?.tab || 'unknown';
-      let sub = 'list';
-      if (tabId === 'gear') {
-        sub = header.dataset?.gearType || 'gear';
-      } else if (tabId === 'skills') {
-        sub = 'skills';
-      } else if (tabId === 'magicks') {
-        sub = 'magicks';
-      }
-      return `${tabId}:${sub}`;
-    } catch (e) {
-      return 'unknown:list';
-    }
-  }
+
 
   /**
    * Disables inputs subject to active effects
