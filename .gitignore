@@ -1,0 +1,9 @@
+# Ignore compiled CSS artifacts under src/less — we emit final CSS to /css
+src/less/**/*.css
+src/less/**/*.css.map
+
+# Node modules
+node_modules/
+
+# VS Code workspace settings (keep .vscode for settings.json committed)
+*.code-workspace

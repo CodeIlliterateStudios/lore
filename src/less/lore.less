@@ -1,0 +1,33 @@
+// out: "../../css/lore.css", sourceMap: false, compress: false
+/*
+  LORE LESS entry point
+  - Current Foundry stylesheet remains css/lore.css
+  - This compiles to css/lore.less.css for side-by-side comparison during migration
+  - When ready to switch, run the overwrite script to emit css/lore.css
+*/
+
+@import (css) url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+// Utilities
+@import "utils/variables.less";
+@import "utils/colors.less";
+@import "utils/typography.less";
+@import "utils/mixins.less";
+
+// Global
+@import "global/window.less";
+@import "global/grid.less";
+@import "global/flex.less";
+@import "context-menu.less";
+@import "roll-popup.less";
+@import "roll-card.less";
+
+// Components (scoped under .lore)
+@import "components/forms.less";
+@import "components/resource.less";
+@import "components/items.less";
+@import "components/effects.less";
+@import "components/tab-navigation.less";
+@import "components/sidebar.less";
+@import "components/header.less";
+@import "components/biography.less";

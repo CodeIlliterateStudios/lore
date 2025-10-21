@@ -3,8 +3,9 @@
   "version": "3.0.0",
   "description": "CSS compiler for the lore system",
   "scripts": {
-    "build": "sass src/scss/lore.scss css/lore.css --style=expanded --no-source-map",
-    "watch": "sass src/scss/lore.scss css/lore.css --style=expanded --source-map --watch"
+    "build": "lessc src/less/lore.less css/lore.css",
+    "build:min": "lessc src/less/lore.less css/lore.css --clean-css",
+    "watch": "lessc --watch src/less/lore.less css/lore.css"
   },
   "browserslist": [
     "last 3 versions"
@@ -13,6 +14,7 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "sass": "^1.53.0"
+    "less": "^4.2.0",
+    "less-plugin-clean-css": "^1.6.0"
   }
 }

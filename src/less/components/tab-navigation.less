@@ -1,0 +1,56 @@
+// main: "../lore.less", out: false
+
+// Navigation tabs and tab content layout
+&.actor {
+    // Primary navigation bar within the window content
+    &.application .window-content > nav.tabs,
+    &.window-app .window-content > nav.tabs {
+        grid-row: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 10px;
+        align-items: center;
+        padding: 4px 6px;
+        border-bottom: 1px solid var(--color-tabs-border);
+    }
+
+    // Support when nav.tabs is not a direct child
+    &.application .window-content nav.tabs,
+    &.window-app .window-content nav.tabs {
+        grid-row: 2;
+        grid-column: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 10px;
+        align-items: center;
+        padding: 4px 6px;
+        border-bottom: 1px solid var(--color-tabs-border);
+    }
+
+    // Generic tab content containers
+    &.application .window-content > .tab,
+    &.window-app .window-content > .tab {
+        grid-row: 3;
+        min-height: 0;
+        overflow: auto;
+    }
+
+    // Only show the active primary tab
+    &.application .window-content > .tab[data-group='primary'],
+    &.window-app .window-content > .tab[data-group='primary'] {
+        display: none;
+    }
+    &.application .window-content > .tab[data-group='primary'].active,
+    &.window-app .window-content > .tab[data-group='primary'].active {
+        display: block;
+    }
+
+    // When tabs are not direct children, ensure correct grid placement
+    &.application .window-content .tab,
+    &.window-app .window-content .tab {
+        grid-row: 3;
+        grid-column: 2;
+        min-height: 0;
+        overflow: auto;
+    }
+}

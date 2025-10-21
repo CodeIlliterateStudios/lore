@@ -1,0 +1,11 @@
+{
+  "less.compile": {
+    // Default: don't emit CSS for every .less file
+    // We'll opt-in only the main entry via a per-file directive.
+    "out": false,
+
+    // Keep niceties project-wide; the per-file directive can override too
+    "compress": true,
+    "sourceMap": true
+  }
+}

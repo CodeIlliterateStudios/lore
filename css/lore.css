@@ -1,3 +1,9 @@
+/*
+  LORE LESS entry point
+  - Current Foundry stylesheet remains css/lore.css
+  - This compiles to css/lore.less.css for side-by-side comparison during migration
+  - When ready to switch, run the overwrite script to emit css/lore.css
+*/
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 :root {
   --lore-c-dark: #191813;
@@ -8,7 +14,6 @@
   --lore-c-black: #000000;
   --lore-c-groove: #eeede0;
 }
-
 .theme-dark {
   --lore-c-dark: #c9c7b8;
   --lore-c-faint: #191813;
@@ -18,166 +23,130 @@
   --lore-c-black: #ffffff;
   --lore-c-groove: #11121f;
 }
-
-/* Global styles */
 .window-app {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
-
-.rollable:hover, .rollable:focus {
+.rollable:hover,
+.rollable:focus {
   color: var(--lore-c-black);
   text-shadow: 0 0 10px red;
   cursor: pointer;
 }
-
 .grid,
 .grid-2col {
   display: grid;
-  grid-column: span 2/span 2;
+  grid-column: span 2 / span 2;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin: 10px 0;
   padding: 0;
 }
-
 .grid-3col {
-  grid-column: span 3/span 3;
+  grid-column: span 3 / span 3;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-
 .grid-4col {
-  grid-column: span 4/span 4;
+  grid-column: span 4 / span 4;
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
-
 .grid-5col {
-  grid-column: span 5/span 5;
+  grid-column: span 5 / span 5;
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
-
 .grid-6col {
-  grid-column: span 6/span 6;
+  grid-column: span 6 / span 6;
   grid-template-columns: repeat(6, minmax(0, 1fr));
 }
-
 .grid-7col {
-  grid-column: span 7/span 7;
+  grid-column: span 7 / span 7;
   grid-template-columns: repeat(7, minmax(0, 1fr));
 }
-
 .grid-8col {
-  grid-column: span 8/span 8;
+  grid-column: span 8 / span 8;
   grid-template-columns: repeat(8, minmax(0, 1fr));
 }
-
 .grid-9col {
-  grid-column: span 9/span 9;
+  grid-column: span 9 / span 9;
   grid-template-columns: repeat(9, minmax(0, 1fr));
 }
-
 .grid-10col {
-  grid-column: span 10/span 10;
+  grid-column: span 10 / span 10;
   grid-template-columns: repeat(10, minmax(0, 1fr));
 }
-
 .grid-11col {
-  grid-column: span 11/span 11;
+  grid-column: span 11 / span 11;
   grid-template-columns: repeat(11, minmax(0, 1fr));
 }
-
 .grid-12col {
-  grid-column: span 12/span 12;
+  grid-column: span 12 / span 12;
   grid-template-columns: repeat(12, minmax(0, 1fr));
 }
-
 .grid-start-2 {
   grid-column-start: 2;
 }
-
 .grid-start-3 {
   grid-column-start: 3;
 }
-
 .grid-start-4 {
   grid-column-start: 4;
 }
-
 .grid-start-5 {
   grid-column-start: 5;
 }
-
 .grid-start-6 {
   grid-column-start: 6;
 }
-
 .grid-start-7 {
   grid-column-start: 7;
 }
-
 .grid-start-8 {
   grid-column-start: 8;
 }
-
 .grid-start-9 {
   grid-column-start: 9;
 }
-
 .grid-start-10 {
   grid-column-start: 10;
 }
-
 .grid-start-11 {
   grid-column-start: 11;
 }
-
 .grid-start-12 {
   grid-column-start: 12;
 }
-
 .grid-span-2 {
   grid-column-end: span 2;
 }
-
 .grid-span-3 {
   grid-column-end: span 3;
 }
-
 .grid-span-4 {
   grid-column-end: span 4;
 }
-
 .grid-span-5 {
   grid-column-end: span 5;
 }
-
 .grid-span-6 {
   grid-column-end: span 6;
 }
-
 .grid-span-7 {
   grid-column-end: span 7;
 }
-
 .grid-span-8 {
   grid-column-end: span 8;
 }
-
 .grid-span-9 {
   grid-column-end: span 9;
 }
-
 .grid-span-10 {
   grid-column-end: span 10;
 }
-
 .grid-span-11 {
   grid-column-end: span 11;
 }
-
 .grid-span-12 {
   grid-column-end: span 12;
 }
-
 .flex-group-center,
 .flex-group-left,
 .flex-group-right {
@@ -185,79 +154,64 @@
   align-items: center;
   text-align: center;
 }
-
 .flex-group-left {
   justify-content: flex-start;
   text-align: left;
 }
-
 .flex-group-right {
   justify-content: flex-end;
   text-align: right;
 }
-
 .flexshrink {
   flex: 0;
 }
-
 .flex-between {
   justify-content: space-between;
 }
-
 .flexlarge {
   flex: 2;
 }
-
 .align-left {
   justify-content: flex-start;
   text-align: left;
 }
-
 .align-right {
   justify-content: flex-end;
   text-align: right;
 }
-
 .align-center {
   justify-content: center;
   text-align: center;
 }
-
 .lore-context-menu {
   position: absolute;
   z-index: 1000;
   border: 1px solid #888;
   padding: 4px 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1333333333);
+  box-shadow: 0 2px 8px #0002;
   min-width: 120px;
   background-color: black;
 }
-
 .lore-context-menu-item {
   padding: 4px 16px;
   cursor: pointer;
 }
-
 .roll-formula {
   font-weight: bold;
   text-align: center;
 }
-
 .modifier-input-label {
   text-align: center;
   margin-right: 10px;
 }
-
 .modifier-input {
   width: 50px;
 }
-
 .lore-die {
   text-align: center;
   margin-top: 10px;
   color: var(--color-text, inherit);
 }
-
 .chat-message .message-content .dice-roll {
   color: var(--color-text, inherit);
 }
@@ -276,18 +230,17 @@
 .chat-message .message-content .dice-tooltip .tooltip-part {
   border-color: var(--color-tabs-border, #c9c7b8);
 }
-
-/* Styles limited to lore sheets */
-.lore.application .window-content, .lore.window-app .window-content {
+.application .window-content,
+.window-app .window-content {
   padding: 0;
 }
-.lore .items-list,
-.lore .items-list .item {
+.items-list,
+.items-list .item {
   width: 100%;
   margin: 0px;
   padding: 0px;
 }
-.lore .items-list .item .item-name {
+.items-list .item .item-name {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -296,26 +249,26 @@
   padding-left: 10px;
   padding-right: 10px;
 }
-.lore .items-list .item .item-image {
+.items-list .item .item-image {
   flex: 0 0 auto;
 }
-.lore .items-list .item .item-image img {
+.items-list .item .item-image img {
   width: 24px;
   height: 24px;
   object-fit: cover;
   border: none;
 }
-.lore .items-list .items-header {
+.items-list .items-header {
   background-color: var(--lore-c-faint);
   padding-top: 5px;
   padding-bottom: 5px;
   margin-bottom: 5px;
 }
-.lore .items-list > .items-header.is-collapsible {
+.items-list > .items-header.is-collapsible {
   cursor: pointer;
   position: relative;
 }
-.lore .items-list > .items-header.is-collapsible::before {
+.items-list > .items-header.is-collapsible::before {
   font-size: 10px;
   opacity: 0.7;
   position: absolute;
@@ -323,94 +276,97 @@
   top: 50%;
   transform: translateY(-50%);
 }
-.lore .items-list.collapsed > li:not(.items-header) {
+.items-list.collapsed > li:not(.items-header) {
   display: none;
 }
-.lore .items-list .items-header .item-name {
+.items-list .items-header .item-name {
   flex: 1 1 auto;
 }
-.lore .item-controls {
+.item-controls {
   gap: 4px;
   flex: 0 0 auto;
   padding-right: 1.25em;
 }
-.lore .items-list .item .item-formula {
+.items-list .item .item-formula {
   flex: 0 0 auto;
   margin-left: auto;
   padding-right: 1.25em;
   white-space: nowrap;
   color: var(--color-text-dark-5, #555);
 }
-.lore .items-list .items-header .item-formula {
+.items-list .items-header .item-formula {
   font-weight: 600;
   opacity: 0.9;
 }
-.lore .items-list.items-weapons .items-header,
-.lore .items-list.items-weapons .item {
+.items-list.items-weapons .items-header,
+.items-list.items-weapons .item {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr auto;
   align-items: center;
   column-gap: 8px;
 }
-.lore .items-list.items-weapons .item .item-name,
-.lore .items-list.items-weapons .items-header .item-name {
+.items-list.items-weapons .item .item-name,
+.items-list.items-weapons .items-header .item-name {
   min-width: 0;
 }
-.lore .items-list.items-weapons .item .item-formula,
-.lore .items-list.items-weapons .items-header .item-formula,
-.lore .items-list.items-weapons .item .item-mod,
-.lore .items-list.items-weapons .item .item-range {
+.items-list.items-weapons .item .item-formula,
+.items-list.items-weapons .items-header .item-formula,
+.items-list.items-weapons .item .item-mod,
+.items-list.items-weapons .item .item-range {
   padding-right: 0.5em;
   white-space: nowrap;
 }
-.lore .items-list.items-weapons .item .item-controls,
-.lore .items-list.items-weapons .items-header .item-controls {
+.items-list.items-weapons .item .item-controls,
+.items-list.items-weapons .items-header .item-controls {
   justify-self: end;
   padding-right: 1.25em;
 }
-.lore .items-list .item.empty .item-name {
+.items-list .item.empty .item-name {
   opacity: 0.7;
   font-style: italic;
 }
-.lore .item-sheet-header {
+.item-sheet-header {
   width: 100%;
   display: flex;
   align-items: flex-start;
   gap: 12px;
 }
-.lore.item.application .window-content, .lore.item.window-app .window-content {
+.item.application .window-content,
+.item.window-app .window-content {
   display: block;
 }
-.lore .item-sheet-header .profile-img {
+.item-sheet-header .profile-img {
   flex: 0 0 auto;
   width: 64px;
   height: 64px;
   object-fit: cover;
   border: 1px solid var(--color-tabs-border);
 }
-.lore .item-sheet-header .header-fields {
+.item-sheet-header .header-fields {
   flex: 1 1 auto;
   min-width: 0;
 }
-.lore .item-sheet-header .document-name {
+.item-sheet-header .document-name {
   margin-bottom: 8px;
 }
-.lore .item-sheet-header .name-input {
+.item-sheet-header .name-input {
   width: 100%;
   box-sizing: border-box;
 }
-.lore.actor.application .window-content > .tab.gear, .lore.actor.window-app .window-content > .tab.gear {
+.actor.application .window-content > .tab.gear,
+.actor.window-app .window-content > .tab.gear {
   min-height: 0;
   overflow: hidden;
 }
-.lore.actor.application .window-content > .tab.gear.active, .lore.actor.window-app .window-content > .tab.gear.active {
+.actor.application .window-content > .tab.gear.active,
+.actor.window-app .window-content > .tab.gear.active {
   display: flex;
   flex-direction: column;
 }
-.lore.actor .tab.gear .tabs.sub-tabs {
+.actor .tab.gear .tabs.sub-tabs {
   flex: 0 0 auto;
 }
-.lore.actor .tab.gear .tab.active {
+.actor .tab.gear .tab.active {
   flex: 1 1 auto;
   min-height: 0;
   height: 100%;
@@ -418,158 +374,148 @@
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
-.lore .lore-sidebar {
+.actor.application .window-content > nav.tabs,
+.actor.window-app .window-content > nav.tabs {
+  grid-row: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--color-tabs-border);
+}
+.actor.application .window-content nav.tabs,
+.actor.window-app .window-content nav.tabs {
+  grid-row: 2;
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--color-tabs-border);
+}
+.actor.application .window-content > .tab,
+.actor.window-app .window-content > .tab {
+  grid-row: 3;
+  min-height: 0;
+  overflow: auto;
+}
+.actor.application .window-content > .tab[data-group='primary'],
+.actor.window-app .window-content > .tab[data-group='primary'] {
+  display: none;
+}
+.actor.application .window-content > .tab[data-group='primary'].active,
+.actor.window-app .window-content > .tab[data-group='primary'].active {
+  display: block;
+}
+.actor.application .window-content .tab,
+.actor.window-app .window-content .tab {
+  grid-row: 3;
+  grid-column: 2;
+  min-height: 0;
+  overflow: auto;
+}
+.lore-sidebar {
   width: 160px;
   border-right: 1px solid var(--color-tabs-border);
 }
-.lore.actor.application .window-content, .lore.actor.window-app .window-content {
+.actor.application .window-content,
+.actor.window-app .window-content {
   display: grid;
   grid-template-columns: 160px 1fr;
-  /* Ensure header (row 1), tabs (row 2), and content (row 3) stack tightly */
   grid-template-rows: auto auto minmax(0, 1fr);
   align-items: start;
 }
-.lore.actor.application .window-content > .lore-sidebar, .lore.actor.window-app .window-content > .lore-sidebar {
+.actor.application .window-content > .lore-sidebar,
+.actor.window-app .window-content > .lore-sidebar {
   grid-column: 1;
-  grid-row: 1/-1;
+  grid-row: 1 / -1;
 }
-.lore.actor {
-  /* If the sidebar is inside a wrapper form, keep it pinned to column 1 */
-}
-.lore.actor.application .window-content > form > .lore-sidebar, .lore.actor.window-app .window-content > form > .lore-sidebar {
+.actor.application .window-content > form > .lore-sidebar,
+.actor.window-app .window-content > form > .lore-sidebar {
   grid-column: 1;
-  grid-row: 1/-1;
+  grid-row: 1 / -1;
 }
-.lore.actor.application .window-content > :not(.lore-sidebar), .lore.actor.window-app .window-content > :not(.lore-sidebar) {
+.actor.application .window-content > :not(.lore-sidebar),
+.actor.window-app .window-content > :not(.lore-sidebar) {
   grid-column: 2;
 }
-.lore.actor {
-  /* Ensure non-sidebar parts under a wrapper (e.g., form) go to column 2 */
-}
-.lore.actor.application .window-content > form > :not(.lore-sidebar), .lore.actor.window-app .window-content > form > :not(.lore-sidebar) {
+.actor.application .window-content > form > :not(.lore-sidebar),
+.actor.window-app .window-content > form > :not(.lore-sidebar) {
   grid-column: 2;
 }
-.lore.actor {
-  /* In Foundry VTT v11+/ActorSheetV2, parts may be wrapped in a <form>.
-     Make that wrapper transparent to the grid so its children become grid items. */
-}
-.lore.actor.application .window-content > form, .lore.actor.window-app .window-content > form {
+.actor.application .window-content > form,
+.actor.window-app .window-content > form {
   display: contents;
 }
-.lore.actor.application .window-content > nav.tabs, .lore.actor.window-app .window-content > nav.tabs {
-  grid-row: 2;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  align-items: center;
-  padding: 4px 6px;
-  border-bottom: 1px solid var(--color-tabs-border);
-}
-.lore.actor {
-  /* Also support when nav.tabs is nested under a wrapper (e.g., form) */
-}
-.lore.actor.application .window-content nav.tabs, .lore.actor.window-app .window-content nav.tabs {
-  grid-row: 2;
-  grid-column: 2;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  align-items: center;
-  padding: 4px 6px;
-  border-bottom: 1px solid var(--color-tabs-border);
-}
-.lore.actor.application .window-content > .tab, .lore.actor.window-app .window-content > .tab {
-  grid-row: 3;
-  min-height: 0;
-  overflow: auto;
-}
-.lore.actor {
-  /* Hide inactive primary tabs by default; only .active is displayed */
-}
-.lore.actor.application .window-content > .tab[data-group=primary], .lore.actor.window-app .window-content > .tab[data-group=primary] {
-  display: none;
-}
-.lore.actor.application .window-content > .tab[data-group=primary].active, .lore.actor.window-app .window-content > .tab[data-group=primary].active {
-  display: block;
-}
-.lore.actor {
-  /* Also support when .tab is nested under a wrapper (e.g., form) */
-}
-.lore.actor.application .window-content .tab, .lore.actor.window-app .window-content .tab {
-  grid-row: 3;
-  grid-column: 2;
-  min-height: 0;
-  overflow: auto;
-}
-.lore.actor.application .window-content > .tab.gear, .lore.actor.window-app .window-content > .tab.gear {
+.actor.application .window-content > .tab.gear,
+.actor.window-app .window-content > .tab.gear {
   overflow: hidden;
 }
-.lore.actor .tab.gear .tab.active {
+.actor .tab.gear .tab.active {
   height: 100%;
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
-.lore.actor {
-  /* Hide inactive gear sub-tabs */
-}
-.lore.actor .tab.gear .tab[data-group=gear-sub] {
+.actor .tab.gear .tab[data-group='gear-sub'] {
   display: none;
 }
-.lore.actor .tab.gear .tab[data-group=gear-sub].active {
+.actor .tab.gear .tab[data-group='gear-sub'].active {
   display: block;
 }
-.lore.actor.application .window-content > .tab.gear.active .tab.active, .lore.actor.window-app .window-content > .tab.gear.active .tab.active {
+.actor.application .window-content > .tab.gear.active .tab.active,
+.actor.window-app .window-content > .tab.gear.active .tab.active {
   height: 100%;
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
 }
-.lore .profile-img {
+.profile-img {
   width: 160px;
   height: 160px;
   object-fit: cover;
   border-bottom: 1px solid var(--color-tabs-border);
 }
-.lore .attributes {
+.attributes {
   padding: 10px;
 }
-.lore .attribute {
+.attribute {
   margin: 0px;
   height: 30px;
 }
-.lore .attribute-label {
+.attribute-label {
   font-weight: bold;
   text-align: center;
   display: block;
 }
-.lore .stats-container {
+.stats-container {
   padding: 10px;
 }
-.lore .stat-container {
+.stat-container {
   padding: 0px;
 }
-.lore .stat-label {
+.stat-label {
   padding-right: 20px;
 }
-.lore .stat-input {
+.stat-input {
   width: 50px;
   text-align: center;
 }
-.lore.application .window-content > .sheet-header, .lore.window-app .window-content > .sheet-header {
+.application .window-content > .sheet-header,
+.window-app .window-content > .sheet-header {
   grid-row: 1;
   align-self: start;
 }
-.lore {
-  /* Support when header is inside a wrapper (e.g., form) */
-}
-.lore.application .window-content .sheet-header, .lore.window-app .window-content .sheet-header {
+.application .window-content .sheet-header,
+.window-app .window-content .sheet-header {
   grid-row: 1;
   grid-column: 2;
   align-self: start;
 }
-.lore .name-input {
+.name-input {
   border: none;
   border-right: 1px solid var(--color-tabs-border);
   border-radius: 0px;
@@ -579,57 +525,62 @@
   box-shadow: none;
   margin: none;
 }
-.lore .level-label {
+.level-label {
   padding-right: 10px;
 }
-.lore .level-input {
+.level-input {
   width: 50px;
   text-align: center;
 }
-.lore .quantity-input, .lore .cost-input, .lore .weight-input {
+.quantity-input,
+.cost-input,
+.weight-input {
   width: 40px;
   text-align: center;
 }
-.lore .horizontal-line {
+.horizontal-line {
   width: 100%;
   height: 1px;
   background-color: var(--color-tabs-border);
   margin: 8px 0;
 }
-.lore .middle-header .wounds-container, .lore .middle-header .fatigue-container {
+.middle-header .wounds-container,
+.middle-header .fatigue-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
 }
-.lore .middle-header .wounds-label, .lore .middle-header .fatigue-label {
+.middle-header .wounds-label,
+.middle-header .fatigue-label {
   font-weight: 600;
 }
-.lore .middle-header .wounds-content, .lore .middle-header .fatigue-content {
+.middle-header .wounds-content,
+.middle-header .fatigue-content {
   display: flex;
   gap: 12px;
 }
-.lore .middle-header .condition-container {
+.middle-header .condition-container {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 8px;
 }
-.lore .middle-header .condition-item {
+.middle-header .condition-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
 }
-.lore .middle-header .wounds-content label,
-.lore .middle-header .fatigue-content label,
-.lore .middle-header .condition-item label {
+.middle-header .wounds-content label,
+.middle-header .fatigue-content label,
+.middle-header .condition-item label {
   position: relative;
   display: inline-block;
 }
-.lore .middle-header .wounds-content label,
-.lore .middle-header .fatigue-content label,
-.lore .middle-header .condition-item label {
+.middle-header .wounds-content label,
+.middle-header .fatigue-content label,
+.middle-header .condition-item label {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -637,7 +588,7 @@
   height: 20px;
   cursor: pointer;
 }
-.lore .middle-header input[type=checkbox] {
+.middle-header input[type="checkbox"] {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -646,7 +597,7 @@
   opacity: 0;
   cursor: pointer;
 }
-.lore .middle-header .custom-circle {
+.middle-header .custom-circle {
   display: inline-block;
   width: 20px;
   height: 20px;
@@ -657,54 +608,54 @@
   transition: background-color 120ms ease, border-color 120ms ease, transform 60ms ease;
   pointer-events: none;
 }
-.lore .middle-header input[type=checkbox]:checked + .custom-circle {
+.middle-header input[type="checkbox"]:checked + .custom-circle {
   background-color: var(--lore-c-dark);
   border-color: var(--lore-c-dark);
 }
-.lore .middle-header label:hover .custom-circle {
+.middle-header label:hover .custom-circle {
   border-color: var(--lore-c-tan);
 }
-.lore .middle-header input[type=checkbox]:active + .custom-circle {
+.middle-header input[type="checkbox"]:active + .custom-circle {
   transform: scale(0.95);
 }
-.lore .middle-header input[type=checkbox]:focus-visible + .custom-circle {
+.middle-header input[type="checkbox"]:focus-visible + .custom-circle {
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25), 0 0 0 4px var(--lore-c-tan);
 }
-.lore .middle-header input[type=checkbox]:disabled + .custom-circle {
+.middle-header input[type="checkbox"]:disabled + .custom-circle {
   opacity: 0.5;
   cursor: not-allowed;
 }
-.lore .morale-label {
+.morale-label {
   display: block;
   width: 100%;
   text-align: center;
 }
-.lore .morale-slider-container {
+.morale-slider-container {
   width: 100%;
   padding-left: 30px;
   padding-right: 30px;
   padding-bottom: 10px;
 }
-.lore .morale-slider {
+.morale-slider {
   position: relative;
 }
-.lore .morale-input {
+.morale-input {
   width: 100%;
 }
-.lore .morale-ticks {
+.morale-ticks {
   position: absolute;
   left: 0;
   right: 0;
   height: 8px;
   bottom: -6px;
   background-image: linear-gradient(to right, var(--color-tabs-border) 1px, transparent 1px);
-  background-size: 8.3333333333% 100%;
+  background-size: calc(100% / 12) 100%;
   background-repeat: repeat-x;
   background-position: left bottom;
   opacity: 0.6;
   pointer-events: none;
 }
-.lore .morale-ticks::after {
+.morale-ticks::after {
   content: "";
   position: absolute;
   right: 0;
@@ -713,10 +664,10 @@
   width: 1px;
   background-color: var(--color-tabs-border);
 }
-.lore .biography {
+.biography {
   padding: 10px;
 }
-.lore .biography-content {
+.biography-content {
   background: none;
   border: none;
 }
