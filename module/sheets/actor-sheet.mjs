@@ -30,7 +30,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     classes: ['lore', 'actor'],
     position: {
       width: 600,
-      height: 580,
+      height: 600,
     },
     actions: {
       onEditImage: this._onEditImage,

@@ -525,12 +525,18 @@
 }
 .stats-container {
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .stat-container {
   padding: 0px;
 }
 .stat-label {
   padding-right: 20px;
+  display: flex;
+  align-items: center;
 }
 .stat-input {
   width: 50px;
@@ -549,7 +555,6 @@
 }
 .name-input {
   border: none;
-  border-right: 1px solid var(--color-tabs-border);
   border-radius: 0px;
   background: none;
   font-weight: bold;
@@ -698,8 +703,39 @@
 }
 .biography {
   padding: 10px;
+  height: 100%;
+  overflow: hidden;
 }
 .biography-content {
   background: none;
   border: none;
+  height: 100%;
+  overflow-y: auto;
+}
+/* TEMP: Diagnostic flexbox fix for gear ancestors */
+.gear,
+.gear-content,
+.gear * {
+  box-sizing: border-box;
+}
+body,
+html,
+.gear,
+.gear-content {
+  height: 100%;
+}
+.gear {
+  display: flex;
+  flex-direction: column;
+}
+.gear {
+  padding: 10px;
+  overflow: auto;
+  /* TEMP: Add overflow for debugging */
+}
+.gear-content {
+  background: none;
+  border: 2px dashed red;
+  /* TEMP: Debug border */
+  overflow-y: auto;
 }
