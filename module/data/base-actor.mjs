@@ -55,10 +55,24 @@ export default class loreActorBase extends foundry.abstract
 
     schema.biography = new fields.HTMLField();
 
-    
+    schema.equippedWeapons = new fields.SchemaField({
+      mainhand: new fields.SchemaField({ initial: null }),
+      offhand: new fields.SchemaField({ initial: null }),
+    });
+
+    schema.equippedArmor = new fields.SchemaField({
+      head: new fields.SchemaField({ initial: null }),
+      body: new fields.SchemaField({ initial: null }),
+      arms: new fields.SchemaField({ initial: null }),
+      hands: new fields.SchemaField({ initial: null }),
+      legs: new fields.SchemaField({ initial: null }),
+      feet: new fields.SchemaField({ initial: null }),
+    });
 
     return schema;
   }
+
+
 
   prepareDerivedData() {
 
