@@ -374,8 +374,8 @@
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
-.actor.application .window-content > nav.tabs,
-.actor.window-app .window-content > nav.tabs {
+.actor.application .window-content > nav.tabs.main-tabs,
+.actor.window-app .window-content > nav.tabs.main-tabs {
   grid-row: 2;
   display: flex;
   flex-wrap: wrap;
@@ -384,8 +384,13 @@
   padding: 4px 6px;
   border-bottom: 1px solid var(--color-tabs-border);
 }
-.actor.application .window-content nav.tabs,
-.actor.window-app .window-content nav.tabs {
+.actor.application .window-content nav.tabs.main-tabs a.item,
+.actor.window-app .window-content nav.tabs.main-tabs a.item {
+  padding: 4px 8px;
+  line-height: 1.6;
+}
+.actor.application .window-content nav.tabs.main-tabs,
+.actor.window-app .window-content nav.tabs.main-tabs {
   grid-row: 2;
   grid-column: 2;
   display: flex;
@@ -394,6 +399,25 @@
   align-items: center;
   padding: 4px 6px;
   border-bottom: 1px solid var(--color-tabs-border);
+}
+.actor.application .window-content nav.tabs.sub-tabs,
+.actor.window-app .window-content nav.tabs.sub-tabs {
+  /* Sub nav appears within a primary tab's content area */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  align-items: center;
+  padding: 2px 4px;
+  margin: 4px 0 6px;
+  border-top: none;
+  border-bottom: 1px solid var(--color-tabs-border, #999);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.actor.application .window-content nav.tabs.sub-tabs a.item,
+.actor.window-app .window-content nav.tabs.sub-tabs a.item {
+  padding: 2px 6px;
+  line-height: 1.3;
 }
 .actor.application .window-content > .tab,
 .actor.window-app .window-content > .tab {
@@ -407,6 +431,14 @@
 }
 .actor.application .window-content > .tab[data-group='primary'].active,
 .actor.window-app .window-content > .tab[data-group='primary'].active {
+  display: block;
+}
+.actor.application .window-content > .tab[data-group]:not([data-group='primary']),
+.actor.window-app .window-content > .tab[data-group]:not([data-group='primary']) {
+  display: none;
+}
+.actor.application .window-content > .tab[data-group]:not([data-group='primary']).active,
+.actor.window-app .window-content > .tab[data-group]:not([data-group='primary']).active {
   display: block;
 }
 .actor.application .window-content .tab,

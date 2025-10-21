@@ -14,6 +14,18 @@
 			"script": "watch",
 			"isBackground": true,
 			"problemMatcher": []
+		},
+		{
+			"label": "Build LESS (one-off)",
+			"type": "shell",
+			"command": "npm run build",
+			"group": "build"
+		},
+		{
+			"label": "Build LESS",
+			"type": "shell",
+			"command": "npm run build",
+			"group": "build"
 		}
 	]
 }
