@@ -1,4 +1,3 @@
-@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 :root {
   --lore-c-dark: #191813;
@@ -329,19 +328,22 @@
 }
 .lore .items-list > .items-header.is-collapsible {
   cursor: pointer;
-  position: relative;
+  position: relative; /* allow ::before to be absolutely positioned */
 }
 .lore .items-list > .items-header.is-collapsible::before {
-  content: "▼"; /* down triangle */
   font-size: 10px;
   opacity: 0.7;
-  margin-left: 6px;
-  margin-right: 2px;
+  position: absolute; /* keep out of CSS grid flow so it doesn't create a new column/row */
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
 }
-.lore .items-list.collapsed > .items-header.is-collapsible::before {
-  content: "▶"; /* right triangle */
+.lore {
+  /* When a list is collapsed, hide all immediate children except the header.
+     This covers normal rows (li.item) and grouped sublists (li.items-sublist),
+     ensuring the Armor header collapses all its sub-lists. */
 }
-.lore .items-list.collapsed > li.item:not(.items-header) {
+.lore .items-list.collapsed > li:not(.items-header) {
   display: none;
 }
 .lore .items-list .items-header .item-name {
@@ -390,6 +392,13 @@
   justify-self: end;
   padding-right: 1.25em;
 }
+.lore {
+  /* Empty state row inside lists */
+}
+.lore .items-list .item.empty .item-name {
+  opacity: 0.7;
+  font-style: italic;
+}
 .lore .item-sheet-header {
   width: 100%;
   display: flex;
@@ -423,6 +432,42 @@
   width: 100%;
   box-sizing: border-box;
 }
+.lore {
+  /* Gear tab layout: make the List sub-tab scrollable */
+}
+.lore.actor {
+  /* Allow Gear tab to use the default overflow from the base tab styling */
+}
+.lore.actor.application .window-content > .tab.gear, .lore.actor.window-app .window-content > .tab.gear {
+  min-height: 0; /* ensure children can compute height properly */
+  /* Prevent the outer tab from becoming the scroll container; we want the
+     inner active sub-tab (List/Paper Doll) to own the scrollbar. */
+  overflow: hidden;
+}
+.lore.actor {
+  /* Only when the Gear tab is active, use flex to reserve space for sub-tabs + content */
+}
+.lore.actor.application .window-content > .tab.gear.active, .lore.actor.window-app .window-content > .tab.gear.active {
+  display: flex;
+  flex-direction: column;
+}
+.lore.actor {
+  /* Sub-tabs header stays fixed at the top of Gear tab */
+}
+.lore.actor .tab.gear .tabs.sub-tabs {
+  flex: 0 0 auto;
+}
+.lore.actor {
+  /* Make the inner active sub-tab the scroll container */
+}
+.lore.actor .tab.gear .tab.active {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
 .lore .lore-sidebar {
   width: 160px;
   border-right: 1px solid var(--color-tabs-border);
@@ -434,7 +479,7 @@
   display: grid;
   grid-template-columns: 160px 1fr; /* match .lore-sidebar width */
   /* Explicit rows prevent the first row (header) from expanding to the sidebar's height */
-  grid-template-rows: auto auto 1fr; /* row 1: header, row 2: tabs, row 3: content */
+  grid-template-rows: auto auto minmax(0, 1fr); /* row 1: header, row 2: tabs, row 3: content */
   align-items: start;
 }
 .lore.actor.application .window-content > .lore-sidebar, .lore.actor.window-app .window-content > .lore-sidebar {
@@ -451,6 +496,31 @@
   grid-row: 3;
   min-height: 0; /* Allow scrolling within the content area if needed */
   overflow: auto;
+}
+.lore.actor {
+  /* Gear tab: the outer tab should not scroll; inner active sub-tab owns the scrollbar */
+}
+.lore.actor.application .window-content > .tab.gear, .lore.actor.window-app .window-content > .tab.gear {
+  overflow: hidden;
+}
+.lore.actor {
+  /* Ensure the active Gear sub-tab (List/Paper Doll) fills the space and scrolls */
+}
+.lore.actor .tab.gear .tab.active {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.lore.actor {
+  /* Even more specific target to win against any theme overrides */
+}
+.lore.actor.application .window-content > .tab.gear.active .tab.active, .lore.actor.window-app .window-content > .tab.gear.active .tab.active {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .lore .profile-img {
   width: 160px;

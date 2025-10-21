@@ -38,25 +38,25 @@
 /* Collapsible behavior */
 .items-list > .items-header.is-collapsible {
 	cursor: pointer;
-	position: relative;
+	position: relative; /* allow ::before to be absolutely positioned */
 }
 .items-list > .items-header.is-collapsible::before {
-	content: '\25BC'; /* down triangle */
 	font-size: 10px;
 	opacity: 0.7;
-	margin-left: 6px;
-	margin-right: 2px;
+	position: absolute; /* keep out of CSS grid flow so it doesn't create a new column/row */
+	left: 6px;
+	top: 50%;
+	transform: translateY(-50%);
 }
-.items-list.collapsed > .items-header.is-collapsible::before {
-	content: '\25B6'; /* right triangle */
-}
-.items-list.collapsed > li.item:not(.items-header) {
+/* When a list is collapsed, hide all immediate children except the header.
+   This covers normal rows (li.item) and grouped sublists (li.items-sublist),
+   ensuring the Armor header collapses all its sub-lists. */
+.items-list.collapsed > li:not(.items-header) {
 	display: none;
 }
 
 .items-list .items-header .item-name {
 	flex: 1 1 auto;
-    
 }
 
 .item-controls {
@@ -107,6 +107,12 @@
 	padding-right: 1.25em;
 }
 
+/* Empty state row inside lists */
+.items-list .item.empty .item-name {
+	opacity: 0.7;
+	font-style: italic;
+}
+
 .item-sheet-header {
 	width: 100%;
 	display: flex;
@@ -143,4 +149,38 @@
 .item-sheet-header .name-input {
 	width: 100%;
 	box-sizing: border-box;
+}
+
+/* Gear tab layout: make the List sub-tab scrollable */
+&.actor {
+	/* Allow Gear tab to use the default overflow from the base tab styling */
+	&.application .window-content > .tab.gear,
+	&.window-app .window-content > .tab.gear {
+		min-height: 0; /* ensure children can compute height properly */
+		/* Prevent the outer tab from becoming the scroll container; we want the
+		   inner active sub-tab (List/Paper Doll) to own the scrollbar. */
+		overflow: hidden;
+	}
+
+	/* Only when the Gear tab is active, use flex to reserve space for sub-tabs + content */
+	&.application .window-content > .tab.gear.active,
+	&.window-app .window-content > .tab.gear.active {
+		display: flex;
+		flex-direction: column;
+	}
+
+	/* Sub-tabs header stays fixed at the top of Gear tab */
+	.tab.gear .tabs.sub-tabs {
+		flex: 0 0 auto;
+	}
+
+	/* Make the inner active sub-tab the scroll container */
+	.tab.gear .tab.active {
+		flex: 1 1 auto;
+		min-height: 0;
+		height: 100%;
+		overflow-y: auto;
+		overflow-x: hidden;
+		-webkit-overflow-scrolling: touch;
+	}
 }

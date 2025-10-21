@@ -10,7 +10,7 @@
         display: grid;
         grid-template-columns: 160px 1fr; /* match .lore-sidebar width */
         /* Explicit rows prevent the first row (header) from expanding to the sidebar's height */
-        grid-template-rows: auto auto 1fr; /* row 1: header, row 2: tabs, row 3: content */
+        grid-template-rows: auto auto minmax(0, 1fr); /* row 1: header, row 2: tabs, row 3: content */
         align-items: start;
     }
 
@@ -35,6 +35,30 @@
         grid-row: 3;
         min-height: 0; /* Allow scrolling within the content area if needed */
         overflow: auto;
+    }
+
+    /* Gear tab: the outer tab should not scroll; inner active sub-tab owns the scrollbar */
+    &.application .window-content > .tab.gear,
+    &.window-app .window-content > .tab.gear {
+        overflow: hidden;
+    }
+
+    /* Ensure the active Gear sub-tab (List/Paper Doll) fills the space and scrolls */
+    .tab.gear .tab.active {
+        height: 100%;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Even more specific target to win against any theme overrides */
+    &.application .window-content > .tab.gear.active .tab.active,
+    &.window-app .window-content > .tab.gear.active .tab.active {
+        height: 100%;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 }
 .profile-img {

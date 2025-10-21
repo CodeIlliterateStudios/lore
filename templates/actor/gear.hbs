@@ -56,6 +56,176 @@
       {{/each}}
     </ol>
 
+    {{!-- Armor Section (grouped by armorType) --}}
+    {{!-- Top-level Armor header is always shown; sublists render only if they have items --}}
+    <ol class='items-list items-armor'>
+      <li class='item flexrow items-header' data-gear-type='armor'>
+        <div class='item-name'>{{localize 'TYPES.Item.armor'}}</div>
+        <div class='item-formula'></div>
+      </li>
+      {{!-- Head Armor --}}
+      <li class='items-sublist'>
+        <ol class='items-list items-armor-sub'>
+          <li class='item flexrow items-header' data-gear-type='armor-head'>
+            <div class='item-name'>{{localize 'LORE.Item.Armor.Types.head'}}</div>
+            <div class='item-formula'></div>
+          </li>
+          {{#each armorByType.head as |item id|}}
+            <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
+              <div class='item-name'>
+                <div class='item-image'>
+                  <a class='item-control'>
+                    <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+                  </a>
+                </div>
+                <div>{{item.name}}</div>
+              </div>
+            </li>
+          {{/each}}
+          {{#unless armorByType.head.[0]}}
+            <li class='item flexrow empty'>
+              <div class='item-name'>— None —</div>
+            </li>
+          {{/unless}}
+        </ol>
+      </li>
+
+      {{!-- Body Armor --}}
+      <li class='items-sublist'>
+        <ol class='items-list items-armor-sub'>
+          <li class='item flexrow items-header' data-gear-type='armor-body'>
+            <div class='item-name'>{{localize 'LORE.Item.Armor.Types.body'}}</div>
+            <div class='item-formula'></div>
+          </li>
+          {{#each armorByType.body as |item id|}}
+            <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
+              <div class='item-name'>
+                <div class='item-image'>
+                  <a class='item-control'>
+                    <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+                  </a>
+                </div>
+                <div>{{item.name}}</div>
+              </div>
+            </li>
+          {{/each}}
+          {{#unless armorByType.body.[0]}}
+            <li class='item flexrow empty'>
+              <div class='item-name'>— None —</div>
+            </li>
+          {{/unless}}
+        </ol>
+      </li>
+
+      {{!-- Arms Armor --}}
+      <li class='items-sublist'>
+        <ol class='items-list items-armor-sub'>
+          <li class='item flexrow items-header' data-gear-type='armor-arms'>
+            <div class='item-name'>{{localize 'LORE.Item.Armor.Types.arms'}}</div>
+            <div class='item-formula'></div>
+          </li>
+          {{#each armorByType.arms as |item id|}}
+            <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
+              <div class='item-name'>
+                <div class='item-image'>
+                  <a class='item-control'>
+                    <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+                  </a>
+                </div>
+                <div>{{item.name}}</div>
+              </div>
+            </li>
+          {{/each}}
+          {{#unless armorByType.arms.[0]}}
+            <li class='item flexrow empty'>
+              <div class='item-name'>— None —</div>
+            </li>
+          {{/unless}}
+        </ol>
+      </li>
+
+      {{!-- Hands Armor --}}
+      <li class='items-sublist'>
+        <ol class='items-list items-armor-sub'>
+          <li class='item flexrow items-header' data-gear-type='armor-hands'>
+            <div class='item-name'>{{localize 'LORE.Item.Armor.Types.hands'}}</div>
+            <div class='item-formula'></div>
+          </li>
+          {{#each armorByType.hands as |item id|}}
+            <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
+              <div class='item-name'>
+                <div class='item-image'>
+                  <a class='item-control'>
+                    <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+                  </a>
+                </div>
+                <div>{{item.name}}</div>
+              </div>
+            </li>
+          {{/each}}
+          {{#unless armorByType.hands.[0]}}
+            <li class='item flexrow empty'>
+              <div class='item-name'>— None —</div>
+            </li>
+          {{/unless}}
+        </ol>
+      </li>
+
+      {{!-- Legs Armor --}}
+      <li class='items-sublist'>
+        <ol class='items-list items-armor-sub'>
+          <li class='item flexrow items-header' data-gear-type='armor-legs'>
+            <div class='item-name'>{{localize 'LORE.Item.Armor.Types.legs'}}</div>
+            <div class='item-formula'></div>
+          </li>
+          {{#each armorByType.legs as |item id|}}
+            <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
+              <div class='item-name'>
+                <div class='item-image'>
+                  <a class='item-control'>
+                    <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+                  </a>
+                </div>
+                <div>{{item.name}}</div>
+              </div>
+            </li>
+          {{/each}}
+          {{#unless armorByType.legs.[0]}}
+            <li class='item flexrow empty'>
+              <div class='item-name'>— None —</div>
+            </li>
+          {{/unless}}
+        </ol>
+      </li>
+
+      {{!-- Feet Armor --}}
+      <li class='items-sublist'>
+        <ol class='items-list items-armor-sub'>
+          <li class='item flexrow items-header' data-gear-type='armor-feet'>
+            <div class='item-name'>{{localize 'LORE.Item.Armor.Types.feet'}}</div>
+            <div class='item-formula'></div>
+          </li>
+          {{#each armorByType.feet as |item id|}}
+            <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
+              <div class='item-name'>
+                <div class='item-image'>
+                  <a class='item-control'>
+                    <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+                  </a>
+                </div>
+                <div>{{item.name}}</div>
+              </div>
+            </li>
+          {{/each}}
+          {{#unless armorByType.feet.[0]}}
+            <li class='item flexrow empty'>
+              <div class='item-name'>— None —</div>
+            </li>
+          {{/unless}}
+        </ol>
+      </li>
+    </ol>
+
     {{!-- Misc Gear Section --}}
     <ol class='items-list'>
       <li class='item flexrow items-header' data-gear-type='gear'>

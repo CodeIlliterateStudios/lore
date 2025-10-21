@@ -233,6 +233,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // this sheet does with magicks
   const gear = [];
   const weapons = [];
+  const armor = [];
     const skills = [];
     const magicks = [];
 
@@ -244,6 +245,9 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       }
       else if (i.type === 'weapon') {
         weapons.push(i);
+      }
+      else if (i.type === 'armor') {
+        armor.push(i);
       }
       // Append to skills.
       else if (i.type === 'skill') {
@@ -258,6 +262,17 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // Sort then assign
   context.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
   context.weapons = weapons.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+  context.armor = armor.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+  // Group armor by armorType for the gear tab
+  const armorByType = { head: [], body: [], arms: [], hands: [], legs: [], feet: [] };
+  for (const it of context.armor) {
+    const t = it?.system?.armorType;
+    if (t && armorByType[t]) armorByType[t].push(it);
+  }
+  for (const k of Object.keys(armorByType)) {
+    armorByType[k] = armorByType[k].sort((a, b) => (a.sort || 0) - (b.sort || 0));
+  }
+  context.armorByType = armorByType;
     context.skills = skills.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.magicks = magicks.sort((a, b) => (a.sort || 0) - (b.sort || 0));
   }
@@ -319,10 +334,35 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     }
 
     // Context menu: right-click on Gear tab headers to create new items
+    // EXCEPTION: Disable right-click on the parent Armor list header (data-gear-type="armor")
     const gearHeaders = this.element.querySelectorAll('.tab.gear .items-header');
     for (const header of gearHeaders) {
+      // Always remove our menu handler first to avoid stacking
       header.removeEventListener('contextmenu', this.#onGearHeaderContextMenuBound);
-      header.addEventListener('contextmenu', this.#onGearHeaderContextMenuBound);
+
+      const gearType = header?.dataset?.gearType;
+      const isParentArmorHeader = gearType === 'armor';
+
+      // Clean up any previous preventer if present
+      if (header._loreCtxPrevent) {
+        header.removeEventListener('contextmenu', header._loreCtxPrevent);
+        header._loreCtxPrevent = null;
+      }
+
+      if (isParentArmorHeader) {
+        // For the parent Armor header only, block context menu entirely
+        const prevent = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        };
+        header.addEventListener('contextmenu', prevent);
+        // Store reference to remove cleanly on re-render
+        header._loreCtxPrevent = prevent;
+      } else {
+        // For all other headers (weapons, gear, armor sublists), keep the menu
+        header.addEventListener('contextmenu', this.#onGearHeaderContextMenuBound);
+      }
     }
 
     // Left-click to collapse/expand any items-list; right-click remains context menu
@@ -1195,9 +1235,17 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
   const gearType = header?.dataset?.gearType ?? 'gear';
 
     // Provide creation options; for now a single action depending on header
-  let label = 'New Item';
-  if (gearType === 'weapon') label = 'New Weapon';
-  else label = 'New Gear';
+    let label = 'New Item';
+    if (gearType === 'weapon') label = 'New Weapon';
+    else if (gearType === 'armor' || (typeof gearType === 'string' && gearType.startsWith('armor'))) {
+      // If creating from an armor sub-header (armor-head/body/etc.), reflect that in the label
+      if (typeof gearType === 'string' && gearType.startsWith('armor-')) {
+        const subtype = gearType.split('-')[1] || '';
+        label = `New Armor (${subtype})`;
+      } else {
+        label = 'New Armor';
+      }
+    } else label = 'New Gear';
 
     const items = [ { action: 'create-gear', label } ];
 
@@ -1222,9 +1270,25 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       try {
         if (action === 'create-gear') {
           const docCls = getDocumentClass('Item');
-          const type = gearType === 'weapon' ? 'weapon' : 'gear';
+          let type = 'gear';
+          /** @type {Record<string, any>} */
+          const createData = {};
+          if (gearType === 'weapon') {
+            type = 'weapon';
+          } else if (gearType === 'armor' || (typeof gearType === 'string' && gearType.startsWith('armor'))) {
+            type = 'armor';
+            // If from an armor sub-header, set the armorType accordingly (head, body, arms, hands, legs, feet)
+            if (typeof gearType === 'string' && gearType.startsWith('armor-')) {
+              const subtype = gearType.split('-')[1] || '';
+              // Ensure we set only recognized subtypes; otherwise omit
+              const valid = ['head', 'body', 'arms', 'hands', 'legs', 'feet'];
+              if (valid.includes(subtype)) {
+                createData.system = { armorType: subtype };
+              }
+            }
+          }
           const name = docCls.defaultName({ type, parent: this.actor });
-          await docCls.create({ type, name }, { parent: this.actor });
+          await docCls.create({ type, name, ...createData }, { parent: this.actor });
         }
       } finally {
         this.#closeContextMenu();
