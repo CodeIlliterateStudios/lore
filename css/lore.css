@@ -255,23 +255,15 @@
 .lore-die {
   text-align: center;
   margin-top: 10px;
-  /* Keep layout intact; only adjust colors to match Foundry */
   color: var(--color-text, inherit);
 }
 
-/* Theme roll chat cards to follow the current Foundry theme without changing layout */
 .chat-message .message-content .dice-roll {
   color: var(--color-text, inherit);
-}
-.chat-message .message-content {
-  /* Formula line and dividers use the theme's tab/border color */
 }
 .chat-message .message-content .dice-formula {
   color: var(--color-text-dark-5, #555);
   border-color: var(--color-tabs-border, #c9c7b8);
-}
-.chat-message .message-content {
-  /* Result container and totals inherit themed text and borders */
 }
 .chat-message .message-content .dice-result {
   border-color: var(--color-tabs-border, #c9c7b8);
@@ -279,9 +271,6 @@
 .chat-message .message-content .dice-total {
   color: var(--color-text, inherit);
   border-color: var(--color-tabs-border, #c9c7b8);
-}
-.chat-message .message-content {
-  /* Tooltip sections (breakdowns) use themed border accents */
 }
 .chat-message .message-content .dice-tooltip,
 .chat-message .message-content .dice-tooltip .tooltip-part {
@@ -302,9 +291,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  /* Let the name grow to fill remaining space */
   flex: 1 1 auto;
-  min-width: 0; /* allow text to shrink/ellipsis within flex container */
+  min-width: 0;
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -323,25 +311,17 @@
   padding-bottom: 5px;
   margin-bottom: 5px;
 }
-.lore {
-  /* Collapsible behavior */
-}
 .lore .items-list > .items-header.is-collapsible {
   cursor: pointer;
-  position: relative; /* allow ::before to be absolutely positioned */
+  position: relative;
 }
 .lore .items-list > .items-header.is-collapsible::before {
   font-size: 10px;
   opacity: 0.7;
-  position: absolute; /* keep out of CSS grid flow so it doesn't create a new column/row */
+  position: absolute;
   left: 6px;
   top: 50%;
   transform: translateY(-50%);
-}
-.lore {
-  /* When a list is collapsed, hide all immediate children except the header.
-     This covers normal rows (li.item) and grouped sublists (li.items-sublist),
-     ensuring the Armor header collapses all its sub-lists. */
 }
 .lore .items-list.collapsed > li:not(.items-header) {
   display: none;
@@ -365,19 +345,15 @@
   font-weight: 600;
   opacity: 0.9;
 }
-.lore {
-  /* Weapons: enforce even columns with CSS grid */
-}
 .lore .items-list.items-weapons .items-header,
 .lore .items-list.items-weapons .item {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr auto; /* Name | Roll | Mod | Range | Controls */
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
   align-items: center;
   column-gap: 8px;
 }
 .lore .items-list.items-weapons .item .item-name,
 .lore .items-list.items-weapons .items-header .item-name {
-  /* allow name to use the first grid column */
   min-width: 0;
 }
 .lore .items-list.items-weapons .item .item-formula,
@@ -392,9 +368,6 @@
   justify-self: end;
   padding-right: 1.25em;
 }
-.lore {
-  /* Empty state row inside lists */
-}
 .lore .items-list .item.empty .item-name {
   opacity: 0.7;
   font-style: italic;
@@ -405,14 +378,8 @@
   align-items: flex-start;
   gap: 12px;
 }
-.lore {
-  /* Ensure item sheets use full-width content and are not placed in a grid */
-}
 .lore.item.application .window-content, .lore.item.window-app .window-content {
-  display: block; /* revert any grid from actor layout */
-}
-.lore {
-  /* Image + fields layout inside item header */
+  display: block;
 }
 .lore .item-sheet-header .profile-img {
   flex: 0 0 auto;
@@ -423,7 +390,7 @@
 }
 .lore .item-sheet-header .header-fields {
   flex: 1 1 auto;
-  min-width: 0; /* allow input to shrink as needed */
+  min-width: 0;
 }
 .lore .item-sheet-header .document-name {
   margin-bottom: 8px;
@@ -432,33 +399,16 @@
   width: 100%;
   box-sizing: border-box;
 }
-.lore {
-  /* Gear tab layout: make the List sub-tab scrollable */
-}
-.lore.actor {
-  /* Allow Gear tab to use the default overflow from the base tab styling */
-}
 .lore.actor.application .window-content > .tab.gear, .lore.actor.window-app .window-content > .tab.gear {
-  min-height: 0; /* ensure children can compute height properly */
-  /* Prevent the outer tab from becoming the scroll container; we want the
-     inner active sub-tab (List/Paper Doll) to own the scrollbar. */
+  min-height: 0;
   overflow: hidden;
-}
-.lore.actor {
-  /* Only when the Gear tab is active, use flex to reserve space for sub-tabs + content */
 }
 .lore.actor.application .window-content > .tab.gear.active, .lore.actor.window-app .window-content > .tab.gear.active {
   display: flex;
   flex-direction: column;
 }
-.lore.actor {
-  /* Sub-tabs header stays fixed at the top of Gear tab */
-}
 .lore.actor .tab.gear .tabs.sub-tabs {
   flex: 0 0 auto;
-}
-.lore.actor {
-  /* Make the inner active sub-tab the scroll container */
 }
 .lore.actor .tab.gear .tab.active {
   flex: 1 1 auto;
@@ -472,14 +422,9 @@
   width: 160px;
   border-right: 1px solid var(--color-tabs-border);
 }
-.lore {
-  /* Scope the sidebar grid layout to ACTOR sheets only to avoid affecting Item sheets */
-}
 .lore.actor.application .window-content, .lore.actor.window-app .window-content {
   display: grid;
-  grid-template-columns: 160px 1fr; /* match .lore-sidebar width */
-  /* Explicit rows prevent the first row (header) from expanding to the sidebar's height */
-  grid-template-rows: auto auto minmax(0, 1fr); /* row 1: header, row 2: tabs, row 3: content */
+  grid-template-columns: 160px 1fr;
   align-items: start;
 }
 .lore.actor.application .window-content > .lore-sidebar, .lore.actor.window-app .window-content > .lore-sidebar {
@@ -494,17 +439,11 @@
 }
 .lore.actor.application .window-content > .tab, .lore.actor.window-app .window-content > .tab {
   grid-row: 3;
-  min-height: 0; /* Allow scrolling within the content area if needed */
+  min-height: 0;
   overflow: auto;
-}
-.lore.actor {
-  /* Gear tab: the outer tab should not scroll; inner active sub-tab owns the scrollbar */
 }
 .lore.actor.application .window-content > .tab.gear, .lore.actor.window-app .window-content > .tab.gear {
   overflow: hidden;
-}
-.lore.actor {
-  /* Ensure the active Gear sub-tab (List/Paper Doll) fills the space and scrolls */
 }
 .lore.actor .tab.gear .tab.active {
   height: 100%;
@@ -512,9 +451,6 @@
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-}
-.lore.actor {
-  /* Even more specific target to win against any theme overrides */
 }
 .lore.actor.application .window-content > .tab.gear.active .tab.active, .lore.actor.window-app .window-content > .tab.gear.active .tab.active {
   height: 100%;
@@ -555,7 +491,7 @@
 }
 .lore.application .window-content > .sheet-header, .lore.window-app .window-content > .sheet-header {
   grid-row: 1;
-  align-self: start; /* Don't stretch to row height */
+  align-self: start;
 }
 .lore .name-input {
   border: none;
@@ -607,7 +543,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px; /* replaces inline margin-bottom on labels */
+  gap: 2px;
 }
 .lore .middle-header .wounds-content label,
 .lore .middle-header .fatigue-content label,
@@ -615,13 +551,9 @@
   position: relative;
   display: inline-block;
 }
-.lore {
-  /* Custom circle checkboxes: show hollow when unchecked, filled when checked */
-}
 .lore .middle-header .wounds-content label,
 .lore .middle-header .fatigue-content label,
 .lore .middle-header .condition-item label {
-  /* Make the label the click target area */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -631,11 +563,11 @@
 }
 .lore .middle-header input[type=checkbox] {
   position: absolute;
-  inset: 0; /* stretch to label to keep keyboard focus and clicks */
+  inset: 0;
   width: 100%;
   height: 100%;
   margin: 0;
-  opacity: 0; /* hide native checkbox */
+  opacity: 0;
   cursor: pointer;
 }
 .lore .middle-header .custom-circle {
@@ -645,19 +577,13 @@
   border-radius: 50%;
   box-sizing: border-box;
   border: 2px solid var(--color-tabs-border);
-  background-color: transparent; /* hollow by default */
+  background-color: transparent;
   transition: background-color 120ms ease, border-color 120ms ease, transform 60ms ease;
-  pointer-events: none; /* ensure clicks go to the label/input */
-}
-.lore {
-  /* Filled when checked */
+  pointer-events: none;
 }
 .lore .middle-header input[type=checkbox]:checked + .custom-circle {
   background-color: var(--lore-c-dark);
   border-color: var(--lore-c-dark);
-}
-.lore {
-  /* Hover and active feedback */
 }
 .lore .middle-header label:hover .custom-circle {
   border-color: var(--lore-c-tan);
@@ -665,14 +591,8 @@
 .lore .middle-header input[type=checkbox]:active + .custom-circle {
   transform: scale(0.95);
 }
-.lore {
-  /* Focus visible for keyboard users */
-}
 .lore .middle-header input[type=checkbox]:focus-visible + .custom-circle {
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25), 0 0 0 4px var(--lore-c-tan);
-}
-.lore {
-  /* Disabled state if used */
 }
 .lore .middle-header input[type=checkbox]:disabled + .custom-circle {
   opacity: 0.5;
@@ -689,34 +609,24 @@
   padding-right: 30px;
   padding-bottom: 10px;
 }
-.lore {
-  /* Morale slider + ticks */
-}
 .lore .morale-slider {
   position: relative;
 }
 .lore .morale-input {
   width: 100%;
 }
-.lore {
-  /* Visual tick marks from -6 to 6 (13 steps) */
-}
 .lore .morale-ticks {
   position: absolute;
   left: 0;
   right: 0;
   height: 8px;
-  bottom: -6px; /* a little below the slider */
-  /* Evenly spaced ticks: one 1px line per step, tiled 12 times (12 intervals from -6 to 6) */
+  bottom: -6px;
   background-image: linear-gradient(to right, var(--color-tabs-border) 1px, transparent 1px);
   background-size: 8.3333333333% 100%;
   background-repeat: repeat-x;
   background-position: left bottom;
   opacity: 0.6;
   pointer-events: none;
-}
-.lore {
-  /* Ensure the rightmost edge also shows a tick */
 }
 .lore .morale-ticks::after {
   content: "";

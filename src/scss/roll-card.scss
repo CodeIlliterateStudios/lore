@@ -1,33 +1,23 @@
 .lore-die {
     text-align: center;
     margin-top: 10px;
-    /* Keep layout intact; only adjust colors to match Foundry */
-        color: var(--color-text, inherit);
+    color: var(--color-text, inherit);
 }
-
-/* Theme roll chat cards to follow the current Foundry theme without changing layout */
 .chat-message .message-content {
     .dice-roll {
         color: var(--color-text, inherit);
     }
-
-    /* Formula line and dividers use the theme's tab/border color */
     .dice-formula {
         color: var(--color-text-dark-5, #555);
         border-color: var(--color-tabs-border, #c9c7b8);
     }
-
-    /* Result container and totals inherit themed text and borders */
     .dice-result {
         border-color: var(--color-tabs-border, #c9c7b8);
     }
-
     .dice-total {
         color: var(--color-text, inherit);
         border-color: var(--color-tabs-border, #c9c7b8);
     }
-
-    /* Tooltip sections (breakdowns) use themed border accents */
     .dice-tooltip,
     .dice-tooltip .tooltip-part {
         border-color: var(--color-tabs-border, #c9c7b8);

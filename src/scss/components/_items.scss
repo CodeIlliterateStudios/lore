@@ -10,9 +10,8 @@
 	display: flex;
 	align-items: center;
 	gap: 8px;
-	/* Let the name grow to fill remaining space */
 	flex: 1 1 auto;
-	min-width: 0; /* allow text to shrink/ellipsis within flex container */
+	min-width: 0;
     padding-left: 10px;
     padding-right: 10px;
 }
@@ -35,22 +34,18 @@
     margin-bottom: 5px;
 }
 
-/* Collapsible behavior */
 .items-list > .items-header.is-collapsible {
 	cursor: pointer;
-	position: relative; /* allow ::before to be absolutely positioned */
+	position: relative;
 }
 .items-list > .items-header.is-collapsible::before {
 	font-size: 10px;
 	opacity: 0.7;
-	position: absolute; /* keep out of CSS grid flow so it doesn't create a new column/row */
+	position: absolute;
 	left: 6px;
 	top: 50%;
 	transform: translateY(-50%);
 }
-/* When a list is collapsed, hide all immediate children except the header.
-   This covers normal rows (li.item) and grouped sublists (li.items-sublist),
-   ensuring the Armor header collapses all its sub-lists. */
 .items-list.collapsed > li:not(.items-header) {
 	display: none;
 }
@@ -78,18 +73,16 @@
 	opacity: 0.9;
 }
 
-/* Weapons: enforce even columns with CSS grid */
 .items-list.items-weapons .items-header,
 .items-list.items-weapons .item {
 	display: grid;
-	grid-template-columns: 2fr 1fr 1fr 1fr auto; /* Name | Roll | Mod | Range | Controls */
+	grid-template-columns: 2fr 1fr 1fr 1fr auto;
 	align-items: center;
 	column-gap: 8px;
 }
 
 .items-list.items-weapons .item .item-name,
 .items-list.items-weapons .items-header .item-name {
-	/* allow name to use the first grid column */
 	min-width: 0;
 }
 
@@ -106,8 +99,6 @@
 	justify-self: end;
 	padding-right: 1.25em;
 }
-
-/* Empty state row inside lists */
 .items-list .item.empty .item-name {
 	opacity: 0.7;
 	font-style: italic;
@@ -119,16 +110,12 @@
 	align-items: flex-start;
 	gap: 12px;
 }
-
-/* Ensure item sheets use full-width content and are not placed in a grid */
 &.item {
 	&.application .window-content,
 	&.window-app .window-content {
-		display: block; /* revert any grid from actor layout */
+		display: block;
 	}
 }
-
-/* Image + fields layout inside item header */
 .item-sheet-header .profile-img {
 	flex: 0 0 auto;
 	width: 64px;
@@ -139,7 +126,7 @@
 
 .item-sheet-header .header-fields {
 	flex: 1 1 auto;
-	min-width: 0; /* allow input to shrink as needed */
+	min-width: 0;
 }
 
 .item-sheet-header .document-name {
@@ -150,31 +137,20 @@
 	width: 100%;
 	box-sizing: border-box;
 }
-
-/* Gear tab layout: make the List sub-tab scrollable */
 &.actor {
-	/* Allow Gear tab to use the default overflow from the base tab styling */
 	&.application .window-content > .tab.gear,
 	&.window-app .window-content > .tab.gear {
-		min-height: 0; /* ensure children can compute height properly */
-		/* Prevent the outer tab from becoming the scroll container; we want the
-		   inner active sub-tab (List/Paper Doll) to own the scrollbar. */
+		min-height: 0;
 		overflow: hidden;
 	}
-
-	/* Only when the Gear tab is active, use flex to reserve space for sub-tabs + content */
 	&.application .window-content > .tab.gear.active,
 	&.window-app .window-content > .tab.gear.active {
 		display: flex;
 		flex-direction: column;
 	}
-
-	/* Sub-tabs header stays fixed at the top of Gear tab */
 	.tab.gear .tabs.sub-tabs {
 		flex: 0 0 auto;
 	}
-
-	/* Make the inner active sub-tab the scroll container */
 	.tab.gear .tab.active {
 		flex: 1 1 auto;
 		min-height: 0;

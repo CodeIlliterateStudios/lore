@@ -1,7 +1,7 @@
 &.application .window-content > .sheet-header,
 &.window-app .window-content > .sheet-header {
     grid-row: 1;
-    align-self: start; /* Don't stretch to row height */
+    align-self: start;
 }
 
 .name-input {
@@ -61,7 +61,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px; /* replaces inline margin-bottom on labels */
+    gap: 2px;
 }
 
 .middle-header .wounds-content label,
@@ -70,12 +70,9 @@
     position: relative;
     display: inline-block;
 }
-
-/* Custom circle checkboxes: show hollow when unchecked, filled when checked */
 .middle-header .wounds-content label,
 .middle-header .fatigue-content label,
 .middle-header .condition-item label {
-    /* Make the label the click target area */
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -86,11 +83,11 @@
 
 .middle-header input[type="checkbox"] {
     position: absolute;
-    inset: 0; /* stretch to label to keep keyboard focus and clicks */
+    inset: 0;
     width: 100%;
     height: 100%;
     margin: 0;
-    opacity: 0; /* hide native checkbox */
+    opacity: 0;
     cursor: pointer;
 }
 
@@ -101,31 +98,23 @@
     border-radius: 50%;
     box-sizing: border-box;
     border: 2px solid var(--color-tabs-border);
-    background-color: transparent; /* hollow by default */
+    background-color: transparent;
     transition: background-color 120ms ease, border-color 120ms ease, transform 60ms ease;
-    pointer-events: none; /* ensure clicks go to the label/input */
+    pointer-events: none;
 }
-
-/* Filled when checked */
 .middle-header input[type="checkbox"]:checked + .custom-circle {
     background-color: var(--lore-c-dark);
     border-color: var(--lore-c-dark);
 }
-
-/* Hover and active feedback */
 .middle-header label:hover .custom-circle {
     border-color: var(--lore-c-tan);
 }
 .middle-header input[type="checkbox"]:active + .custom-circle {
     transform: scale(0.95);
 }
-
-/* Focus visible for keyboard users */
 .middle-header input[type="checkbox"]:focus-visible + .custom-circle {
     box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25), 0 0 0 4px var(--lore-c-tan);
 }
-
-/* Disabled state if used */
 .middle-header input[type="checkbox"]:disabled + .custom-circle {
     opacity: 0.5;
     cursor: not-allowed;
@@ -143,8 +132,6 @@
     padding-right: 30px;
     padding-bottom: 10px;
 }
-
-/* Morale slider + ticks */
 .morale-slider {
     position: relative;
 }
@@ -152,15 +139,12 @@
 .morale-input {
     width: 100%;
 }
-
-/* Visual tick marks from -6 to 6 (13 steps) */
 .morale-ticks {
     position: absolute;
     left: 0;
     right: 0;
     height: 8px;
-    bottom: -6px; /* a little below the slider */
-    /* Evenly spaced ticks: one 1px line per step, tiled 12 times (12 intervals from -6 to 6) */
+    bottom: -6px;
     background-image: linear-gradient(to right, var(--color-tabs-border) 1px, transparent 1px);
     background-size: calc(100% / 12) 100%;
     background-repeat: repeat-x;
@@ -168,8 +152,6 @@
     opacity: 0.6;
     pointer-events: none;
 }
-
-/* Ensure the rightmost edge also shows a tick */
 .morale-ticks::after {
     content: "";
     position: absolute;
