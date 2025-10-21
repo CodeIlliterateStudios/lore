@@ -35,6 +35,25 @@
     margin-bottom: 5px;
 }
 
+/* Collapsible behavior */
+.items-list > .items-header.is-collapsible {
+	cursor: pointer;
+	position: relative;
+}
+.items-list > .items-header.is-collapsible::before {
+	content: '\25BC'; /* down triangle */
+	font-size: 10px;
+	opacity: 0.7;
+	margin-left: 6px;
+	margin-right: 2px;
+}
+.items-list.collapsed > .items-header.is-collapsible::before {
+	content: '\25B6'; /* right triangle */
+}
+.items-list.collapsed > li.item:not(.items-header) {
+	display: none;
+}
+
 .items-list .items-header .item-name {
 	flex: 1 1 auto;
     

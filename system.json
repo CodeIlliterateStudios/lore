@@ -17,6 +17,7 @@
     "Item": {
       "gear": {},
       "weapon": {},
+      "armor": {},
       "skill": {},
       "magick": {}
     }

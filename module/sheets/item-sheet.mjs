@@ -55,6 +55,9 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
     detailsWeapon: {
       template: 'systems/lore/templates/item/detail-parts/weapon.hbs',
     },
+    detailsArmor: {
+      template: 'systems/lore/templates/item/detail-parts/armor.hbs',
+    },
     detailsMagick: {
       template: 'systems/lore/templates/item/detail-parts/magick.hbs',
     },
@@ -80,6 +83,9 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
         break;
       case 'weapon':
         options.parts.push('detailsWeapon');
+        break;
+      case 'armor':
+        options.parts.push('detailsArmor');
         break;
       case 'magick':
         options.parts.push('detailsMagick');
@@ -119,6 +125,7 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
       case 'detailsSkill':
       case 'detailsGear':
       case 'detailsWeapon':
+      case 'detailsArmor':
       case 'detailsMagick':
         // Necessary for preserving active tab on re-render
         context.tab = context.tabs[partId];
@@ -181,6 +188,7 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
         case 'detailsSkill':
         case 'detailsGear':
         case 'detailsWeapon':
+        case 'detailsArmor':
         case 'detailsMagick':
           tab.id = 'details';
           tab.label += 'Details';

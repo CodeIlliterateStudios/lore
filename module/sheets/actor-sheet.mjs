@@ -21,6 +21,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // Bind wounds/fatigue handlers
     this.#onWoundsCheckboxChangeBound = (ev) => this.#onWoundsCheckboxChange(ev);
     this.#onFatigueCheckboxChangeBound = (ev) => this.#onFatigueCheckboxChange(ev);
+    // Track collapsed lists for this sheet instance so state persists across re-renders
+    this.#collapsedLists = new Set();
   }
 
   /** @override */
@@ -321,6 +323,46 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     for (const header of gearHeaders) {
       header.removeEventListener('contextmenu', this.#onGearHeaderContextMenuBound);
       header.addEventListener('contextmenu', this.#onGearHeaderContextMenuBound);
+    }
+
+    // Left-click to collapse/expand any items-list; right-click remains context menu
+    try {
+      const headers = this.element.querySelectorAll('.items-list > li.items-header');
+      for (const header of headers) {
+        // Visual cue
+        header.classList.add('is-collapsible');
+
+        // Stable key to persist state
+        const listKey = this.#getListKeyForHeader(header);
+        if (listKey) header.dataset.listKey = listKey;
+
+        // Apply persisted state
+        const listEl = header.closest('ol.items-list');
+        if (listEl && listKey && this.#collapsedLists.has(listKey)) {
+          listEl.classList.add('collapsed');
+        }
+
+        // Avoid stacking listeners across renders
+        if (header._loreCollapseHandler) header.removeEventListener('click', header._loreCollapseHandler);
+        const collapseHandler = (e) => {
+          // Only primary button; ignore clicks on interactive elements inside header
+          if (e.button !== 0) return;
+          if (e.target.closest('a, button, [data-action], .item-controls')) return;
+          const list = header.closest('ol.items-list');
+          if (!list) return;
+          const key = header.dataset.listKey || this.#getListKeyForHeader(header);
+          const willCollapse = !list.classList.contains('collapsed');
+          list.classList.toggle('collapsed', willCollapse);
+          if (key) {
+            if (willCollapse) this.#collapsedLists.add(key);
+            else this.#collapsedLists.delete(key);
+          }
+        };
+        header.addEventListener('click', collapseHandler);
+        header._loreCollapseHandler = collapseHandler;
+      }
+    } catch (e) {
+      console.warn('LORE | Failed to initialize collapsible lists:', e);
     }
 
     // Initialize and wire wounds checkboxes to reflect and update system.wounds.value
@@ -902,6 +944,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
   #onGearHeaderContextMenuBound;
   #onWoundsCheckboxChangeBound;
   #onFatigueCheckboxChangeBound;
+  #collapsedLists;
 
   /**
    * Handle right-click on an attribute row to open a contextual menu.
@@ -1474,6 +1517,31 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     const overrides = foundry.utils.flattenObject(this.actor.overrides);
     for (let k of Object.keys(overrides)) delete submitData[k];
     await this.document.update(submitData);
+  }
+
+  /**
+   * Compute a stable key for a list header to persist collapse state during this sheet's lifetime.
+   * Keys are shaped like `${tabId}:${sub}` where sub identifies multiple lists in a tab.
+   * @param {HTMLElement} header
+   * @returns {string}
+   * @private
+   */
+  #getListKeyForHeader(header) {
+    try {
+      const tabEl = header.closest('.tab');
+      const tabId = tabEl?.dataset?.tab || 'unknown';
+      let sub = 'list';
+      if (tabId === 'gear') {
+        sub = header.dataset?.gearType || 'gear';
+      } else if (tabId === 'skills') {
+        sub = 'skills';
+      } else if (tabId === 'magicks') {
+        sub = 'magicks';
+      }
+      return `${tabId}:${sub}`;
+    } catch (e) {
+      return 'unknown:list';
+    }
   }
 
   /**

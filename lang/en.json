@@ -103,6 +103,20 @@
           "melee": "Melee",
           "ranged": "Ranged"
         }
+      },
+      "Armor": {
+        "FIELDS": {
+          "type": {"label": "Armor Type"},
+          "value": {"label": "Armor Value"}
+        },
+        "Types": {
+          "head": "Head",
+          "body": "Body",
+          "arms": "Arms",
+          "hands": "Hands",
+          "legs": "Legs",
+          "feet": "Feet"
+        }
       }
     },
     "Effect": {
@@ -123,7 +137,8 @@
       "gear": "Gear",
       "weapon": "Weapon",
       "skill": "Skill",
-      "magick": "Magick"
+      "magick": "Magick",
+      "armor": "Armor"
     }
   }
 }

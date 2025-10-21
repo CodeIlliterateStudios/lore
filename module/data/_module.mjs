@@ -10,3 +10,4 @@ export { default as loreGear } from './item-gear.mjs';
 export { default as loreWeapon } from './item-weapon.mjs';
 export { default as loreSkill } from './item-skill.mjs';
 export { default as loreMagick } from './item-magick.mjs';
+export { default as loreArmor } from './item-armor.mjs';

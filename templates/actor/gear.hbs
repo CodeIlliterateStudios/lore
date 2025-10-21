@@ -61,14 +61,6 @@
       <li class='item flexrow items-header' data-gear-type='gear'>
         <div class='item-name'>{{localize 'TYPES.Item.gear'}}</div>
         <div class='item-formula'></div>
-        <div class='item-controls'>
-          {{#if @root.editable}}
-            <a class='item-control item-create' title='Create item' data-action='createDoc' data-document-class='Item' data-type='gear'>
-              <i class='fas fa-plus'></i>
-              {{localize 'DOCUMENT.New' type='gear'}}
-            </a>
-          {{/if}}
-        </div>
       </li>
       {{#each gear as |item id|}}
         <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>

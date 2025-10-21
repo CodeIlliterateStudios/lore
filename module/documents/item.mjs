@@ -16,6 +16,7 @@ export class loreItem extends Item {
     const defaultImages = {
       gear: "icons/svg/item-bag.svg",
       weapon: "icons/svg/sword.svg",
+      armor: "icons/svg/shield.svg",
       magick: "icons/svg/book.svg",
       skill: "systems/lore/assets/icons/D6Icon.svg",
       default: "systems/lore/assets/default-item.png"
