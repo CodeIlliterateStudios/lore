@@ -125,6 +125,21 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     // Offloading context prep to a helper function
     this._prepareItems(context);
 
+    // Prepare equipped items for paper doll
+    const equipped = {};
+    const eqArmor = this.actor.system?.equippedArmor || {};
+    const eqWeapons = this.actor.system?.equippedWeapons || {};
+    // Find the actual item for each equipped slot
+    for (const slot of ["head","body","arms","hands","legs","feet"]) {
+      const id = eqArmor[slot];
+      equipped[slot] = id ? this.actor.items.get(id) : null;
+    }
+    for (const slot of ["mainhand","offhand"]) {
+      const id = eqWeapons[slot];
+      equipped[slot] = id ? this.actor.items.get(id) : null;
+    }
+    context.equipped = equipped;
+
     return context;
   }
 
@@ -288,6 +303,28 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
    * @override
    */
   _onRender(context, options) {
+    // Equip/unequip toggle buttons
+    const equipToggles = this.element.querySelectorAll('.equip-toggle');
+    for (const btn of equipToggles) {
+      btn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        const itemId = btn.dataset.itemId;
+        const equipType = btn.dataset.equipType; // 'weapon' or 'armor'
+        const slot = btn.dataset.slot;
+        if (!itemId || !equipType || !slot) return;
+        let update = {};
+        if (equipType === 'weapon') {
+          // Toggle mainhand/offhand
+          const current = this.actor.system.equippedWeapons?.[slot];
+          update[`system.equippedWeapons.${slot}`] = current === itemId ? '' : itemId;
+        } else if (equipType === 'armor') {
+          // Toggle armor slot
+          const current = this.actor.system.equippedArmor?.[slot];
+          update[`system.equippedArmor.${slot}`] = current === itemId ? '' : itemId;
+        }
+        await this.actor.update(update);
+      });
+    }
     // (Collapsing/scroll state logic removed)
     // Ensure drag/drop is active so dropping Items/Effects onto the sheet works
     if (Array.isArray(this.#dragDrop)) {

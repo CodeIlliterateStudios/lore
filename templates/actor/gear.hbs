@@ -20,6 +20,13 @@
       {{#each weapons as |item id|}}
         <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
           <div class='item-name'>
+            <button class="equip-toggle" data-equip-type="weapon" data-item-id="{{item.id}}" data-slot="{{#if (eq item.system.weaponType 'ranged')}}mainhand{{else}}mainhand{{/if}}" title="Toggle Equip">
+              {{#if (eq ../equipped.mainhand.id item.id)}}
+                <i class="fas fa-check-circle"></i>
+              {{else}}
+                <i class="far fa-circle"></i>
+              {{/if}}
+            </button>
             <div class='item-image'>
               <a class='rollable' data-roll-type='item' data-action='roll'>
                 <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
@@ -80,6 +87,13 @@
           {{#each armorByType.head as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
               <div class='item-name'>
+                <button class="equip-toggle" data-equip-type="armor" data-item-id="{{item.id}}" data-slot="head" title="Toggle Equip">
+                  {{#if (eq ../equipped.head.id item.id)}}
+                    <i class="fas fa-check-circle"></i>
+                  {{else}}
+                    <i class="far fa-circle"></i>
+                  {{/if}}
+                </button>
                 <div class='item-image'>
                   <a class='item-control'>
                     <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
@@ -105,6 +119,13 @@
           {{#each armorByType.body as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
               <div class='item-name'>
+                <button class="equip-toggle" data-equip-type="armor" data-item-id="{{item.id}}" data-slot="body" title="Toggle Equip">
+                  {{#if (eq ../equipped.body.id item.id)}}
+                    <i class="fas fa-check-circle"></i>
+                  {{else}}
+                    <i class="far fa-circle"></i>
+                  {{/if}}
+                </button>
                 <div class='item-image'>
                   <a class='item-control'>
                     <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
@@ -130,6 +151,13 @@
           {{#each armorByType.arms as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
               <div class='item-name'>
+                <button class="equip-toggle" data-equip-type="armor" data-item-id="{{item.id}}" data-slot="arms" title="Toggle Equip">
+                  {{#if (eq ../equipped.arms.id item.id)}}
+                    <i class="fas fa-check-circle"></i>
+                  {{else}}
+                    <i class="far fa-circle"></i>
+                  {{/if}}
+                </button>
                 <div class='item-image'>
                   <a class='item-control'>
                     <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
@@ -155,6 +183,13 @@
           {{#each armorByType.hands as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
               <div class='item-name'>
+                <button class="equip-toggle" data-equip-type="armor" data-item-id="{{item.id}}" data-slot="hands" title="Toggle Equip">
+                  {{#if (eq ../equipped.hands.id item.id)}}
+                    <i class="fas fa-check-circle"></i>
+                  {{else}}
+                    <i class="far fa-circle"></i>
+                  {{/if}}
+                </button>
                 <div class='item-image'>
                   <a class='item-control'>
                     <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
@@ -180,6 +215,13 @@
           {{#each armorByType.legs as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
               <div class='item-name'>
+                <button class="equip-toggle" data-equip-type="armor" data-item-id="{{item.id}}" data-slot="legs" title="Toggle Equip">
+                  {{#if (eq ../equipped.legs.id item.id)}}
+                    <i class="fas fa-check-circle"></i>
+                  {{else}}
+                    <i class="far fa-circle"></i>
+                  {{/if}}
+                </button>
                 <div class='item-image'>
                   <a class='item-control'>
                     <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
@@ -205,6 +247,13 @@
           {{#each armorByType.feet as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
               <div class='item-name'>
+                <button class="equip-toggle" data-equip-type="armor" data-item-id="{{item.id}}" data-slot="feet" title="Toggle Equip">
+                  {{#if (eq ../equipped.feet.id item.id)}}
+                    <i class="fas fa-check-circle"></i>
+                  {{else}}
+                    <i class="far fa-circle"></i>
+                  {{/if}}
+                </button>
                 <div class='item-image'>
                   <a class='item-control'>
                     <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
@@ -244,8 +293,63 @@
 
     {{!-- PAPER DOLL SUB-TAB --}}
     <section class='sub-tab paper-doll' data-group='gear-sub' data-tab='paper-doll'>
-      <div class='paper-doll-placeholder' style='opacity:0.7; text-align:center; padding: 1rem;'>
-        Paper Doll coming soon
+      <div class="paper-doll-absolute-layout">
+        <div class="slot slot-head">
+          {{#if equipped.head}}
+            <img src="{{equipped.head.img}}" alt="{{equipped.head.name}}" width="50" height="50" title="{{equipped.head.name}}" />
+          {{else}}
+            <img src="/icons/svg/shield.svg" alt="Head" width="50" height="50" />
+          {{/if}}
+        </div>
+        <div class="slot slot-body">
+          {{#if equipped.body}}
+            <img src="{{equipped.body.img}}" alt="{{equipped.body.name}}" width="50" height="50" title="{{equipped.body.name}}" />
+          {{else}}
+            <img src="/icons/svg/shield.svg" alt="Body" width="50" height="50" />
+          {{/if}}
+        </div>
+        <div class="slot slot-arms">
+          {{#if equipped.arms}}
+            <img src="{{equipped.arms.img}}" alt="{{equipped.arms.name}}" width="50" height="50" title="{{equipped.arms.name}}" />
+          {{else}}
+            <img src="/icons/svg/shield.svg" alt="Arms" width="50" height="50" />
+          {{/if}}
+        </div>
+        <div class="slot slot-hands">
+          {{#if equipped.hands}}
+            <img src="{{equipped.hands.img}}" alt="{{equipped.hands.name}}" width="50" height="50" title="{{equipped.hands.name}}" />
+          {{else}}
+            <img src="/icons/svg/shield.svg" alt="Hands" width="50" height="50" />
+          {{/if}}
+        </div>
+        <div class="slot slot-legs">
+          {{#if equipped.legs}}
+            <img src="{{equipped.legs.img}}" alt="{{equipped.legs.name}}" width="50" height="50" title="{{equipped.legs.name}}" />
+          {{else}}
+            <img src="/icons/svg/shield.svg" alt="Legs" width="50" height="50" />
+          {{/if}}
+        </div>
+        <div class="slot slot-feet">
+          {{#if equipped.feet}}
+            <img src="{{equipped.feet.img}}" alt="{{equipped.feet.name}}" width="50" height="50" title="{{equipped.feet.name}}" />
+          {{else}}
+            <img src="/icons/svg/shield.svg" alt="Feet" width="50" height="50" />
+          {{/if}}
+        </div>
+        <div class="slot slot-mainhand">
+          {{#if equipped.mainhand}}
+            <img src="{{equipped.mainhand.img}}" alt="{{equipped.mainhand.name}}" width="50" height="50" title="{{equipped.mainhand.name}}" />
+          {{else}}
+            <img src="/icons/svg/shield.svg" alt="Mainhand" width="50" height="50" />
+          {{/if}}
+        </div>
+        <div class="slot slot-offhand">
+          {{#if equipped.offhand}}
+            <img src="{{equipped.offhand.img}}" alt="{{equipped.offhand.name}}" width="50" height="50" title="{{equipped.offhand.name}}" />
+          {{else}}
+            <img src="/icons/svg/shield.svg" alt="Offhand" width="50" height="50" />
+          {{/if}}
+        </div>
       </div>
     </section>
   </div>
