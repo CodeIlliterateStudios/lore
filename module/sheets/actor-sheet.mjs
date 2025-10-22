@@ -1,31 +1,30 @@
 
 const { api, sheets } = foundry.applications;
 import { RollPopup } from "../apps/roll-popup.mjs";
+import { LoreContextMenus } from "../helpers/context-menu.mjs";
+import { LoreTabNavigation } from "../helpers/tab-navigation.mjs";
+import { LoreWoundsFatigue } from "../helpers/wounds-fatigue.mjs";
+import { LoreMorale } from "../helpers/morale.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheetV2}
  */
-export class loreActorSheet extends api.HandlebarsApplicationMixin(
-  sheets.ActorSheetV2
-) {
+export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorSheetV2) {
+  // Used to close weapon equip context menu
+  _closeWeaponEquipContextMenu = null;
   constructor(options = {}) {
     super(options);
-  this.#dragDrop = this.#createDragDropHandlers();
-  // Bind handlers once to keep stable references across renders
-  this.#onAttributeContextMenuBound = (ev) => this.#onAttributeContextMenu(ev);
-  this.#onItemContextMenuBound = (ev) => this.#onItemContextMenu(ev);
-  this.#onSkillsHeaderContextMenuBound = (ev) => this.#onSkillsHeaderContextMenu(ev);
-  this.#onGearHeaderContextMenuBound = (ev) => this.#onGearHeaderContextMenu(ev);
-  // Bind wounds/fatigue handlers
-  this.#onWoundsCheckboxChangeBound = (ev) => this.#onWoundsCheckboxChange(ev);
-  this.#onFatigueCheckboxChangeBound = (ev) => this.#onFatigueCheckboxChange(ev);
+    this._dragDrop = this.#createDragDropHandlers();
+    // Context menu controller for readability and reuse
+    this._contextMenus = new LoreContextMenus(this);
+    // Wounds & Fatigue controller
+    this._woundsFatigue = new LoreWoundsFatigue(this);
+    // Tab navigation controller
+    this._tabNavigation = new LoreTabNavigation(this);
+    // Morale slider controller
+    this._morale = new LoreMorale(this);
   }
-  
-
-
-
-
 
   /** @override */
   static DEFAULT_OPTIONS = {
@@ -58,7 +57,6 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       template: 'systems/lore/templates/actor/header.hbs',
     },
     tabs: {
-      // Use local template to ensure availability
       template: 'systems/lore/templates/tab-navigation.hbs',
     },
     skills: {
@@ -129,6 +127,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     const equipped = {};
     const eqArmor = this.actor.system?.equippedArmor || {};
     const eqWeapons = this.actor.system?.equippedWeapons || {};
+
     // Find the actual item for each equipped slot
     for (const slot of ["head","body","arms","hands","legs","feet"]) {
       const id = eqArmor[slot];
@@ -277,19 +276,20 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
     }
 
     // Sort then assign
-  context.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-  context.weapons = weapons.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-  context.armor = armor.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-  // Group armor by armorType for the gear tab
-  const armorByType = { head: [], body: [], arms: [], hands: [], legs: [], feet: [] };
-  for (const it of context.armor) {
-    const t = it?.system?.armorType;
-    if (t && armorByType[t]) armorByType[t].push(it);
-  }
-  for (const k of Object.keys(armorByType)) {
-    armorByType[k] = armorByType[k].sort((a, b) => (a.sort || 0) - (b.sort || 0));
-  }
-  context.armorByType = armorByType;
+    context.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.weapons = weapons.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.armor = armor.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    
+    // Group armor by armorType for the gear tab
+    const armorByType = { head: [], body: [], arms: [], hands: [], legs: [], feet: [] };
+    for (const it of context.armor) {
+      const t = it?.system?.armorType;
+      if (t && armorByType[t]) armorByType[t].push(it);
+    }
+    for (const k of Object.keys(armorByType)) {
+      armorByType[k] = armorByType[k].sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    }
+    context.armorByType = armorByType;
     context.skills = skills.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.magicks = magicks.sort((a, b) => (a.sort || 0) - (b.sort || 0));
   }
@@ -303,209 +303,52 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
    * @override
    */
   _onRender(context, options) {
-    // Equip/unequip toggle buttons
-    const equipToggles = this.element.querySelectorAll('.equip-toggle');
-    for (const btn of equipToggles) {
-      btn.addEventListener('click', async (event) => {
-        event.preventDefault();
-        const itemId = btn.dataset.itemId;
-        const equipType = btn.dataset.equipType; // 'weapon' or 'armor'
-        const slot = btn.dataset.slot;
-        if (!itemId || !equipType || !slot) return;
-        let update = {};
-        if (equipType === 'weapon') {
-          // Toggle mainhand/offhand
-          const current = this.actor.system.equippedWeapons?.[slot];
-          update[`system.equippedWeapons.${slot}`] = current === itemId ? '' : itemId;
-        } else if (equipType === 'armor') {
-          // Toggle armor slot
-          const current = this.actor.system.equippedArmor?.[slot];
-          update[`system.equippedArmor.${slot}`] = current === itemId ? '' : itemId;
-        }
-        await this.actor.update(update);
-      });
-    }
-    // (Collapsing/scroll state logic removed)
     // Ensure drag/drop is active so dropping Items/Effects onto the sheet works
-    if (Array.isArray(this.#dragDrop)) {
+    if (Array.isArray(this._dragDrop)) {
       try {
-        this.#dragDrop.forEach((d) => d.bind?.(this.element));
+        this._dragDrop.forEach((d) => d.bind?.(this.element));
       } catch (e) {
         console.warn('LORE | Failed to bind drag/drop handlers on actor sheet:', e);
       }
     }
 
-    // Close any existing context menu on re-render
-    this.#closeContextMenu();
+    // Close any existing context menu on re-render and re-bind
+    this._contextMenus.close();
 
-    const moraleInput = this.element.querySelector('.morale-input');
-    const moraleValueEl = this.element.querySelector('.morale-value');
-    if (moraleInput && moraleValueEl) {
-      moraleValueEl.textContent = String(this.actor.system.morale ?? 0);
-      moraleInput.addEventListener('input', (e) => {
-        moraleValueEl.textContent = moraleInput.value;
+    // Initialize and wire morale slider/value
+    this._morale.attach(this.element);
+
+    // Delegate all context menu bindings to the controller
+    this._contextMenus.attach(this.element);
+    // Initialize and wire wounds & fatigue checkboxes
+    this._woundsFatigue.attach(this.element);
+
+    // Add click handler for weapon skill rolls in gear list
+    const weaponSkillLinks = this.element.querySelectorAll('.weapon-skill-roll');
+    for (const link of weaponSkillLinks) {
+      link.addEventListener('click', async (event) => {
+        event.preventDefault();
+        const itemId = link.dataset.itemId;
+        const weaponType = link.dataset.weaponType;
+        // Find the correct skill name
+        let skillName = weaponType === 'ranged' ? 'shooting' : 'fighting';
+        // Try to find the skill item on the actor
+        let skillItem = this.actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === skillName);
+        // If not found, fall back to untrained
+        if (!skillItem) {
+          skillName = 'untrained';
+          skillItem = this.actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === 'untrained');
+        }
+        if (skillItem && skillItem.roll) {
+          // Use the same roll popup as other rolls
+          await skillItem.roll();
+        } else {
+          ui.notifications?.warn(`No skill found for ${skillName}`);
+        }
       });
-      moraleInput.addEventListener('change', async (e) => {
-        const newMorale = Number(moraleInput.value) || 0;
-        await this.actor.update({ 'system.morale': newMorale });
-      });
     }
-
-    // Context menu: right-click on attribute rows
-    const attrRows = this.element.querySelectorAll('.attributes .attribute');
-    for (const row of attrRows) {
-      // Avoid stacking listeners by ensuring only one handler per element
-      row.removeEventListener('contextmenu', this.#onAttributeContextMenuBound);
-      row.addEventListener('contextmenu', this.#onAttributeContextMenuBound);
-    }
-
-    // Context menu: right-click on item rows
-    const itemRows = this.element.querySelectorAll('.items-list li.item[data-document-class="Item"]');
-    for (const row of itemRows) {
-      row.removeEventListener('contextmenu', this.#onItemContextMenuBound);
-      row.addEventListener('contextmenu', this.#onItemContextMenuBound);
-    }
-
-    // Context menu: right-click on the Skills header to create new Skill
-    const skillsHeader = this.element.querySelector('.tab.skills .items-header');
-    if (skillsHeader) {
-      skillsHeader.removeEventListener('contextmenu', this.#onSkillsHeaderContextMenuBound);
-      skillsHeader.addEventListener('contextmenu', this.#onSkillsHeaderContextMenuBound);
-    }
-
-    // Context menu: right-click on Gear tab headers to create new items (collapsing logic removed)
-    // Attach to both main headers and sub-headers (for armor types)
-    // Only attach to .items-header if not the main armor header, and always to .items-sub-header
-    const gearHeaders = this.element.querySelectorAll('.tab.gear .items-header, .tab.gear .items-sub-header');
-    for (const header of gearHeaders) {
-      // Remove from main armor header only
-      if (header.classList.contains('items-header') && header.dataset.gearType === 'armor') continue;
-      header.removeEventListener('contextmenu', this.#onGearHeaderContextMenuBound);
-      header.addEventListener('contextmenu', this.#onGearHeaderContextMenuBound);
-    }
-
-    // (Collapsing click logic removed)
-
-    // (Scroll position save logic removed)
-
-    // Initialize and wire wounds checkboxes to reflect and update system.wounds.value
-    const woundsValue = Number(this.actor.system?.wounds?.value ?? 0);
-    const woundsMax = Number(this.actor.system?.wounds?.max ?? 3);
-    const woundBoxes = this.element.querySelectorAll('input.wounds-checkbox');
-    for (const cb of woundBoxes) {
-      const idx = Math.max(1, Math.min(Number(cb.value) || 0, woundsMax));
-      // Reflect current state
-      cb.checked = idx <= woundsValue;
-      // Avoid form auto-submit for these synthetic controls by stopping bubbling
-      cb.removeEventListener('change', this.#onWoundsCheckboxChangeBound);
-      cb.addEventListener('change', this.#onWoundsCheckboxChangeBound);
-    }
-
-    // Initialize and wire fatigue checkboxes to reflect and update system.fatigue.value
-    const fatigueValue = Number(this.actor.system?.fatigue?.value ?? 0);
-    const fatigueMax = Number(this.actor.system?.fatigue?.max ?? 3);
-    const fatigueBoxes = this.element.querySelectorAll('input.fatigue-checkbox');
-    for (const cb of fatigueBoxes) {
-      const idx = Math.max(1, Math.min(Number(cb.value) || 0, fatigueMax));
-      cb.checked = idx <= fatigueValue;
-      cb.removeEventListener('change', this.#onFatigueCheckboxChangeBound);
-      cb.addEventListener('change', this.#onFatigueCheckboxChangeBound);
-    }
-
-      // Add click handler for weapon skill rolls in gear list
-      const weaponSkillLinks = this.element.querySelectorAll('.weapon-skill-roll');
-      for (const link of weaponSkillLinks) {
-        link.addEventListener('click', async (event) => {
-          event.preventDefault();
-          const itemId = link.dataset.itemId;
-          const weaponType = link.dataset.weaponType;
-          // Find the correct skill name
-          let skillName = weaponType === 'ranged' ? 'shooting' : 'fighting';
-          // Try to find the skill item on the actor
-          let skillItem = this.actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === skillName);
-          // If not found, fall back to untrained
-          if (!skillItem) {
-            skillName = 'untrained';
-            skillItem = this.actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === 'untrained');
-          }
-          if (skillItem && skillItem.roll) {
-            // Use the same roll popup as other rolls
-            await skillItem.roll();
-          } else {
-            ui.notifications?.warn(`No skill found for ${skillName}`);
-          }
-        });
-      }
-    // Handle nested sub-tabs inside the Gear tab (List / Paper Doll)
-    try {
-      const subNav = this.element.querySelector('nav.tabs.sub-tabs[data-group="gear-sub"]');
-      if (subNav) {
-        const group = 'gear-sub';
-        // Remember selected sub-tab during this sheet's lifetime
-        const current = this.tabGroups?.[group] ?? 'list';
-  const sections = Array.from(this.element.querySelectorAll('.sub-tab[data-group="gear-sub"]'));
-        const links = Array.from(subNav.querySelectorAll('a.item[data-tab]'));
-
-        const activate = (tabId) => {
-          // Update stored selection
-          if (this.tabGroups) this.tabGroups[group] = tabId;
-          // Toggle link active state
-          for (const a of links) a.classList.toggle('active', a.dataset.tab === tabId);
-          // Toggle section visibility
-          for (const s of sections) s.classList.toggle('active', s.dataset.tab === tabId);
-        };
-
-        // Delegate click handling; avoid stacking by removing prior handler if present
-        const handler = (e) => {
-          const a = e.target.closest('a.item[data-tab]');
-          if (!a) return;
-          e.preventDefault();
-          activate(a.dataset.tab);
-        };
-        // Remove previous handler if we stored one on the element
-        if (subNav._loreGearSubHandler) subNav.removeEventListener('click', subNav._loreGearSubHandler);
-        subNav.addEventListener('click', handler);
-        subNav._loreGearSubHandler = handler;
-
-        // Ensure correct initial state each render
-        activate(current);
-      }
-    } catch (e) {
-      console.warn('LORE | Failed to initialize Gear sub-tabs:', e);
-    }
-
-    // Initialize PRIMARY tabs (skills, gear, magicks, effects, biography)
-    try {
-      const primaryGroup = 'primary';
-      const nav = this.element.querySelector(`nav.tabs[data-group="${primaryGroup}"]`);
-      if (nav) {
-        const sections = Array.from(this.element.querySelectorAll(`.tab[data-group="${primaryGroup}"]`));
-        const links = Array.from(nav.querySelectorAll('a.item[data-tab]'));
-
-        const activate = (tabId) => {
-          if (this.tabGroups) this.tabGroups[primaryGroup] = tabId;
-          for (const a of links) a.classList.toggle('active', a.dataset.tab === tabId);
-          for (const s of sections) s.classList.toggle('active', s.dataset.tab === tabId);
-        };
-
-        // Delegate click handling; avoid stacking listeners across renders
-        const handler = (e) => {
-          const a = e.target.closest('a.item[data-tab]');
-          if (!a) return;
-          e.preventDefault();
-          activate(a.dataset.tab);
-        };
-        if (nav._lorePrimaryHandler) nav.removeEventListener('click', nav._lorePrimaryHandler);
-        nav.addEventListener('click', handler);
-        nav._lorePrimaryHandler = handler;
-
-        // Apply initial activation on each render to keep state in sync
-        const current = this.tabGroups?.[primaryGroup] ?? sections[0]?.dataset?.tab ?? 'biography';
-        activate(current);
-      }
-    } catch (e) {
-      console.warn('LORE | Failed to initialize primary tabs:', e);
-    }
+    // Attach tab navigation (primary + gear sub-tabs)
+    this._tabNavigation.attach(this.element);
   }
 
   /**************
@@ -684,7 +527,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
       let loreTotal = 0;
       if (qualifies) {
         try {
-          const loreRoll = new Roll('1d6');
+          const loreRoll = new Roll('1d6x');
           await loreRoll.evaluate();
           const loreHtml = await loreRoll.render();
           content += `\n<div class="lore-die">LORE Die${loreHtml}</div>`;
@@ -1014,441 +857,6 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
   #dragDrop;
 
   // Active context menu DOM element and cleanup handlers
-  #contextMenuEl = null;
-  #outsidePointerHandler = null;
-  #escKeyHandler = null;
-  #wheelHandler = null;
-  #onAttributeContextMenuBound;
-  #onItemContextMenuBound;
-  #onSkillsHeaderContextMenuBound;
-  #onGearHeaderContextMenuBound;
-  #onWoundsCheckboxChangeBound;
-  #onFatigueCheckboxChangeBound;
-
-
-  /**
-   * Handle right-click on an attribute row to open a contextual menu.
-   * @param {MouseEvent} event
-   * @private
-   */
-  async #onAttributeContextMenu(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-    // Ensure any previous menu is closed
-    this.#closeContextMenu();
-
-    const row = event.target.closest('.attribute');
-    if (!row) return;
-    const attributeKey = row.dataset.attribute;
-
-    // Define menu items; wire your real actions via data-action
-    const items = [
-      { action: 'roll', label: game.i18n?.localize?.('Roll') ?? 'Roll' },
-    ];
-    if (this.isEditable) items.push({ action: 'edit', label: game.i18n?.localize?.('Edit') ?? 'Edit' });
-
-    // Render the menu template using namespaced API (V13+)
-    let html = '';
-    try {
-      html = await foundry.applications.handlebars.renderTemplate('systems/lore/templates/context-menu.hbs', { items });
-    } catch (err) {
-      console.error('Failed to render context menu template:', err);
-      return;
-    }
-
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = html.trim();
-    const menu = wrapper.firstElementChild;
-    if (!menu) return;
-
-    // Attach behavior for clicks on menu items
-    menu.addEventListener('click', (e) => {
-      const itemEl = e.target.closest('.lore-context-menu-item');
-      if (!itemEl) return;
-      const action = itemEl.dataset.action;
-      try {
-        this.#handleAttributeMenuAction(action, attributeKey, row);
-      } finally {
-        // Do not force-close here for actions that replace the menu content (like edit)
-        if (action !== 'edit') this.#closeContextMenu();
-      }
-    });
-
-    // Add to DOM first to measure
-    document.body.appendChild(menu);
-    // Position near cursor, clamped to viewport
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const rect = menu.getBoundingClientRect();
-    let x = event.clientX ?? 0;
-    let y = event.clientY ?? 0;
-    if (x + rect.width > vw) x = Math.max(4, vw - rect.width - 4);
-    if (y + rect.height > vh) y = Math.max(4, vh - rect.height - 4);
-    menu.style.left = `${x}px`;
-    menu.style.top = `${y}px`;
-
-    // Store reference and set up dismissal behaviors
-    this.#contextMenuEl = menu;
-    this.#outsidePointerHandler = (e) => {
-      if (!this.#contextMenuEl) return;
-      if (!this.#contextMenuEl.contains(e.target)) this.#closeContextMenu();
-    };
-    this.#escKeyHandler = (e) => {
-      if (e.key === 'Escape') this.#closeContextMenu();
-    };
-    this.#wheelHandler = () => this.#closeContextMenu();
-
-    // Use capture to get the event before other handlers potentially stop it
-    document.addEventListener('pointerdown', this.#outsidePointerHandler, { capture: true });
-    document.addEventListener('keydown', this.#escKeyHandler, { capture: true });
-    // Close on scroll/wheel to mimic native context menus
-    document.addEventListener('wheel', this.#wheelHandler, { passive: true, capture: true });
-  }
-
-  /**
-   * Handle right-click on an item row to open a contextual menu.
-   * @param {MouseEvent} event
-   * @private
-   */
-  async #onItemContextMenu(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-    // Ensure any previous menu is closed
-    this.#closeContextMenu();
-
-    const row = event.target.closest('li.item[data-document-class="Item"]');
-    if (!row) return;
-    const doc = this._getEmbeddedDocument(row);
-    if (!doc) return;
-
-    // Build menu items based on availability
-    const items = [];
-    
-    items.push({ action: 'view', label: game.i18n?.localize?.('Edit') ?? 'Edit' });
-    if (this.isEditable) items.push({ action: 'delete', label: game.i18n?.localize?.('Delete') ?? 'Delete' });
-
-    // Render the menu template
-    let html = '';
-    try {
-      html = await foundry.applications.handlebars.renderTemplate('systems/lore/templates/context-menu.hbs', { items });
-    } catch (err) {
-      console.error('Failed to render context menu template:', err);
-      return;
-    }
-
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = html.trim();
-    const menu = wrapper.firstElementChild;
-    if (!menu) return;
-
-    // Attach behavior for clicks on menu items
-    menu.addEventListener('click', async (e) => {
-      const itemEl = e.target.closest('.lore-context-menu-item');
-      if (!itemEl) return;
-      const action = itemEl.dataset.action;
-      try {
-        await this.#handleItemMenuAction(action, row, doc);
-      } finally {
-        this.#closeContextMenu();
-      }
-    });
-
-    // Add to DOM first to measure
-    document.body.appendChild(menu);
-    // Position near cursor, clamped to viewport
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const rect = menu.getBoundingClientRect();
-    let x = event.clientX ?? 0;
-    let y = event.clientY ?? 0;
-    if (x + rect.width > vw) x = Math.max(4, vw - rect.width - 4);
-    if (y + rect.height > vh) y = Math.max(4, vh - rect.height - 4);
-    menu.style.left = `${x}px`;
-    menu.style.top = `${y}px`;
-
-    // Store reference and set up dismissal behaviors
-    this.#contextMenuEl = menu;
-    this.#outsidePointerHandler = (e) => {
-      if (!this.#contextMenuEl) return;
-      if (!this.#contextMenuEl.contains(e.target)) this.#closeContextMenu();
-    };
-    this.#escKeyHandler = (e) => {
-      if (e.key === 'Escape') this.#closeContextMenu();
-    };
-    this.#wheelHandler = () => this.#closeContextMenu();
-
-    document.addEventListener('pointerdown', this.#outsidePointerHandler, { capture: true });
-    document.addEventListener('keydown', this.#escKeyHandler, { capture: true });
-    document.addEventListener('wheel', this.#wheelHandler, { passive: true, capture: true });
-  }
-
-  /**
-   * Handle right-click on the Skills list header to offer creation.
-   * @param {MouseEvent} event
-   * @private
-   */
-  async #onSkillsHeaderContextMenu(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-    // Ensure any previous menu is closed
-    this.#closeContextMenu();
-
-    // Only for editable sheets
-    if (!this.isEditable) return;
-
-    const items = [
-      { action: 'create-skill', label: 'New Skill' }
-    ];
-
-    // Render the menu template
-    let html = '';
-    try {
-      html = await foundry.applications.handlebars.renderTemplate('systems/lore/templates/context-menu.hbs', { items });
-    } catch (err) {
-      console.error('Failed to render context menu template:', err);
-      return;
-    }
-
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = html.trim();
-    const menu = wrapper.firstElementChild;
-    if (!menu) return;
-
-    menu.addEventListener('click', async (e) => {
-      const itemEl = e.target.closest('.lore-context-menu-item');
-      if (!itemEl) return;
-      const action = itemEl.dataset.action;
-      try {
-        if (action === 'create-skill') {
-          const docCls = getDocumentClass('Item');
-          const name = docCls.defaultName({ type: 'skill', parent: this.actor });
-          await docCls.create({ name, type: 'skill' }, { parent: this.actor });
-        }
-      } finally {
-        this.#closeContextMenu();
-      }
-    });
-
-    document.body.appendChild(menu);
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const rect = menu.getBoundingClientRect();
-    let x = event.clientX ?? 0;
-    let y = event.clientY ?? 0;
-    if (x + rect.width > vw) x = Math.max(4, vw - rect.width - 4);
-    if (y + rect.height > vh) y = Math.max(4, vh - rect.height - 4);
-    menu.style.left = `${x}px`;
-    menu.style.top = `${y}px`;
-
-    this.#contextMenuEl = menu;
-    this.#outsidePointerHandler = (e) => {
-      if (!this.#contextMenuEl) return;
-      if (!this.#contextMenuEl.contains(e.target)) this.#closeContextMenu();
-    };
-    this.#escKeyHandler = (e) => { if (e.key === 'Escape') this.#closeContextMenu(); };
-    this.#wheelHandler = () => this.#closeContextMenu();
-    document.addEventListener('pointerdown', this.#outsidePointerHandler, { capture: true });
-    document.addEventListener('keydown', this.#escKeyHandler, { capture: true });
-    document.addEventListener('wheel', this.#wheelHandler, { passive: true, capture: true });
-  }
-
-  /**
-   * Handle right-click on the Gear list headers to offer creation.
-   * Reads data-gear-type from the header to decide what to create.
-   * @param {MouseEvent} event
-   * @private
-   */
-  async #onGearHeaderContextMenu(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-    // Ensure any previous menu is closed
-    this.#closeContextMenu();
-
-    // Only for editable sheets
-    if (!this.isEditable) return;
-
-  // Support both .items-header and .items-sub-header
-  let header = event.currentTarget;
-  // If not a header, try to find the closest header or sub-header
-  if (!header.classList.contains('items-header') && !header.classList.contains('items-sub-header')) {
-    header = header.closest('.items-header, .items-sub-header');
-  }
-  const gearType = header?.dataset?.gearType ?? 'gear';
-
-    // Provide creation options; for now a single action depending on header
-    let label = 'New Item';
-    if (gearType === 'weapon') label = 'New Weapon';
-    else if (gearType === 'armor' || (typeof gearType === 'string' && gearType.startsWith('armor'))) {
-      // If creating from an armor sub-header (armor-head/body/etc.), reflect that in the label
-      if (typeof gearType === 'string' && gearType.startsWith('armor-')) {
-        const subtype = gearType.split('-')[1] || '';
-        label = `New Armor (${subtype})`;
-      } else {
-        label = 'New Armor';
-      }
-    } else label = 'New Gear';
-
-    const items = [ { action: 'create-gear', label } ];
-
-    // Render the menu template
-  let html = '';
-    try {
-      html = await foundry.applications.handlebars.renderTemplate('systems/lore/templates/context-menu.hbs', { items });
-    } catch (err) {
-      console.error('Failed to render context menu template:', err);
-      return;
-    }
-
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = html.trim();
-    const menu = wrapper.firstElementChild;
-    if (!menu) return;
-
-    menu.addEventListener('click', async (e) => {
-      const itemEl = e.target.closest('.lore-context-menu-item');
-      if (!itemEl) return;
-      const action = itemEl.dataset.action;
-      try {
-        if (action === 'create-gear') {
-          const docCls = getDocumentClass('Item');
-          let type = 'gear';
-          /** @type {Record<string, any>} */
-          const createData = {};
-          let armorType = undefined;
-          if (gearType === 'weapon') {
-            type = 'weapon';
-          } else if (gearType === 'armor' || (typeof gearType === 'string' && gearType.startsWith('armor'))) {
-            type = 'armor';
-            // If from an armor sub-header, set the armorType accordingly (head, body, arms, hands, legs, feet)
-            if (typeof gearType === 'string' && gearType.startsWith('armor-')) {
-              const subtype = gearType.split('-')[1] || '';
-              // Ensure we set only recognized subtypes; otherwise omit
-              const valid = ['head', 'body', 'arms', 'hands', 'legs', 'feet'];
-              if (valid.includes(subtype)) {
-                createData.system = { armorType: subtype };
-                armorType = subtype;
-              }
-            }
-          }
-          let name = docCls.defaultName({ type, parent: this.actor });
-          // If creating armor and armorType is set, use it as the name
-          if (type === 'armor' && armorType) {
-            name = armorType.charAt(0).toUpperCase() + armorType.slice(1);
-          }
-          await docCls.create({ type, name, ...createData }, { parent: this.actor });
-        }
-      } finally {
-        this.#closeContextMenu();
-      }
-    });
-
-    document.body.appendChild(menu);
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const rect = menu.getBoundingClientRect();
-    let x = event.clientX ?? 0;
-    let y = event.clientY ?? 0;
-    if (x + rect.width > vw) x = Math.max(4, vw - rect.width - 4);
-    if (y + rect.height > vh) y = Math.max(4, vh - rect.height - 4);
-    menu.style.left = `${x}px`;
-    menu.style.top = `${y}px`;
-
-    this.#contextMenuEl = menu;
-    this.#outsidePointerHandler = (e) => {
-      if (!this.#contextMenuEl) return;
-      if (!this.#contextMenuEl.contains(e.target)) this.#closeContextMenu();
-    };
-    this.#escKeyHandler = (e) => { if (e.key === 'Escape') this.#closeContextMenu(); };
-    this.#wheelHandler = () => this.#closeContextMenu();
-    document.addEventListener('pointerdown', this.#outsidePointerHandler, { capture: true });
-    document.addEventListener('keydown', this.#escKeyHandler, { capture: true });
-    document.addEventListener('wheel', this.#wheelHandler, { passive: true, capture: true });
-  }
-
-  /**
-   * Close and cleanup the active context menu if present.
-   * @private
-   */
-  #closeContextMenu() {
-    if (this.#contextMenuEl?.parentElement) {
-      this.#contextMenuEl.parentElement.removeChild(this.#contextMenuEl);
-    }
-    this.#contextMenuEl = null;
-    if (this.#outsidePointerHandler) {
-      document.removeEventListener('pointerdown', this.#outsidePointerHandler, { capture: true });
-      this.#outsidePointerHandler = null;
-    }
-    if (this.#escKeyHandler) {
-      document.removeEventListener('keydown', this.#escKeyHandler, { capture: true });
-      this.#escKeyHandler = null;
-    }
-    if (this.#wheelHandler) {
-      document.removeEventListener('wheel', this.#wheelHandler, { capture: true });
-      this.#wheelHandler = null;
-    }
-  }
-
-  /**
-   * Handle change on wounds checkboxes, mapping to system.wounds.value
-   * Prevents the default bubbling change so the form doesn't auto-submit separately.
-   * @param {Event} event
-   * @private
-   */
-  async #onWoundsCheckboxChange(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const input = event.currentTarget;
-    const idx = Math.max(1, Number(input.value) || 1);
-    const current = Number(this.actor.system?.wounds?.value ?? 0);
-    const max = Number(this.actor.system?.wounds?.max ?? 3);
-    let next = current;
-    if (input.checked) {
-      next = idx; // checking sets value to that index
-    } else {
-      // unchecking the highest checked index decrements by one
-      next = Math.min(current, idx - 1);
-    }
-    next = Math.max(0, Math.min(next, max));
-    if (next !== current) await this.actor.update({ 'system.wounds.value': next });
-    // Update visual state immediately (the sheet will re-render after update too)
-    const boxes = this.element.querySelectorAll('input.wounds-checkbox');
-    for (const cb of boxes) {
-      const v = Math.max(1, Number(cb.value) || 1);
-      cb.checked = v <= next;
-    }
-  }
-
-  /**
-   * Handle change on fatigue checkboxes, mapping to system.fatigue.value
-   * Prevents the default bubbling change so the form doesn't auto-submit separately.
-   * @param {Event} event
-   * @private
-   */
-  async #onFatigueCheckboxChange(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const input = event.currentTarget;
-    const idx = Math.max(1, Number(input.value) || 1);
-    const current = Number(this.actor.system?.fatigue?.value ?? 0);
-    const max = Number(this.actor.system?.fatigue?.max ?? 3);
-    let next = current;
-    if (input.checked) {
-      next = idx;
-    } else {
-      next = Math.min(current, idx - 1);
-    }
-    next = Math.max(0, Math.min(next, max));
-    if (next !== current) await this.actor.update({ 'system.fatigue.value': next });
-    const boxes = this.element.querySelectorAll('input.fatigue-checkbox');
-    for (const cb of boxes) {
-      const v = Math.max(1, Number(cb.value) || 1);
-      cb.checked = v <= next;
-    }
-  }
 
   /**
    * Handle actions triggered from the attribute context menu.
@@ -1458,139 +866,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(
    * @param {HTMLElement} rowEl
    * @private
    */
-  async #handleAttributeMenuAction(action, attributeKey, rowEl) {
-    switch (action) {
-      case 'roll': {
-        // Simulate clicking the rollable label inside the row
-        const rollTarget = rowEl.querySelector('.attribute-roll-label[data-action="roll"]');
-        if (rollTarget) {
-          // Create a synthetic click to reuse existing roll logic
-          const evt = new MouseEvent('click', { bubbles: true, cancelable: true });
-          rollTarget.dispatchEvent(evt);
-        }
-        break;
-      }
-      case 'edit': {
-        // Transform the context menu into an inline editor for the attribute rank
-        this.#openAttributeEditMenu(attributeKey);
-        break;
-      }
-      default:
-        console.debug('Unhandled attribute menu action:', action, attributeKey);
-    }
-  }
-
-  /**
-   * Replace the current context menu content with an input to edit the attribute rank.
-   * Enter saves, Escape cancels, clicking outside cancels.
-   * @param {string} attributeKey
-   * @private
-   */
-  #openAttributeEditMenu(attributeKey) {
-    const menu = this.#contextMenuEl;
-    if (!menu) return;
-
-    // Get current value from the actor system
-    const path = `system.attributes.${attributeKey}.value`;
-    const current = Number(foundry.utils.getProperty(this.actor, path) ?? 0);
-
-    // Clear existing content
-    menu.innerHTML = '';
-
-    // Build editor UI
-  const wrap = document.createElement('div');
-    wrap.style.display = 'flex';
-    wrap.style.alignItems = 'center';
-    wrap.style.gap = '6px';
-    wrap.style.padding = '4px 8px';
-
-  const label = document.createElement('div');
-  const attrNameKey = CONFIG?.LORE?.attributes?.[attributeKey];
-  const attrName = (attrNameKey && game.i18n?.localize?.(attrNameKey)) || attributeKey;
-  label.textContent = `${attrName} rank:`;
-    label.style.opacity = '0.8';
-    label.style.fontSize = '12px';
-
-    const input = document.createElement('input');
-    input.type = 'number';
-    input.value = String(current);
-    input.min = '0';
-    input.step = '1';
-    input.style.width = '64px';
-    input.style.textAlign = 'right';
-  input.setAttribute('aria-label', `Edit ${attrName} rank`);
-
-    const saveBtn = document.createElement('button');
-    saveBtn.textContent = game.i18n?.localize?.('Save') ?? 'Save';
-    saveBtn.classList.add('lore-context-menu-save');
-
-    const cancelBtn = document.createElement('button');
-    cancelBtn.textContent = game.i18n?.localize?.('Cancel') ?? 'Cancel';
-    cancelBtn.classList.add('lore-context-menu-cancel');
-
-    wrap.appendChild(label);
-    wrap.appendChild(input);
-    wrap.appendChild(saveBtn);
-    wrap.appendChild(cancelBtn);
-    menu.appendChild(wrap);
-
-    // Focus input ASAP
-    setTimeout(() => input.focus(), 0);
-
-    const save = async () => {
-      if (!this.isEditable) { this.#closeContextMenu(); return; }
-      let v = Number(input.value);
-      if (!Number.isFinite(v)) v = current;
-      v = Math.max(0, Math.round(v));
-      await this.actor.update({ [path]: v });
-      this.#closeContextMenu();
-    };
-
-    const cancel = () => this.#closeContextMenu();
-
-    saveBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); save(); });
-    cancelBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); cancel(); });
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); save(); }
-      else if (e.key === 'Escape') { e.preventDefault(); cancel(); }
-    });
-    // Prevent clicks inside the editor from closing the menu
-    menu.addEventListener('pointerdown', (e) => e.stopPropagation(), { capture: true, once: false });
-  }
-
-  /**
-   * Execute selected item context-menu action.
-   * @param {string} action
-   * @param {HTMLElement} rowEl The LI element for the item row
-   * @param {Item} doc The embedded item document
-   * @private
-   */
-  async #handleItemMenuAction(action, rowEl, doc) {
-    switch (action) {
-      case 'roll': {
-        // Prefer clicking the existing rollable anchor to reuse logic
-        const rollTarget = rowEl.querySelector('.rollable[data-action="roll"]');
-        if (rollTarget) {
-          const evt = new MouseEvent('click', { bubbles: true, cancelable: true });
-          rollTarget.dispatchEvent(evt);
-        } else if (doc?.roll) {
-          try { await doc.roll(); } catch (e) { console.error(e); }
-        }
-        break;
-      }
-      case 'view': {
-        doc?.sheet?.render(true);
-        break;
-      }
-      case 'delete': {
-        if (!this.isEditable) return;
-        await doc?.delete();
-        break;
-      }
-      default:
-        console.debug('Unhandled item menu action:', action, doc);
-    }
-  }
+  
 
   /**
    * Create drag-and-drop workflow handlers for this Application

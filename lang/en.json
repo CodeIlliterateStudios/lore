@@ -92,6 +92,7 @@
           "damageFormula": {"label": "Damage Formula"},
           "damageDice": {"label": "Damage Dice"},
           "type": {"label": "Weapon Type"},
+          "handedness": {"label": "Handedness"},
           "range": {
             "short": {"label": "Short Range"},
             "medium": {"label": "Medium Range"},

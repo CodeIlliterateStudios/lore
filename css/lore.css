@@ -13,6 +13,14 @@
   --lore-c-white: #ffffff;
   --lore-c-black: #000000;
   --lore-c-groove: #eeede0;
+  --lore-c-charcoal: #2e2e2e;
+  --lore-c-slate: #6e6e6e;
+  --lore-c-ivory: #fdfdfd;
+  --lore-c-ash: #e6e2dc;
+  --lore-c-blue: #3a6ea5;
+  --lore-c-red: #c23b22;
+  --lore-c-gold: #daa520;
+  --lore-c-green: #3cb371;
 }
 .theme-dark {
   --lore-c-dark: #c9c7b8;
@@ -289,6 +297,25 @@
   padding-bottom: 5px;
   margin-bottom: 5px;
 }
+.items-list .item .equip-toggle {
+  border: none;
+  background: none;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  color: var(--color-text, inherit);
+}
+.items-list .item .equip-toggle i {
+  font-size: 16px;
+  line-height: 1;
+}
+.items-list .item .equip-toggle:hover {
+  color: var(--color-text-dark-1, #222);
+}
 .items-list > .items-header.is-collapsible {
   cursor: pointer;
   position: relative;
@@ -340,6 +367,10 @@
 .items-list.items-weapons .item .item-range {
   padding-right: 0.5em;
   white-space: nowrap;
+}
+.items-list.items-weapons .item .item-formula,
+.items-list.items-weapons .items-header .item-formula {
+  color: var(--color-text, inherit);
 }
 .items-list.items-weapons .item .item-controls,
 .items-list.items-weapons .items-header .item-controls {
@@ -776,11 +807,13 @@
   position: relative;
   width: 100%;
   margin: 0 auto;
+  --paper-doll-slot-size: 50px;
+  --paper-doll-weapon-icon: 24px;
 }
 .paper-doll-absolute-layout .slot {
   position: absolute;
-  width: 50px;
-  height: 50px;
+  width: var(--paper-doll-slot-size, 50px);
+  height: var(--paper-doll-slot-size, 50px);
   background: var(--lore-c-faint, #c9c7b8);
   border: 2px solid var(--lore-c-tan, #444);
   border-radius: 8px;
@@ -856,8 +889,8 @@
   right: 0;
 }
 .weapon-slot img {
-  width: 20px;
-  height: 20px;
+  width: var(--paper-doll-weapon-icon, 24px);
+  height: var(--paper-doll-weapon-icon, 24px);
   background: var(--lore-c-faint, #c9c7b8);
   border: 2px solid var(--lore-c-tan, #444);
   border-radius: 5px;
@@ -881,9 +914,10 @@
   max-width: 120px;
   margin: 0.25rem auto 0.1rem auto;
 }
-.slot {
-  width: 20px;
-  height: 20px;
+.paper-doll-layout .slot {
+  --paper-doll-grid-slot-size: 28px;
+  width: var(--paper-doll-grid-slot-size, 28px);
+  height: var(--paper-doll-grid-slot-size, 28px);
   background: var(--lore-c-faint, #c9c7b8);
   border: 2px solid var(--lore-c-tan, #444);
   border-radius: 5px;
@@ -891,12 +925,12 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: var(--lore-c-black, #000);
   box-shadow: 0 1px 3px #0001;
   user-select: none;
 }
-.slot img {
+.paper-doll-layout .slot img {
   max-width: 90%;
   max-height: 90%;
   object-fit: contain;

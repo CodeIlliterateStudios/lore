@@ -11,10 +11,17 @@ export default class loreWeapon extends loreItemBase {
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = super.defineSchema();
 
+
     // weapon category/type
     schema.weaponType = new fields.StringField({
       initial: 'melee',
       choices: ['melee', 'ranged'],
+    });
+
+    // handedness: one-handed or two-handed
+    schema.handedness = new fields.StringField({
+      initial: 'one',
+      choices: ['one', 'two'],
     });
 
     // basic weapon roll parts

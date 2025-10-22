@@ -74,6 +74,39 @@ export default class loreActorBase extends foundry.abstract
 
 
 
+    /**
+     * Equip a weapon to mainhand or offhand, enforcing one/two-handed rules.
+     * @param {object} weapon - The weapon item (must have id and handedness).
+     * @param {string} slot - 'mainhand' or 'offhand'.
+     * @returns {boolean} True if equipped, false if not allowed.
+     */
+    equipWeapon(weapon, slot) {
+      if (!weapon || !weapon.id || !weapon.handedness) return false;
+      const { mainhand, offhand } = this.equippedWeapons;
+      // If equipping a two-handed weapon, must occupy both slots
+      if (weapon.handedness === 'two') {
+        if (mainhand || offhand) return false; // Both must be empty
+        this.equippedWeapons.mainhand = weapon.id;
+        this.equippedWeapons.offhand = weapon.id;
+        return true;
+      }
+      // If equipping a one-handed weapon
+      // Block only if a two-handed weapon is equipped (both slots have same non-empty ID)
+      if (mainhand && offhand && mainhand === offhand && mainhand !== '') return false;
+      if (slot === 'mainhand') {
+        // If offhand is a two-handed weapon, clear it
+        if (mainhand === offhand && mainhand !== '') this.equippedWeapons.offhand = '';
+        this.equippedWeapons.mainhand = weapon.id;
+        return true;
+      }
+      if (slot === 'offhand') {
+        // If mainhand is a two-handed weapon, clear it
+        if (mainhand === offhand && mainhand !== '') this.equippedWeapons.mainhand = '';
+        this.equippedWeapons.offhand = weapon.id;
+        return true;
+      }
+      return false;
+    }
   prepareDerivedData() {
 
     // Loop through attribute scores, and add their modifiers to our sheet output.

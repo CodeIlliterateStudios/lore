@@ -18,15 +18,12 @@
         <div class='item-range'>Range</div>
       </li>
       {{#each weapons as |item id|}}
-        <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
+        <li class='item flexrow weapon-row' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item' {{#if (eq item.system.handedness 'one')}}data-context-menu='weapon-equip'{{/if}}>
           <div class='item-name'>
-            <button class="equip-toggle" data-equip-type="weapon" data-item-id="{{item.id}}" data-slot="{{#if (eq item.system.weaponType 'ranged')}}mainhand{{else}}mainhand{{/if}}" title="Toggle Equip">
-              {{#if (eq ../equipped.mainhand.id item.id)}}
-                <i class="fas fa-check-circle"></i>
-              {{else}}
-                <i class="far fa-circle"></i>
-              {{/if}}
-            </button>
+            {{!-- Equip checkbox removed --}}
+            {{#if (eq item.system.handedness 'one')}}
+              <span class="weapon-equip-context-menu" style="display:none;"></span>
+            {{/if}}
             <div class='item-image'>
               <a class='rollable' data-roll-type='item' data-action='roll'>
                 <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
@@ -46,7 +43,7 @@
           {{#if (eq item.system.weaponType 'ranged')}}
             {{!-- Ranged uses Reflex (ref) --}}
             <div class='item-mod item-prop'>
-              {{@root.actor.system.attributes.ref.mod}}
+              + {{@root.actor.system.attributes.ref.mod}}
               ({{localize (lookup @root.config.attributeAbbreviations 'ref')}})
             </div>
             {{!-- Range bands for ranged --}}
@@ -58,7 +55,7 @@
           {{else}}
             {{!-- Melee uses Might (mig) --}}
             <div class='item-mod item-prop'>
-              {{@root.actor.system.attributes.mig.mod}}
+              + {{@root.actor.system.attributes.mig.mod}}
               ({{localize (lookup @root.config.attributeAbbreviations 'mig')}})
             </div>
             <div class='item-range item-prop'>
@@ -87,13 +84,7 @@
           {{#each armorByType.head as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
               <div class='item-name'>
-                <button class="equip-toggle" data-equip-type="armor" data-item-id="{{item.id}}" data-slot="head" title="Toggle Equip">
-                  {{#if (eq ../equipped.head.id item.id)}}
-                    <i class="fas fa-check-circle"></i>
-                  {{else}}
-                    <i class="far fa-circle"></i>
-                  {{/if}}
-                </button>
+                {{!-- Equip checkbox removed --}}
                 <div class='item-image'>
                   <a class='item-control'>
                     <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
@@ -119,13 +110,7 @@
           {{#each armorByType.body as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
               <div class='item-name'>
-                <button class="equip-toggle" data-equip-type="armor" data-item-id="{{item.id}}" data-slot="body" title="Toggle Equip">
-                  {{#if (eq ../equipped.body.id item.id)}}
-                    <i class="fas fa-check-circle"></i>
-                  {{else}}
-                    <i class="far fa-circle"></i>
-                  {{/if}}
-                </button>
+                {{!-- Equip checkbox removed --}}
                 <div class='item-image'>
                   <a class='item-control'>
                     <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
@@ -151,13 +136,7 @@
           {{#each armorByType.arms as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
               <div class='item-name'>
-                <button class="equip-toggle" data-equip-type="armor" data-item-id="{{item.id}}" data-slot="arms" title="Toggle Equip">
-                  {{#if (eq ../equipped.arms.id item.id)}}
-                    <i class="fas fa-check-circle"></i>
-                  {{else}}
-                    <i class="far fa-circle"></i>
-                  {{/if}}
-                </button>
+                {{!-- Equip checkbox removed --}}
                 <div class='item-image'>
                   <a class='item-control'>
                     <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
@@ -183,13 +162,7 @@
           {{#each armorByType.hands as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
               <div class='item-name'>
-                <button class="equip-toggle" data-equip-type="armor" data-item-id="{{item.id}}" data-slot="hands" title="Toggle Equip">
-                  {{#if (eq ../equipped.hands.id item.id)}}
-                    <i class="fas fa-check-circle"></i>
-                  {{else}}
-                    <i class="far fa-circle"></i>
-                  {{/if}}
-                </button>
+                {{!-- Equip checkbox removed --}}
                 <div class='item-image'>
                   <a class='item-control'>
                     <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
@@ -215,13 +188,7 @@
           {{#each armorByType.legs as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
               <div class='item-name'>
-                <button class="equip-toggle" data-equip-type="armor" data-item-id="{{item.id}}" data-slot="legs" title="Toggle Equip">
-                  {{#if (eq ../equipped.legs.id item.id)}}
-                    <i class="fas fa-check-circle"></i>
-                  {{else}}
-                    <i class="far fa-circle"></i>
-                  {{/if}}
-                </button>
+                {{!-- Equip checkbox removed --}}
                 <div class='item-image'>
                   <a class='item-control'>
                     <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
@@ -247,13 +214,7 @@
           {{#each armorByType.feet as |item id|}}
             <li class='item flexrow' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
               <div class='item-name'>
-                <button class="equip-toggle" data-equip-type="armor" data-item-id="{{item.id}}" data-slot="feet" title="Toggle Equip">
-                  {{#if (eq ../equipped.feet.id item.id)}}
-                    <i class="fas fa-check-circle"></i>
-                  {{else}}
-                    <i class="far fa-circle"></i>
-                  {{/if}}
-                </button>
+                {{!-- Equip checkbox removed --}}
                 <div class='item-image'>
                   <a class='item-control'>
                     <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />

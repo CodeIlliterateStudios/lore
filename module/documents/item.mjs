@@ -144,7 +144,7 @@ export class loreItem extends Item {
         const actorType = this.actor?.type ?? '';
         const qualifies = (this.type === 'skill') && (actorType === 'player' || actorType === 'professional');
         if (qualifies) {
-          const loreRoll = new Roll('1d6');
+          const loreRoll = new Roll('1d6x');
           await loreRoll.evaluate();
           const loreHtml = await loreRoll.render();
           content += `\n<div class=\"lore-die\">LORE Die${loreHtml}</div>`;

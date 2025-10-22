@@ -9,6 +9,13 @@
           <option value='ranged' {{#if (eq system.weaponType 'ranged')}}selected{{/if}}>{{localize 'LORE.Item.Weapon.Types.ranged'}}</option>
         </select>
       </div>
+      <div class='grid-span-1'>
+        <label class='resource-label'>{{localize 'LORE.Item.Weapon.FIELDS.handedness.label'}}</label>
+        <select name='system.handedness'>
+          <option value='one' {{#if (eq system.handedness 'one')}}selected{{/if}}>One Handed</option>
+          <option value='two' {{#if (eq system.handedness 'two')}}selected{{/if}}>Two Handed</option>
+        </select>
+      </div>
     </div>
     {{!-- Show range options only for ranged weapons --}}
     {{#if (eq system.weaponType 'ranged')}}
@@ -31,7 +38,7 @@
       </div>
     </div>
     {{/if}}
-    <span>{{system.formula}}</span>
+  <span class="weapon-roll-formula" style="cursor:pointer; color:#2a7ae2; text-decoration:underline;" title="Roll Damage">{{system.formula}}</span>
     <div class='grid grid-4col'>
       <div class='grid-span-1'>
         <label class='resource-label'>{{localize 'LORE.Item.Gear.FIELDS.numDice.label'}}</label>

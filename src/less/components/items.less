@@ -63,6 +63,27 @@
     margin-bottom: 5px;
 }
 
+// Equip toggle button and icon sizing for clarity
+.items-list .item .equip-toggle {
+	border: none;
+	background: none;
+	padding: 0 4px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+	color: var(--color-text, inherit);
+}
+.items-list .item .equip-toggle i {
+	font-size: 16px; // Make FA icons readable
+	line-height: 1;
+}
+.items-list .item .equip-toggle:hover {
+	color: var(--color-text-dark-1, #222);
+}
+
 .items-list > .items-header.is-collapsible {
 	cursor: pointer;
 	position: relative;
@@ -121,6 +142,12 @@
 .items-list.items-weapons .item .item-range {
 	padding-right: 0.5em;
 	white-space: nowrap;
+}
+
+// Override color for weapon roll column to match other columns
+.items-list.items-weapons .item .item-formula,
+.items-list.items-weapons .items-header .item-formula {
+	color: var(--color-text, inherit);
 }
 
 .items-list.items-weapons .item .item-controls,

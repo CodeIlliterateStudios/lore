@@ -238,6 +238,16 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
         const current = this.tabGroups?.[primaryGroup] ?? sections[0]?.dataset?.tab ?? 'description';
         activate(current);
       }
+
+      // Add click handler for weapon roll formula
+      const formula = this.element.querySelector('.weapon-roll-formula');
+      if (formula && this.item.type === 'weapon') {
+        formula.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          // Call the item roll method
+          this.item.roll();
+        });
+      }
     } catch (e) {
       console.warn('LORE | Failed to initialize primary tabs (item):', e);
     }
