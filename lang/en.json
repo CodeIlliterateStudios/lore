@@ -14,7 +14,8 @@
       "Attributes": "Attributes",
       "RollMod": "Roll Mod",
       "AdditionalMod": "Additional Mod",
-      "Name": "Name"
+      "Name": "Name",
+      "Target": "Target"
     },
     "Actor": {
       "Tabs": {

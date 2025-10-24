@@ -303,8 +303,10 @@
 
     {{!-- PAPER DOLL SUB-TAB --}}
     <section class='sub-tab paper-doll' data-group='gear-sub' data-tab='paper-doll'>
-      <div class="paper-doll-absolute-layout">
-        <div class="slot slot-head">
+      <div class="paper-doll-with-summary">
+        <div class="paper-doll-absolute-layout">
+        <div class='paper-doll-slots'>
+          <div class="slot slot-head">
           {{#if equipped.head}}
             <img src="{{equipped.head.img}}" alt="{{equipped.head.name}}" width="50" height="50" title="{{equipped.head.name}}" />
           {{else}}
@@ -360,6 +362,43 @@
             <img src="/icons/svg/shield.svg" alt="Offhand" width="50" height="50" />
           {{/if}}
         </div>
+        </div>
+      </div>
+      <div class="armor-summary">
+        <div class="armor-summary-title">{{localize 'TYPES.Item.armor'}}</div>
+        <ul class="armor-summary-list">
+          <li>
+            <span class="label">{{localize 'LORE.Item.Armor.Types.head'}}</span>
+            <span class="item-name">{{#if equipped.head}}{{equipped.head.name}}{{else}}-{{/if}}</span>
+            <span class="value">{{armorSummary.head}}</span>
+          </li>
+          <li>
+            <span class="label">{{localize 'LORE.Item.Armor.Types.body'}}</span>
+            <span class="item-name">{{#if equipped.body}}{{equipped.body.name}}{{else}}-{{/if}}</span>
+            <span class="value">{{armorSummary.body}}</span>
+          </li>
+          <li>
+            <span class="label">{{localize 'LORE.Item.Armor.Types.arms'}}</span>
+            <span class="item-name">{{#if equipped.arms}}{{equipped.arms.name}}{{else}}-{{/if}}</span>
+            <span class="value">{{armorSummary.arms}}</span>
+          </li>
+          <li>
+            <span class="label">{{localize 'LORE.Item.Armor.Types.hands'}}</span>
+            <span class="item-name">{{#if equipped.hands}}{{equipped.hands.name}}{{else}}-{{/if}}</span>
+            <span class="value">{{armorSummary.hands}}</span>
+          </li>
+          <li>
+            <span class="label">{{localize 'LORE.Item.Armor.Types.legs'}}</span>
+            <span class="item-name">{{#if equipped.legs}}{{equipped.legs.name}}{{else}}-{{/if}}</span>
+            <span class="value">{{armorSummary.legs}}</span>
+          </li>
+          <li>
+            <span class="label">{{localize 'LORE.Item.Armor.Types.feet'}}</span>
+            <span class="item-name">{{#if equipped.feet}}{{equipped.feet.name}}{{else}}-{{/if}}</span>
+            <span class="value">{{armorSummary.feet}}</span>
+          </li>
+        </ul>
+      </div>
       </div>
     </section>
   </div>

@@ -255,6 +255,34 @@ body.theme-light .application {
   width: 50px;
   background: var(--lore-c-slate);
 }
+.lore-roll-popup .roll-target {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  margin-bottom: 8px;
+  background: var(--lore-c-slate);
+  border-radius: 4px;
+}
+.lore-roll-popup .roll-target-img {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+  border-radius: 3px;
+}
+.lore-roll-popup .roll-target-text {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.lore-roll-popup .roll-target-label {
+  color: var(--color-text-light-4);
+  font-size: 0.9rem;
+}
+.lore-roll-popup .roll-target-name {
+  font-weight: 600;
+}
 .lore-roll-popup .roll-popup-actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -272,6 +300,7 @@ body.theme-light .application {
 }
 .lore {
   /* Clean Paper Doll Absolute Layout */
+  /* Ensure images fit within the slot padding and stay inside the border */
   /* Head: top center */
   /* Body: center */
   /* Arms: left edge, upper third */
@@ -283,6 +312,7 @@ body.theme-light .application {
   /* Paper Doll Weapon Slots */
   /* Paper Doll Weapon Slots - edge layout */
   /* Paper Doll Layout */
+  /* Armor summary panel */
 }
 .lore .window-app {
   font-family: 'Roboto', sans-serif;
@@ -1217,6 +1247,7 @@ body.theme-light .application {
   flex: 1 1 auto;
   min-height: 0;
   color: var(--lore-c-txt2);
+  padding: 5px;
 }
 .lore .weapon-skill-roll:hover,
 .lore .weapon-skill-roll.active {
@@ -1228,6 +1259,16 @@ body.theme-light .application {
   color: var(--lore-c-red) !important;
   text-shadow: 0 0 8px var(--lore-c-red);
 }
+.lore .paper-doll-with-summary {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  /* Separator below the equipment icons and armor values */
+  border-bottom: 1px solid var(--lore-c-bg2);
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
 .lore .paper-doll-absolute-layout {
   position: relative;
   width: 100%;
@@ -1235,53 +1276,66 @@ body.theme-light .application {
   --paper-doll-slot-size: 50px;
   --paper-doll-weapon-icon: 24px;
 }
+.lore .paper-doll-absolute-layout .paper-doll-slots {
+  /* Anchor the paper doll block in the top-left and give it a visible boundary */
+  position: relative;
+  /* 3 slots wide/tall (slot-size * 3) plus two 10px gutters used by absolute offsets */
+  width: calc(var(--paper-doll-slot-size, 50px) * 3 + 20px);
+  height: calc(var(--paper-doll-slot-size, 50px) * 3 + 20px);
+}
 .lore .paper-doll-absolute-layout .slot {
   position: absolute;
   width: var(--paper-doll-slot-size, 50px);
   height: var(--paper-doll-slot-size, 50px);
-  background: var(--lore-c-ash, #e6e2dc);
-  border: 2px solid var(--lore-c-slate, #6e6e6e);
+  background: var(--lore-c-bg1);
+  border: 2px solid var(--lore-c-bg2);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 6px #0001;
+  /* Keep the total box (including border/padding) at the defined slot size */
+  box-sizing: border-box;
+  /* Create a small inset so images don't touch the border */
+  padding: 3px;
+}
+.lore .paper-doll-absolute-layout .slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .lore .paper-doll-absolute-layout .slot-head {
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 60px;
 }
 .lore .paper-doll-absolute-layout .slot-body {
-  top: 120px;
-  left: 50%;
-  transform: translate(-50%, 0);
+  top: 60px;
+  left: 60px;
 }
 .lore .paper-doll-absolute-layout .slot-arms {
-  top: 60px;
+  top: 0;
   left: 0;
 }
 .lore .paper-doll-absolute-layout .slot-hands {
-  top: 180px;
+  top: 60px;
   left: 0;
 }
 .lore .paper-doll-absolute-layout .slot-legs {
-  top: 60px;
-  right: 0;
+  top: 0;
+  left: 120px;
 }
 .lore .paper-doll-absolute-layout .slot-feet {
-  top: 180px;
-  right: 0;
+  top: 60px;
+  left: 120px;
 }
 .lore .paper-doll-absolute-layout .slot-mainhand {
-  top: 240px;
-  left: 35%;
-  transform: translateX(-50%);
+  top: 120px;
+  left: 0;
 }
 .lore .paper-doll-absolute-layout .slot-offhand {
-  top: 240px;
-  right: 35%;
-  transform: translateX(50%);
+  top: 120px;
+  left: 120px;
 }
 .lore .paper-doll-weapons {
   position: relative;
@@ -1367,6 +1421,50 @@ body.theme-light .application {
 }
 .lore .slot-feet {
   grid-area: feet;
+}
+.lore .paper-doll-with-summary .paper-doll-absolute-layout {
+  width: auto;
+  /* shrink to content so summary can sit to the right */
+  margin: 0;
+  /* avoid auto-centering inside the flex row */
+}
+.lore .armor-summary {
+  background: var(--lore-c-bg1);
+  border-left: 1px solid var(--lore-c-bg2);
+  padding: 8px 10px;
+  min-width: 160px;
+  box-shadow: 0 2px 6px #0001;
+}
+.lore .armor-summary-title {
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  font-size: 0.95rem;
+}
+.lore .armor-summary-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  row-gap: 6px;
+  column-gap: 12px;
+}
+.lore .armor-summary-list li {
+  display: contents;
+  /* allow grid to handle layout */
+}
+.lore .armor-summary-list .label {
+  /* Use main text color so it contrasts on both dark/light themes */
+  color: var(--lore-c-txt1);
+}
+.lore .armor-summary-list .item-name {
+  /* Use main text color for visibility; slightly reduced opacity for hierarchy */
+  color: var(--lore-c-txt1);
+  opacity: 0.9;
+}
+.lore .armor-summary-list .value {
+  font-weight: 600;
+  text-align: right;
 }
 .lore .skills {
   background: var(--lore-c-bg1);

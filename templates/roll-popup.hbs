@@ -1,5 +1,16 @@
 <div class="lore-roll-popup">
-  
+  {{#if target}}
+    <div class="roll-target">
+      {{#if target.img}}
+        <img class="roll-target-img" src="{{target.img}}" alt="{{target.name}}" />
+      {{/if}}
+      <div class="roll-target-text">
+        <span class="roll-target-label">{{localize "LORE.SheetLabels.Target"}}:</span>
+        <span class="roll-target-name">{{target.name}}</span>
+      </div>
+    </div>
+  {{/if}}
+
   <p class="roll-formula">{{rollData.formula}}</p>
 
   <label for="modifier-input" class="modifier-input-label">{{localize "LORE.SheetLabels.AdditionalMod" }}:</label>

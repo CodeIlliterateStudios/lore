@@ -22,6 +22,36 @@
     background: var(--lore-c-slate);
   }
 
+  // Target header
+  .roll-target {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    margin-bottom: 8px;
+    background: var(--lore-c-slate);
+    border-radius: 4px;
+  }
+  .roll-target-img {
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 3px;
+  }
+  .roll-target-text {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .roll-target-label {
+    color: var(--color-text-light-4);
+    font-size: 0.9rem;
+  }
+  .roll-target-name {
+    font-weight: 600;
+  }
+
   // Ensure action buttons sit side-by-side regardless of any global grid utilities
   .roll-popup-actions {
     display: grid;

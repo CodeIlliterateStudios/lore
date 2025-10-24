@@ -38,24 +38,28 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
 
   /** @override */
   getData() {
+    const target = this.#getCurrentTargetInfo();
     return {
       title: this.title,
       rollType: this.rollType,
       rollData: this.rollData,
       label: this.label,
       options: this.popupOptions,
+      target,
     };
   }
 
   /** @override */
   async _prepareContext(options) {
     // Provide the same render context the template expects
+    const target = this.#getCurrentTargetInfo();
     return {
       title: this.title,
       rollType: this.rollType,
       rollData: this.rollData,
       label: this.label,
       options: this.popupOptions,
+      target,
     };
   }
   /** @override */
@@ -127,5 +131,37 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
       this._confirmResolve = resolve;
     });
     return this._confirmPromise;
+  }
+
+  /**
+   * Safely get the current user's first targeted token info (name/img/id).
+   * Returns null if there is no current target.
+   * @returns {{name:string, img:string|null, id:string|null}|null}
+   */
+  #getCurrentTargetInfo() {
+    try {
+      const user = game?.user;
+      if (!user) return null;
+      const tset = user.targets;
+      let tok = null;
+      if (tset && typeof tset.size === 'number') {
+        // Set or Collection
+        const it = tset.values?.() ?? tset[Symbol.iterator]?.();
+        tok = it ? it.next()?.value ?? null : null;
+      } else if (Array.isArray(tset)) {
+        tok = tset[0] ?? null;
+      } else if (user.target) {
+        tok = user.target;
+      }
+      if (!tok) return null;
+      const name = tok.name ?? tok.document?.name ?? tok.actor?.name ?? null;
+      const img = tok.texture?.src ?? tok.document?.texture?.src ?? tok.actor?.img ?? null;
+      const id = tok.id ?? tok.document?.id ?? null;
+      if (!name) return null;
+      return { name, img, id };
+    } catch (e) {
+      console.warn('LORE | Failed to resolve current target for RollPopup:', e);
+      return null;
+    }
   }
 }

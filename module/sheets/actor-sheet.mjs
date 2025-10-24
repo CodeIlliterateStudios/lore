@@ -123,21 +123,44 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
     // Offloading context prep to a helper function
     this._prepareItems(context);
 
-    // Prepare equipped items for paper doll
+    // Prepare equipped items for paper doll and armor summary
     const equipped = {};
     const eqArmor = this.actor.system?.equippedArmor || {};
     const eqWeapons = this.actor.system?.equippedWeapons || {};
 
-    // Find the actual item for each equipped slot
+    // Start with any explicit equipped IDs stored on the actor (if used)
     for (const slot of ["head","body","arms","hands","legs","feet"]) {
       const id = eqArmor[slot];
       equipped[slot] = id ? this.actor.items.get(id) : null;
     }
+
+    // Override with items that have the equipped flag set for their armorType
+    // If multiple are equipped for the same slot, prefer highest armorValue
+    const armorItems = this.actor.items.filter(i => i.type === 'armor' && i.system?.equipped);
+    for (const slot of ["head","body","arms","hands","legs","feet"]) {
+      const choices = armorItems.filter(i => i.system?.armorType === slot);
+      if (choices.length > 0) {
+        choices.sort((a,b) => (b.system?.armorValue ?? 0) - (a.system?.armorValue ?? 0));
+        equipped[slot] = choices[0];
+      }
+    }
+
+    // Weapons: keep existing mapping
     for (const slot of ["mainhand","offhand"]) {
       const id = eqWeapons[slot];
       equipped[slot] = id ? this.actor.items.get(id) : null;
     }
     context.equipped = equipped;
+
+    // Compute armor summary values per slot (fallback to 0 if empty)
+    context.armorSummary = {
+      head: equipped.head?.system?.armorValue ?? 0,
+      body: equipped.body?.system?.armorValue ?? 0,
+      arms: equipped.arms?.system?.armorValue ?? 0,
+      hands: equipped.hands?.system?.armorValue ?? 0,
+      legs: equipped.legs?.system?.armorValue ?? 0,
+      feet: equipped.feet?.system?.armorValue ?? 0,
+    };
 
     return context;
   }
