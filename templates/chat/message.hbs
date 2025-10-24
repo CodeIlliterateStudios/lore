@@ -1,0 +1,26 @@
+<div class="lore-chat-message">
+  <div class="lcm-header">
+    <div class="lcm-left">
+      <img class="lcm-avatar" src="{{author.img}}" alt="{{author.name}}" />
+      <div class="lcm-meta">
+        <div class="lcm-author">{{author.name}}</div>
+        {{#if rollType}}
+          <div class="lcm-rolltype">[{{rollType}}]{{#if rollName}} {{rollName}}{{/if}}</div>
+        {{/if}}
+      </div>
+    </div>
+    <div class="lcm-right">
+      {{#if tags}}
+        <div class="lcm-tags">
+          {{#each tags}}
+            <span class="lcm-tag">{{this}}</span>
+          {{/each}}
+        </div>
+      {{/if}}
+      <div class="lcm-controls"><!-- Foundry injects message controls here --></div>
+    </div>
+  </div>
+  <div class="lcm-content">
+    {{{content}}}
+  </div>
+</div>

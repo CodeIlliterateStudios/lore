@@ -3,11 +3,11 @@
 // Sidebar should not scroll; only tab/window content should scroll
 .lore-sidebar {
     width: 160px;
-    border-right: 1px solid var(--color-tabs-border);
+    border-right: 1px solid var(--lore-c-bg2);
     height: 100%;
     overflow: visible;
+    background: var(--lore-c-bg1);
 }
-
 &.actor {
     &.application .window-content,
     &.window-app .window-content {
@@ -42,29 +42,12 @@
         display: contents;
         height: 100%;
     }
-
-    
-    &.application .window-content > .tab.gear,
-    &.window-app .window-content > .tab.gear {
-        overflow: hidden;
-    }
-    .tab.gear .sub-tab.active {
-        flex: 1 1 auto;
-        min-height: 0;
-    }
-    .tab.gear .sub-tab[data-group='gear-sub'] { display: none; }
-    .tab.gear .sub-tab[data-group='gear-sub'].active { display: block; }
-    &.application .window-content > .tab.gear.active .sub-tab.active,
-    &.window-app .window-content > .tab.gear.active .sub-tab.active {
-        flex: 1 1 auto;
-        min-height: 0;
-    }
 }
 .profile-img {
     width: 160px;
     height: 160px;
     object-fit: cover;
-    border-bottom: 1px solid var(--color-tabs-border);
+    border-bottom: 1px solid var(--lore-c-bg2);
 }
 .attributes {
     padding: 10px;
@@ -72,12 +55,23 @@
 .attribute {
     margin: 0px;
     height: 30px;
+    color: var(--lore-c-txt2);
 }
 .attribute-label {
     font-weight: bold;
     text-align: center;
     display: block;
+    color: var(--lore-c-txt1);
 }
+
+.attribute-roll-label {
+    color: var(--lore-c-txt1);
+}
+
+.attribute-formula-label {
+    color: var(--lore-c-txt2);
+}
+
 .stats-container {
     padding: 10px;
     display: flex;
@@ -92,8 +86,12 @@
     padding-right: 20px;
     display: flex;
     align-items: center;
+    color: var(--lore-c-txt1);
+    
 }
 .stat-input {
     width: 50px;
     text-align: center;
+    color: var(--lore-c-txt2);
+    background: var(--lore-c-bg2);
 }

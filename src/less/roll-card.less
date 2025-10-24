@@ -1,11 +1,113 @@
 // main: "lore.less", out: false
 
-.lore-die {
-    text-align: center;
-    margin-top: 10px;
-    color: var(--color-text, inherit);
-}
-.chat-message .message-content {
+// Scope all styles to the lore roll card container only
+.lore-roll-card {
+    .lore-main-roll {
+        margin-top: 10px;
+        text-align: left;
+        .lore-dice-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .dice-images {
+            display: inline-flex;
+            gap: 4px;
+        }
+        .die-icon {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+        }
+        .die-icon.is-dropped {
+            opacity: 0.35;
+            filter: grayscale(100%);
+        }
+        .die-icon.is-exploded {
+            /* Approximate a green tint */
+            filter: hue-rotate(85deg) saturate(1.8) brightness(1.1);
+        }
+        .dice-modifier {
+            font-weight: 600;
+            color: var(--color-text, inherit);
+            margin-left: 2px;
+        }
+    }
+
+    .lore-die {
+        .lore-dice-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .dice-images {
+            display: inline-flex;
+            gap: 4px;
+        }
+        .die-icon {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+        }
+        .die-icon.is-dropped {
+            opacity: 0.35;
+            filter: grayscale(100%);
+        }
+        .die-icon.is-exploded {
+            filter: hue-rotate(85deg) saturate(1.8) brightness(1.1);
+        }
+        .dice-modifier {
+            font-weight: 600;
+            color: var(--color-text, inherit);
+            margin-left: 2px;
+        }
+    }
+
+    .lore-die {
+        text-align: left;
+        margin-top: 10px;
+        color: var(--color-text, inherit);
+    }
+
+    .lore-roll-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+        .lore-roll-img {
+            width: 36px;
+            height: 36px;
+            object-fit: cover;
+            border: 1px solid var(--color-border-light, #999);
+            border-radius: 50%;
+        }
+        .lore-roll-actor {
+            font-weight: 600;
+        }
+    }
+    // Title section under the header
+    .lore-roll-title {
+        margin-bottom: 6px;
+        .lore-roll-label {
+            font-weight: 600;
+        }
+    }
+    .lore-roll-formula {
+        color: var(--color-text-dark-5, #555);
+        margin-bottom: 6px;
+    }
+    .lore-crit-failure {
+        margin-top: 6px;
+        color: var(--color-level-error, #b51e1e);
+    }
+    .lore-final-total {
+        margin-top: 6px;
+        padding-top: 6px;
+        border-top: 1px solid var(--color-border-light, #999);
+    }
+
+    // Dice styling only within our card
     .dice-roll {
         color: var(--color-text, inherit);
     }

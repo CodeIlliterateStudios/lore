@@ -128,6 +128,26 @@
       "Inactive": "Inactive Effects"
     }
   },
+  "LORE.Settings": {
+    "TransparentChat": {
+      "Name": "Transparent Chat Background",
+      "Hint": "Make the chat log background semi-transparent. Client-only."
+    },
+    "GrittyWounds": {
+      "Name": "Gritty Wounds",
+      "Hint": "Apply harsher wound rules for gameplay. World setting."
+    },
+    "DefaultRollMode": {
+      "Name": "Default Roll Visibility",
+      "Hint": "The default roll visibility used by Lore roll messages.",
+      "choices": {
+        "publicroll": "Public Roll",
+        "gmroll": "Private GM Roll",
+        "blindroll": "Blind GM Roll",
+        "selfroll": "Self Roll"
+      }
+    }
+  },
   "TYPES": {
     "Actor": {
       "player": "Player",

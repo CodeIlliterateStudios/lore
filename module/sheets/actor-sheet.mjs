@@ -1,6 +1,7 @@
 
 const { api, sheets } = foundry.applications;
 import { RollPopup } from "../apps/roll-popup.mjs";
+import { RollHandler } from "../helpers/roll-handler.mjs";
 import { LoreContextMenus } from "../helpers/context-menu.mjs";
 import { LoreTabNavigation } from "../helpers/tab-navigation.mjs";
 import { LoreWoundsFatigue } from "../helpers/wounds-fatigue.mjs";
@@ -11,12 +12,11 @@ import { LoreMorale } from "../helpers/morale.mjs";
  * @extends {ActorSheetV2}
  */
 export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorSheetV2) {
-  // Used to close weapon equip context menu
-  _closeWeaponEquipContextMenu = null;
+  
   constructor(options = {}) {
     super(options);
     this._dragDrop = this.#createDragDropHandlers();
-    // Context menu controller for readability and reuse
+    // Context menu controller
     this._contextMenus = new LoreContextMenus(this);
     // Wounds & Fatigue controller
     this._woundsFatigue = new LoreWoundsFatigue(this);
@@ -347,6 +347,24 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
         }
       });
     }
+    // Handle armor equip checkboxes in gear list (one per slot)
+    const armorEquipInputs = this.element.querySelectorAll('.items-armor-sub input[name="system.equipped"]');
+    for (const input of armorEquipInputs) {
+      input.addEventListener('change', async (event) => {
+        // Prevent the sheet's submit-on-change from racing; we'll update directly
+        event.stopPropagation();
+        event.preventDefault();
+        try {
+          const li = input.closest('li[data-item-id]');
+          const itemId = input.dataset.itemId || li?.dataset.itemId;
+          const item = itemId ? this.actor.items.get(itemId) : null;
+          if (!item) return;
+          await item.update({ 'system.equipped': input.checked });
+        } catch (e) {
+          console.warn('LORE | Failed to toggle armor equipped state', e);
+        }
+      });
+    }
     // Attach tab navigation (primary + gear sub-tabs)
     this._tabNavigation.attach(this.element);
   }
@@ -484,76 +502,10 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
         if (item) return item.roll();
     }
 
-    // Handle rolls that supply the formula directly.
+    // Handle rolls that supply the formula directly via the centralized handler.
     if (dataset.roll) {
-      // Show a confirmation popup with roll data before executing the roll
       const label = dataset.label ?? '';
-      const baseFormula = dataset.roll;
-      const roll = new Roll(baseFormula, this.actor.getRollData());
-
-      // Prepare roll data for display in the popup
-      const rollData = roll.toJSON ? roll.toJSON() : { formula: baseFormula };
-
-      const popup = new RollPopup({ rollType: 'attribute', rollData, label });
-      popup.render(true);
-
-      // Await the user's confirmation before sending the roll
-      try {
-        await popup.awaitConfirm();
-      } catch (err) {
-        // If awaiting fails or is canceled, don't proceed
-        return null;
-      }
-
-      // If a modifier was provided in the popup, append it to the roll formula
-      let finalRoll = roll;
-      const mod = Number(popup.modifier) || 0;
-      if (mod !== 0) {
-        const sign = mod >= 0 ? '+' : '-';
-        const abs = Math.abs(mod);
-        const newFormula = `${baseFormula} ${sign} ${abs}`;
-        finalRoll = new Roll(newFormula, this.actor.getRollData());
-        await finalRoll.evaluate();
-      }
-
-      // Merge both rolls into a single chat card (separate displays), pawns excluded
-      const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-      const rollMode = game.settings.get('core', 'rollMode');
-      let content = await finalRoll.render();
-      const actorType = this.actor?.type ?? '';
-      const qualifies = actorType === 'player' || actorType === 'professional';
-      /** @type {Roll[]} */
-      const rolls = [finalRoll];
-      let loreTotal = 0;
-      if (qualifies) {
-        try {
-          const loreRoll = new Roll('1d6x');
-          await loreRoll.evaluate();
-          const loreHtml = await loreRoll.render();
-          content += `\n<div class="lore-die">LORE Die${loreHtml}</div>`;
-          rolls.push(loreRoll);
-          loreTotal = Number(loreRoll.total) || 0;
-        } catch (e) {
-          console.warn('LORE | Failed to roll/render LORE Die for attribute:', e);
-        }
-      }
-      // Apply Morale as a final modifier after all dice are rolled
-      const morale = Number(this.actor?.system?.morale ?? 0);
-      if (morale !== 0) {
-        const sign = morale >= 0 ? '+' : '-';
-        const abs = Math.abs(morale);
-        content += `\n<div class="lore-morale-mod">Morale: ${sign}${abs}</div>`;
-      }
-      const finalTotal = (Number(finalRoll.total) || 0) + loreTotal + morale;
-      content += `\n<div class="lore-final-total" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--color-border-light, #999);"><strong>Final Result:</strong> ${finalTotal}</div>`;
-      await ChatMessage.create({
-        speaker,
-        flavor: label,
-        rollMode,
-        content,
-        rolls,
-      });
-      return finalRoll;
+      return await RollHandler.rollInline({ actor: this.actor, formula: dataset.roll, label });
     }
   }
 

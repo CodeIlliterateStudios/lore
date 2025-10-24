@@ -4,22 +4,21 @@
   data-group='primary'
   data-tab='skills'
 >
-  <ol class='items-list'>
-    <li class='item flexrow items-header'>
-      <div class='item-name'>{{localize 'Name'}}</div>
-      <div class='item-formula'>Roll</div>
-      <div class='item-controls'></div>
+  <ol class='skills-list'>
+    <li class='skills-header flexrow'>
+      <div class='skill-name'>{{localize 'Name'}}</div>
+      <div class='skill-formula align-right'>Roll</div>
     </li>
 
     {{#each skills as |item id|}}
       <li
-        class='item flexrow'
+        class='skill flexrow'
         data-item-id='{{item.id}}'
         data-drag='true'
         data-document-class='Item'
       >
-        <div class='item-name flexrow'>
-          <div class='item-image'>
+        <div class='skill-name flexrow align-left'>
+          <div class='skill-image'>
             <a class='rollable' data-roll-type='item' data-action='roll'>
               <img
                 src='{{#if item.img}}{{item.img}}{{else}}icons/svg/mystery-man.svg{{/if}}'
@@ -31,8 +30,7 @@
           </div>
           <div>{{item.name}}</div>
         </div>
-        <div class='item-formula item-prop roll-summary align-right'>
-          {{!-- Similar to attributes: Xd6 +/- tied attribute mod (Untrained = -3). Pawn extra die not shown here. --}}
+        <div class='skill-formula skill-prop roll-summary align-right'>
           {{item.system.rank.value}}d6
           {{#if (eq item.name 'Untrained')}}
             {{numberFormat -3 decimals=0 sign=true}}
@@ -42,7 +40,6 @@
             {{/with}}
           {{/if}}
         </div>
-        {{!-- Controls moved to context menu --}}
       </li>
     {{/each}}
   </ol>

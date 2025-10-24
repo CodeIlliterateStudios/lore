@@ -54,7 +54,7 @@ export class LoreTabNavigation {
       const nav = rootEl.querySelector(`nav.tabs[data-group="${primaryGroup}"]`);
       if (nav) {
         const sections = Array.from(rootEl.querySelectorAll(`.tab[data-group="${primaryGroup}"]`));
-        const links = Array.from(nav.querySelectorAll('a.item[data-tab]'));
+        const links = Array.from(nav.querySelectorAll('a.main-tab[data-tab]'));
 
         const activate = (tabId) => {
           if (this.sheet.tabGroups) this.sheet.tabGroups[primaryGroup] = tabId;
@@ -63,7 +63,7 @@ export class LoreTabNavigation {
         };
 
         const handler = (e) => {
-          const a = e.target.closest('a.item[data-tab]');
+          const a = e.target.closest('a.main-tab[data-tab]');
           if (!a) return;
           e.preventDefault();
           activate(a.dataset.tab);

@@ -1,0 +1,27 @@
+<div class="lore-roll-card">
+  
+  <!-- Main/normal roll -->
+  <div class="lore-main-roll">
+    {{{mainRollHtml}}}
+  </div>
+
+  <!-- LORE Die (optional) -->
+  {{#if loreHtml}}
+  <div class="lore-die">
+    {{{loreHtml}}}
+  </div>
+  {{/if}}
+
+  <!-- Morale -->
+  {{#if morale}}
+  <div class="lore-morale-mod">Morale: {{moraleText}}</div>
+  {{/if}}
+
+  <!-- Critical Failure (optional) -->
+  {{#if critFailure}}
+  <div class="lore-crit lore-crit-failure"><strong>Critical Failure</strong> — Snake Eyes</div>
+  {{/if}}
+
+  <!-- Final Result -->
+  <div class="lore-final-total"><strong>Final Result:</strong> {{finalTotal}}</div>
+</div>

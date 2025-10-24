@@ -50,7 +50,7 @@
 
     <div class='condition-container grid-span-3'>
       <div class='condition-item center-text' style='display:flex;flex-direction:column;align-items:center;gap:2px;'>
-        <span class='resource-label'>
+        <span class='condition-label'>
 	        {{localize 'LORE.Actor.base.FIELDS.unconscious.label'}}
         </span>
         <label>
@@ -58,7 +58,7 @@
         </label>
       </div>
       <div class='condition-item center-text'>
-        <span class='resource-label'>
+        <span class='condition-label'>
 	        {{localize 'LORE.Actor.base.FIELDS.stunned.label'}}
         </span>
         <label>
@@ -66,7 +66,7 @@
         </label>
       </div>
       <div class='condition-item center-text'>
-        <span class='resource-label'>
+        <span class='condition-label'>
 	        {{localize 'LORE.Actor.base.FIELDS.incapacitated.label'}}
         </span>
         <label>
@@ -111,7 +111,11 @@
         data-dtype='Number'
         aria-label='{{localize "LORE.Actor.base.FIELDS.morale.label"}}'
       />
-      <div class='morale-ticks' aria-hidden='true'></div>
+      <div class='morale-ticks' aria-hidden='true'>
+        {{#each (range -6 7)}}
+          <span class="morale-tick"></span>
+        {{/each}}
+      </div>
     </div>
     
   </div>

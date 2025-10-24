@@ -1,0 +1,92 @@
+
+// Lore chat message styles responsive to theme variables
+
+.lore-chat-message {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--lore-sidebar-bg);
+  border: 1px solid var(--lore-c-slate);
+  border-radius: 10px;
+  color: var(--lore-c-ivory);
+}
+
+.lcm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lcm-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.lcm-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 20%;
+  object-fit: cover;
+  border: 1px solid var(--lore-c-slate);
+  box-shadow: 0 0 0 2px var(--lore-c-charcoal);
+}
+
+.lcm-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.lcm-author {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.lcm-rolltype {
+  font-size: 0.85em;
+  color: var(--lore-c-ash);
+}
+
+.lcm-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lcm-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.lcm-tag {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 999px;
+  color: var(--lore-c-blue);
+  background: color-mix(in srgb, var(--lore-c-blue) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--lore-c-blue) 25%, transparent);
+}
+
+.lcm-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lcm-content {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--lore-c-ivory) 3%, transparent);
+
+  border: 1px solid var(--lore-c-slate);
+}
+
+
+
+
+

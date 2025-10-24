@@ -6,6 +6,8 @@ import { loreActorSheet } from './sheets/actor-sheet.mjs';
 import { loreItemSheet } from './sheets/item-sheet.mjs';
 // Import helper/utility classes and constants.
 import { LORE } from './helpers/config.mjs';
+import './helpers/chat.mjs';
+import { registerSystemSettings } from './helpers/settings.mjs';
 // Import DataModel classes
 import * as models from './data/_module.mjs';
 
@@ -33,6 +35,9 @@ globalThis.lore = {
 Hooks.once('init', function () {
   // Add custom constants for configuration.
   CONFIG.LORE = LORE;
+
+  // Register system settings
+  registerSystemSettings();
 
   /**
    * Set an initiative formula for the system
@@ -130,6 +135,19 @@ Handlebars.registerHelper('range', function (start, end) {
 /* -------------------------------------------- */
 
 Hooks.once('ready', function () {
+  // Preload system templates that we render dynamically (performance)
+  try {
+    const load = foundry?.applications?.handlebars?.loadTemplates ?? globalThis.loadTemplates;
+    if (typeof load === 'function') {
+      load([
+        'systems/lore/templates/chat/message.hbs',
+      ]);
+    } else {
+      console.warn('Lore | No Handlebars template loader available. Skipping template preload.');
+    }
+  } catch (e) {
+    console.warn('Lore | Failed to preload templates', e);
+  }
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on('hotbarDrop', (bar, data, slot) => createDocMacro(data, slot));
 
@@ -152,11 +170,14 @@ Hooks.once('ready', function () {
   // Initial check on ready
   updateDefaultBackground();
 
+  // Settings template is currently non-functional; no client effects to apply
+
   // Listen for scene activation/deactivation
   Hooks.on('canvasReady', updateDefaultBackground);
   Hooks.on('updateScene', updateDefaultBackground);
   Hooks.on('createScene', updateDefaultBackground);
   Hooks.on('deleteScene', updateDefaultBackground);
+
 
   // Automatically add default skills to new actors
   Hooks.on('createActor', async function(actor, options, userId) {
@@ -304,10 +325,11 @@ function rollItemMacro(itemUuid) {
     // Trigger the item roll and send it to chat directly (no popup)
   const rollResult = await item.roll();
     const roll = rollResult instanceof Roll ? rollResult : new Roll(rollResult?.formula || '');
+    const rollMode = game.settings.get('core', 'rollMode');
     await roll.toMessage({
       speaker: ChatMessage.getSpeaker({ actor: item.parent }),
       flavor: item.name,
-      rollMode: game.settings.get('core', 'rollMode'),
+      rollMode,
     });
   });
 }

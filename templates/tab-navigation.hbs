@@ -2,7 +2,7 @@
 <nav class="tabs main-tabs" data-group="primary">
   {{#each tabs as |tab key|}}
     {{#if tab.id}}
-      <a class="item {{tab.cssClass}}" data-tab="{{tab.id}}">
+      <a class="main-tab {{tab.cssClass}}" data-tab="{{tab.id}}">
         {{#if tab.icon}}<i class="fa-fw {{tab.icon}}"></i>{{/if}}
         {{localize tab.label}}
       </a>

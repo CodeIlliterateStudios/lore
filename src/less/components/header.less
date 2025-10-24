@@ -4,6 +4,7 @@
 &.window-app .window-content > .sheet-header {
     grid-row: 1;
     align-self: start;
+    background: var(--lore-c-bg1);
 }
 
 &.application .window-content .sheet-header,
@@ -21,25 +22,17 @@
     font-size: 1.5em;
     box-shadow: none;
     margin: none;
+    color: var(--lore-c-txt1);
 }
 .level-label {
     padding-right: 10px;
+    color: var(--lore-c-txt1);
 }
 .level-input {
     width: 50px;
     text-align: center;
-}
-
-.quantity-input, .cost-input, .weight-input {
-    width: 40px;
-    text-align: center;
-}
-
-.horizontal-line {
-    width: 100%;
-    height: 1px;
-    background-color: var(--color-tabs-border);
-    margin: 8px 0;
+    background: var(--lore-c-bg2);
+    color: var(--lore-c-txt2);
 }
 
 .middle-header .wounds-container, .middle-header .fatigue-container {
@@ -51,6 +44,7 @@
 
 .middle-header .wounds-label, .middle-header .fatigue-label {
     font-weight: 600;
+    color: var(--lore-c-txt1);
 }
 
 .middle-header .wounds-content, .middle-header .fatigue-content {
@@ -89,6 +83,10 @@
     cursor: pointer;
 }
 
+.condition-label {
+    color: var(--lore-c-txt1);
+}
+
 .middle-header input[type="checkbox"] {
     position: absolute;
     inset: 0;
@@ -105,23 +103,23 @@
     height: 20px;
     border-radius: 50%;
     box-sizing: border-box;
-    border: 2px solid var(--color-tabs-border);
+    border: 2px solid var(--lore-c-bg2);
     background-color: transparent;
     transition: background-color 120ms ease, border-color 120ms ease, transform 60ms ease;
     pointer-events: none;
 }
 .middle-header input[type="checkbox"]:checked + .custom-circle {
-    background-color: var(--lore-c-dark);
-    border-color: var(--lore-c-dark);
+    background-color: var(--lore-c-red);
+    border-color: var(--lore-c-bg2);
 }
 .middle-header label:hover .custom-circle {
-    border-color: var(--lore-c-tan);
+    border-color: var(--lore-c-bg2);
 }
 .middle-header input[type="checkbox"]:active + .custom-circle {
     transform: scale(0.95);
 }
 .middle-header input[type="checkbox"]:focus-visible + .custom-circle {
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25), 0 0 0 4px var(--lore-c-tan);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25), 0 0 0 4px var(--lore-c-bg2);
 }
 .middle-header input[type="checkbox"]:disabled + .custom-circle {
     opacity: 0.5;
@@ -132,6 +130,7 @@
     display: block;
     width: 100%;
     text-align: center;
+    color: var(--lore-c-txt1);
 }
 
 .morale-slider-container {
@@ -142,24 +141,107 @@
 }
 .morale-slider {
     position: relative;
+    color: var(--lore-c-bg2);
 }
 
 .morale-input {
     width: 100%;
+    color: var(--lore-c-bg2);
+    /* Custom slider styles */
+    &::-webkit-slider-runnable-track {
+        background: var(--lore-c-bg2);
+        height: 6px;
+        border-radius: 3px;
+    }
+    &::-webkit-slider-thumb {
+        background: var(--lore-c-txt1);
+        border: 2px solid var(--lore-c-bg2);
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        margin-top: -6px;
+        cursor: pointer;
+        -webkit-appearance: none;
+        appearance: none;
+        transition: background 0.2s, border 0.2s;
+    }
+    &::-ms-fill-lower {
+        background: var(--lore-c-bg2);
+    }
+    &::-ms-fill-upper {
+        background: var(--lore-c-bg2);
+    }
+    &::-moz-range-track {
+        background: var(--lore-c-bg2);
+        height: 6px;
+        border-radius: 3px;
+    }
+    &::-moz-range-thumb {
+        background: var(--lore-c-txt1);
+        border: 2px solid var(--lore-c-bg2);
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        transition: background 0.2s, border 0.2s;
+    }
+    &::-ms-thumb {
+        background: var(--lore-c-txt1);
+        border: 2px solid var(--lore-c-bg2);
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        transition: background 0.2s, border 0.2s;
+    }
+    &::-ms-tooltip {
+        display: none;
+    }
+    &:focus {
+        outline: none;
+    }
+    /* Remove default styles for Firefox */
+    &::-moz-focus-outer {
+        border: 0;
+    }
+    &::-moz-focus-inner {
+        border: 0;
+    }
+    /* General track height for all browsers */
+    height: 30px;
 }
 .morale-ticks {
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 9px;
+    right: 9px;
     height: 8px;
     bottom: -6px;
-    background-image: linear-gradient(to right, var(--color-tabs-border) 1px, transparent 1px);
-    background-size: calc(100% / 12) 100%;
-    background-repeat: repeat-x;
-    background-position: left bottom;
-    opacity: 0.6;
+    box-sizing: border-box;
     pointer-events: none;
 }
+
+.morale-tick {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: var(--lore-c-txt2);
+    transform: translateX(-1px);
+}
+
+.morale-ticks .morale-tick:nth-child(1)  { left: 0%; background-color: var(--lore-c-red); }
+.morale-ticks .morale-tick:nth-child(2)  { left: 8.333%; background-color: var(--lore-c-red); }
+.morale-ticks .morale-tick:nth-child(3)  { left: 16.666%; background-color: var(--lore-c-red); }
+.morale-ticks .morale-tick:nth-child(4)  { left: 25%; background-color: var(--lore-c-red); }
+.morale-ticks .morale-tick:nth-child(5)  { left: 33.333%; background-color: var(--lore-c-red); }
+.morale-ticks .morale-tick:nth-child(6)  { left: 41.666%; background-color: var(--lore-c-red); }
+.morale-ticks .morale-tick:nth-child(7)  { left: 50%; }
+.morale-ticks .morale-tick:nth-child(8)  { left: 58.333%;  background-color: var(--lore-c-green); }
+.morale-ticks .morale-tick:nth-child(9)  { left: 66.666%; background-color: var(--lore-c-green); }
+.morale-ticks .morale-tick:nth-child(10) { left: 75%; background-color: var(--lore-c-green); }
+.morale-ticks .morale-tick:nth-child(11) { left: 83.333%; background-color: var(--lore-c-green); }
+.morale-ticks .morale-tick:nth-child(12) { left: 91.666%; background-color: var(--lore-c-green); }
+.morale-ticks .morale-tick:nth-child(13) { left: 100%;  background-color: var(--lore-c-green);}
 .morale-ticks::after {
     content: "";
     position: absolute;
@@ -167,5 +249,6 @@
     top: 0;
     bottom: 0;
     width: 1px;
-    background-color: var(--color-tabs-border);
+    background-color: var(--lore-c-bg2);
 }
+

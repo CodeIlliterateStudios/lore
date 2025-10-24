@@ -14,22 +14,31 @@
 @import "utils/typography.less";
 @import "utils/mixins.less";
 
-// Global
-@import "global/window.less";
-@import "global/grid.less";
-@import "global/flex.less";
+// System-specific overlays that are safe globally (kept namespaced)
 @import "context-menu.less";
-@import "roll-popup.less";
-@import "roll-card.less";
 
-// Components (scoped under .lore)
-@import "components/forms.less";
-@import "components/resource.less";
-@import "components/items.less";
-@import "components/effects.less";
-@import "components/tab-navigation.less";
-@import "components/sidebar.less";
-@import "components/header.less";
-@import "components/biography.less";
-@import "components/gear.less";
-@import "components/paper-doll.less";
+// Keep styles for chat cards and roll popup, safely scoped to their containers
+@import "components/chat.less";
+@import "roll-card.less";
+@import "roll-popup.less";
+
+// Scope all sheet styling strictly to .lore (actor/item sheets)
+.lore {
+  // Previously global helpers and overrides are now scoped to our sheets only
+  @import "global/window.less";
+  @import "global/grid.less";
+  @import "global/flex.less";
+
+  // Components
+  @import "components/forms.less";
+  @import "components/resource.less";
+  @import "components/items.less";
+  @import "components/effects.less";
+  @import "components/tab-navigation.less";
+  @import "components/sidebar.less";
+  @import "components/header.less";
+  @import "components/biography.less";
+  @import "components/gear.less";
+  @import "components/paper-doll.less";
+  @import "components/skills.less";
+}

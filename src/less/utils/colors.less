@@ -1,19 +1,29 @@
 // main: "../lore.less", out: false
 
 :root {
-  --lore-c-dark: #191813;
-  --lore-c-faint: #c9c7b8;
-  --lore-c-beige: #b5b3a4;
-  --lore-c-tan: #444444;
-  --lore-c-white: #ffffff;
-  --lore-c-black: #000000;
-  --lore-c-groove: #eeede0;
-
   // Core Colors
-  --lore-c-charcoal: #2e2e2e;
-  --lore-c-slate: #6e6e6e;
-  --lore-c-ivory: #fdfdfd;
-  --lore-c-ash: #e6e2dc;
+  --lore-c-bg1: #2e2e2e;
+  --lore-c-bg2: #6e6e6e;
+  --lore-c-txt1: #fdfdfd;
+  --lore-c-txt2: #b9b9b9;
+
+  //Accent Colors
+  --lore-c-blue: #3a6ea5;
+  --lore-c-red: #c23b22;
+  --lore-c-gold: #daa520;
+  --lore-c-green: #3cb371;
+
+  // System Backgrounds (derived from palette so they flip with theme)
+  --lore-window-bg: var(--lore-c-bg1);
+  --lore-sidebar-bg: var(--lore-c-bg1);
+}
+
+body.theme-dark .application {
+  // Core Colors
+  --lore-c-bg1: #2e2e2e;
+  --lore-c-bg2: #6e6e6e;
+  --lore-c-txt1: #fdfdfd;
+  --lore-c-txt2: #b9b9b9;
 
   //Accent Colors
   --lore-c-blue: #3a6ea5;
@@ -22,22 +32,17 @@
   --lore-c-green: #3cb371;
 }
 
-.theme-dark {
-  --lore-c-dark: #c9c7b8;
-  --lore-c-faint: #191813;
-  --lore-c-beige: #444444;
-  --lore-c-tan: #b5b3a4;
-  --lore-c-white: #000000;
-  --lore-c-black: #ffffff;
-  --lore-c-groove: #11121f;
+body.theme-light .application {
+  // Core Colors
+  --lore-c-bg1: #f0f0f0;
+  --lore-c-bg2: #b0b0b0;
+  --lore-c-txt1: #2e2e2e;
+  --lore-c-txt2: #4a4a4a;
+
+  //Accent Colors
+  --lore-c-blue: #3a6ea5;
+  --lore-c-red: #c23b22;
+  --lore-c-gold: #daa520;
+  --lore-c-green: #3cb371;
 }
 
-@c-white: var(--lore-c-white);
-@c-black: var(--lore-c-black);
-
-@c-dark: var(--lore-c-dark);
-@c-faint: var(--lore-c-faint);
-@c-beige: var(--lore-c-beige);
-@c-tan: var(--lore-c-tan);
-
-@c-groove: var(--lore-c-groove);

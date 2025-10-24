@@ -1,14 +1,60 @@
 // main: "../lore.less", out: false
 
-// Match biography tab scrolling
 .gear {
-	padding: 10px;
 	height: 100%;
 	overflow: hidden;
+	background: var(--lore-c-bg1);
 }
+
 .gear-content {
 	background: none;
 	border: none;
 	height: 100%;
 	overflow-y: auto;
+	scrollbar-color: var(--lore-c-bg2) var(--lore-c-bg1);
+
+	.item {
+		color: var(--lore-c-txt2);
+	}
+}
+
+&.actor {
+	&.application .window-content > .tab.gear,
+	&.window-app .window-content > .tab.gear {
+		overflow: hidden;
+	}
+
+	.tab.gear {
+		.sub-tab.active {
+			flex: 1 1 auto;
+			min-height: 0;
+		}
+		.sub-tab[data-group='gear-sub'] {
+			display: none;
+			&.active {
+				display: block;
+			}
+		}
+	}
+
+	&.application .window-content > .tab.gear.active .sub-tab.active,
+	&.window-app .window-content > .tab.gear.active .sub-tab.active {
+		flex: 1 1 auto;
+		min-height: 0;
+		color: var(--lore-c-txt2);
+	}
+}
+
+.weapon-skill-roll {
+	&:hover,
+	&.active {
+		color: var(--lore-c-red);
+		text-shadow: 0 0 8px var(--lore-c-red);
+	}
+}
+
+.items-list.items-weapons .rollable.item-formula:hover,
+.items-list.items-weapons .rollable.item-formula.active {
+	color: var(--lore-c-red) !important;
+	text-shadow: 0 0 8px var(--lore-c-red);
 }

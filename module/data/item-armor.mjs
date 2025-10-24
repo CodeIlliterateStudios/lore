@@ -13,6 +13,11 @@ export default class loreArmor extends loreItemBase {
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = super.defineSchema();
 
+    // Equipped toggle for UI/state
+    schema.equipped = new fields.BooleanField({
+      initial: false,
+    });
+
     // Armor location/type
     schema.armorType = new fields.StringField({
       initial: 'body',

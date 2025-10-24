@@ -19,6 +19,7 @@ export class LoreContextMenus {
     // Stable bound handlers to allow proper removeEventListener
     this._onAttributeContextMenuBound = this._onAttributeContextMenu.bind(this);
     this._onItemContextMenuBound = this._onItemContextMenu.bind(this);
+    this._onSkillContextMenuBound = this._onSkillContextMenu.bind(this);
     this._onSkillsHeaderContextMenuBound = this._onSkillsHeaderContextMenu.bind(this);
     this._onGearHeaderContextMenuBound = this._onGearHeaderContextMenu.bind(this);
   }
@@ -44,8 +45,15 @@ export class LoreContextMenus {
       row.addEventListener('contextmenu', this._onItemContextMenuBound);
     }
 
+    // Skill rows
+    const skillRows = rootEl.querySelectorAll('.skills-list li.skill[data-document-class="Item"]');
+    for (const row of skillRows) {
+      row.removeEventListener('contextmenu', this._onSkillContextMenuBound);
+      row.addEventListener('contextmenu', this._onSkillContextMenuBound);
+    }
+
     // Skills header
-    const skillsHeader = rootEl.querySelector('.tab.skills .items-header');
+    const skillsHeader = rootEl.querySelector('.tab.skills .skills-header');
     if (skillsHeader) {
       skillsHeader.removeEventListener('contextmenu', this._onSkillsHeaderContextMenuBound);
       skillsHeader.addEventListener('contextmenu', this._onSkillsHeaderContextMenuBound);
@@ -127,6 +135,42 @@ export class LoreContextMenus {
     this.close();
 
     const row = event.target.closest('li.item[data-document-class="Item"]');
+    if (!row) return;
+    const doc = this.sheet._getEmbeddedDocument(row);
+    if (!doc) return;
+
+    const items = [];
+    items.push({ action: 'view', label: game.i18n?.localize?.('Edit') ?? 'Edit' });
+    if (this.sheet.isEditable) items.push({ action: 'delete', label: game.i18n?.localize?.('Delete') ?? 'Delete' });
+
+    const menu = await this._renderMenu(items);
+    if (!menu) return;
+
+    menu.addEventListener('click', async (e) => {
+      const itemEl = e.target.closest('.lore-context-menu-item');
+      if (!itemEl) return;
+      const action = itemEl.dataset.action;
+      try {
+        await this._handleItemMenuAction(action, row, doc);
+      } finally {
+        this.close();
+      }
+    });
+
+    this._positionAndOpen(menu, event);
+  }
+
+  /**
+   * Right-click on skill row
+   * @param {MouseEvent} event
+   */
+  async _onSkillContextMenu(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    this.close();
+
+    const row = event.target.closest('li.skill[data-document-class="Item"]');
     if (!row) return;
     const doc = this.sheet._getEmbeddedDocument(row);
     if (!doc) return;

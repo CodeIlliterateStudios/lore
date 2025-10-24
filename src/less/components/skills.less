@@ -1,0 +1,69 @@
+// main: "../lore.less", out: false
+
+.skills {
+    background: var(--lore-c-bg1);
+    scrollbar-color: var(--lore-c-bg2) var(--lore-c-bg1);
+}
+
+.skills-list,
+.skills-list .skill {
+	width: 100%;
+    margin: 0px;
+    padding: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.skill {
+    border-bottom: 1px solid var(--lore-c-bg2);
+    
+}
+
+.skills-list .skills-header {
+    border-bottom: 1px solid var(--lore-c-bg2);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 0px;
+    width: 100%;
+}
+
+.skills-list .skills-header .skill-name {
+    padding-left: 10px;
+    font-weight: bold;
+}
+
+.skills-list .skills-header .skill-formula {
+    margin-right: 15px;
+    font-weight: bold;
+}
+
+.skills-list .skill .skill-image {
+	width: 24px;
+	height: 24px;
+	object-fit: cover;
+	border: none;
+	flex: 0 0 auto;
+}
+
+.skills-list .skill .skill-image img {
+	width: 24px;
+	height: 24px;
+	object-fit: cover;
+	border: none;
+    flex: 0 0 auto;
+}
+
+.skills-list .skill .skill-name {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1 1 auto;
+	min-width: 0;
+    padding-left: 10px;
+    color: var(--lore-c-txt2);
+}
+
+.skills-list .skill .skill-formula {
+    padding-right: 10px;
+    color: var(--lore-c-txt2);
+}

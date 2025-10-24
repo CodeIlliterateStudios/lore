@@ -7,9 +7,9 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
   constructor({ rollType = "generic", rollData = {}, label = "", options = {} } = {}) {
     // Pass rendering options to super but don't overwrite the Application.options property.
     super(options);
-  this.rollType = rollType;
+    this.rollType = rollType;
     this.rollData = rollData;
-  this.label = label;
+    this.label = label;
     // Keep popup-specific options separate to avoid clobbering Application internals
     this.popupOptions = options || {};
     // Track a simple numeric modifier entered by the user in the popup
@@ -33,7 +33,6 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
       width: 400,
       height: "auto",
       resizable: true,
-      classes: ["lore-roll-popup"],
     }
   );
 

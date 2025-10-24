@@ -81,6 +81,43 @@ export class loreActor extends Actor {
   }
 
   /**
+   * Ensure only one armor per slot is equipped. Called when an armor item's equipped checkbox changes.
+   * @param {Item} armorItem - The armor Item being toggled
+   * @param {boolean} equipped - The target equipped state
+   */
+  async handleArmorEquipChange(armorItem, equipped) {
+    try {
+      if (!armorItem || armorItem.type !== 'armor') return;
+      const slot = armorItem.system?.armorType ?? 'body';
+      const currentId = this.system?.equippedArmor?.[slot] ?? '';
+      const updates = [];
+
+      if (equipped) {
+        // If another item is equipped in this slot, unequip it
+        if (currentId && currentId !== armorItem.id) {
+          const prev = this.items.get(currentId);
+          if (prev) {
+            updates.push({ _id: prev.id, 'system.equipped': false });
+          }
+        }
+        // Set mapping to this item (do not update the current item here to avoid recursion)
+        await this.update({ [`system.equippedArmor.${slot}`]: armorItem.id });
+      } else {
+        // Unequip this item; clear mapping if it was the mapped one
+        if (currentId === armorItem.id) {
+          await this.update({ [`system.equippedArmor.${slot}`]: '' });
+        }
+      }
+
+      if (updates.length) {
+        await this.updateEmbeddedDocuments('Item', updates);
+      }
+    } catch (err) {
+      console.warn('LORE | Failed to handle armor equip change', err);
+    }
+  }
+
+  /**
    *
    * @override
    * Augment the actor's default getRollData() method by appending the data object

@@ -36,13 +36,24 @@
         gap: 6px 10px;
         align-items: center;
         padding: 4px 6px;
-        border-bottom: 1px solid var(--color-tabs-border);
+        background: var(--lore-c-bg1);
+        border-bottom: 1px solid var(--lore-c-bg2);
+        
     }
     // Main tab links sizing
-    &.application .window-content nav.tabs.main-tabs a.item,
-    &.window-app .window-content nav.tabs.main-tabs a.item {
+    &.application .window-content nav.tabs.main-tabs a.main-tab,
+    &.window-app .window-content nav.tabs.main-tabs a.main-tab {
         padding: 4px 8px;
         line-height: 1.6;
+        color: var(--lore-c-txt1);
+        &:hover {
+            color: var(--lore-c-txt1);
+            text-shadow: 0 0 8px var(--lore-c-txt1);
+        }
+        &.active {
+            color: var(--lore-c-txt1);
+            text-shadow: 0 0 8px var(--lore-c-txt1);
+        }
     }
 
     // Support when main nav is not a direct child
@@ -55,8 +66,12 @@
         gap: 6px 10px;
         align-items: center;
         padding: 4px 6px;
-        border-bottom: 1px solid var(--color-tabs-border);
+        background: var(--lore-c-bg1);
+        border-top: 1px solid var(--lore-c-bg2);
+        border-bottom: 1px solid var(--lore-c-bg2);
     }
+
+    
 
     // Sub-tabs navigation (e.g., inside Gear tab)
     &.application .window-content nav.tabs.sub-tabs,
@@ -67,9 +82,11 @@
         gap: 4px 6px;
         align-items: center;
         padding: 2px 4px;
-        margin: 4px 0 6px;
+        //margin: 4px 0 6px;
         border-top: none;
-        border-bottom: 1px solid var(--color-tabs-border, #999);
+        background: var(--lore-c-bg1);
+        //border-top: 1px solid var(--lore-c-bg2);
+        border-bottom: 1px solid var(--lore-c-bg2);
         font-size: 12px;
         line-height: 1.4;
     }
@@ -78,6 +95,14 @@
     &.window-app .window-content nav.tabs.sub-tabs a.item {
         padding: 2px 6px;
         line-height: 1.3;
+        &:hover {
+            color: var(--lore-c-txt1);
+            text-shadow: 0 0 8px var(--lore-c-txt1);
+        }
+        &.active {
+            color: var(--lore-c-txt1);
+            text-shadow: 0 0 8px var(--lore-c-txt1);
+        }
     }
 
     // Generic tab content containers
@@ -88,6 +113,7 @@
         height: 100%;
         overflow-y: auto;
         overflow-x: hidden;
+        color: var(--lore-c-txt2);
     }
 
     // Only show the active primary tab

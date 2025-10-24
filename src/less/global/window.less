@@ -7,8 +7,15 @@
 .rollable {
   &:hover,
   &:focus {
-    color: @c-black;
-    text-shadow: 0 0 10px red;
+    color: var(--lore-c-red);
+    text-shadow: 0 0 10px var(--lore-c-red);
     cursor: pointer;
   }
+}
+
+.horizontal-line {
+    width: 100%;
+    height: 1px;
+    background-color: var(--lore-c-bg2);
+    margin: 8px 0;
 }

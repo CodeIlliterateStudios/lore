@@ -219,14 +219,14 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
       const nav = this.element.querySelector(`nav.tabs[data-group="${primaryGroup}"]`);
       if (nav) {
         const sections = Array.from(this.element.querySelectorAll(`.tab[data-group="${primaryGroup}"]`));
-        const links = Array.from(nav.querySelectorAll('a.item[data-tab]'));
+        const links = Array.from(nav.querySelectorAll('a[data-tab]'));
         const activate = (tabId) => {
           if (this.tabGroups) this.tabGroups[primaryGroup] = tabId;
           for (const a of links) a.classList.toggle('active', a.dataset.tab === tabId);
           for (const s of sections) s.classList.toggle('active', s.dataset.tab === tabId);
         };
         const handler = (e) => {
-          const a = e.target.closest('a.item[data-tab]');
+          const a = e.target.closest('a[data-tab]');
           if (!a) return;
           e.preventDefault();
           activate(a.dataset.tab);
