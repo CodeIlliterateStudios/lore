@@ -43,7 +43,7 @@
   "version": "0.0.1",
   "compatibility": {
     "minimum": "13.348",
-    "verified": "13.348"
+    "verified": "13.350"
   },
   "esmodules": ["module/lore.mjs"],
   "styles": ["css/lore.css"],
