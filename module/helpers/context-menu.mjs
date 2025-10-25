@@ -300,6 +300,88 @@ export class LoreContextMenus {
     this._positionAndOpen(menu, event);
   }
 
+  /**
+   * Left-click on a one-handed weapon's equip control.
+   * This is not a 'contextmenu' event, but we use the same menu system.
+   * @param {MouseEvent} event
+   * @param {HTMLElement} target
+   */
+  async onWeaponEquipClick(event, target) {
+    this.close(); // Close any existing menu
+
+    const itemId = target.dataset.itemId;
+    const item = this.sheet.actor.items.get(itemId);
+    if (!item) return;
+
+    const equippedWeapons = this.sheet.actor.system.equippedWeapons || {};
+    const isEquipped = item.system.equipped;
+    const isMainHand = equippedWeapons.mainhand === itemId;
+    const isOffHand = equippedWeapons.offhand === itemId;
+    const currentSlot = isMainHand ? 'mainhand' : (isOffHand ? 'offhand' : null);
+
+    const items = [];
+
+    // Callback to handle equipping or moving between hands.
+    const equip = async (slot) => {
+      // If selecting the same slot it already occupies, unequip instead
+      if (currentSlot === slot) return unequip();
+
+      const updates = {
+        'system.equippedWeapons.mainhand': equippedWeapons.mainhand ?? null,
+        'system.equippedWeapons.offhand': equippedWeapons.offhand ?? null,
+      };
+
+      // Clear any existing reference of this item in either slot
+      if (updates['system.equippedWeapons.mainhand'] === itemId) updates['system.equippedWeapons.mainhand'] = null;
+      if (updates['system.equippedWeapons.offhand'] === itemId) updates['system.equippedWeapons.offhand'] = null;
+
+      // If another weapon is currently in the target slot, mark it as unequipped
+      const prevInTarget = updates[`system.equippedWeapons.${slot}`];
+      if (prevInTarget && prevInTarget !== itemId) {
+        const prevItem = this.sheet.actor.items.get(prevInTarget);
+        // Best-effort: don't fail if missing
+        try { await prevItem?.update?.({ 'system.equipped': false }); } catch (e) { /* noop */ }
+      }
+
+      // Place this weapon into the target slot and mark equipped
+      updates[`system.equippedWeapons.${slot}`] = itemId;
+      await this.sheet.actor.update(updates);
+      await item.update({ 'system.equipped': true });
+    };
+
+    // Callback to handle unequipping
+    const unequip = async () => {
+      const updates = {};
+      if (currentSlot === 'mainhand' || isMainHand) updates['system.equippedWeapons.mainhand'] = null;
+      if (currentSlot === 'offhand' || isOffHand) updates['system.equippedWeapons.offhand'] = null;
+      await this.sheet.actor.update(updates);
+      await item.update({ 'system.equipped': false });
+    };
+
+    // Build menu items
+    // Always show both hand options; clicking the current hand unequips
+    items.push({ action: 'equip-main', label: 'Main Hand' });
+    items.push({ action: 'equip-off', label: 'Off Hand' });
+    // Provide explicit Unequip as well
+    items.push({ action: 'unequip', label: 'Unequip' });
+
+    // Use our custom menu rendering instead of the core ContextMenu
+    const menu = await this._renderMenu(items);
+    if (!menu) return;
+
+    menu.addEventListener('click', async (e) => {
+      const itemEl = e.target.closest('.lore-context-menu-item');
+      if (!itemEl) return;
+      const action = itemEl.dataset.action;
+      try {
+        if (action === 'equip-main') await equip('mainhand');
+        else if (action === 'equip-off') await equip('offhand');
+        else if (action === 'unequip') await unequip();
+      } finally { this.close(); }
+    });
+    this._positionAndOpen(menu, event);
+  }
+
   /** Render the menu template */
   async _renderMenu(items) {
     try {

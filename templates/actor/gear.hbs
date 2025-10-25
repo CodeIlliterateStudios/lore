@@ -19,16 +19,29 @@
       </li>
       {{#each weapons as |item id|}}
         <li class='item flexrow weapon-row' data-item-id='{{item.id}}' data-drag='true' data-document-class='Item'>
-          <div class='item-equip'>
-            <label>
-              <input
-                type='checkbox'
-                name='system.equipped'
-                {{#if item.system.equipped}}checked{{/if}}
-              />
-              <span class='custom-circle'></span>
-            </label>
-          </div>
+          {{#if (eq item.system.handedness 'two')}}
+            {{!-- Two-handed weapons use a simple equip checkbox --}}
+            <div class='item-equip'>
+              <label>
+                <input
+                  type='checkbox'
+                  name='system.equipped'
+                  {{#if (eq item.id @root.actor.system.equippedWeapons.mainhand)}}checked{{/if}}
+                  {{#if (eq item.id @root.actor.system.equippedWeapons.offhand)}}checked{{/if}}
+                />
+                <span class='custom-circle'></span>
+              </label>
+            </div>
+          {{else}}
+            {{!-- One-handed weapons open a context menu to select hand; fill when equipped in any hand --}}
+            <div class='item-equip' data-action='weapon-equip-context' data-item-id='{{item.id}}'>
+              <label>
+                <span class='custom-circle 
+                  {{#if (eq item.id @root.actor.system.equippedWeapons.mainhand)}}checked mainhand{{/if}} 
+                  {{#if (eq item.id @root.actor.system.equippedWeapons.offhand)}}checked offhand{{/if}}'></span>
+              </label>
+            </div>
+          {{/if}}
           <div class='item-name'>
             <div class='item-image'>
               <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />

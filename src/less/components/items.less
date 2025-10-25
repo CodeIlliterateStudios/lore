@@ -126,6 +126,29 @@
     background-color: transparent;
     transition: background-color 120ms ease, border-color 120ms ease, transform 60ms ease;
     pointer-events: none;
+	position: relative;
+}
+.item-equip .custom-circle.checked {
+	background-color: var(--lore-c-blue);
+	border-color: var(--lore-c-blue);
+}
+.item-equip .custom-circle::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	pointer-events: none;
+}
+.item-equip .custom-circle.mainhand::after {
+	content: "M";
+}
+.item-equip .custom-circle.offhand::after {
+	content: "O";
 }
 .item-equip input[type="checkbox"]:checked + .custom-circle {
     background-color: var(--lore-c-blue);

@@ -24,6 +24,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
     this._tabNavigation = new LoreTabNavigation(this);
     // Morale slider controller
     this._morale = new LoreMorale(this);
+
+    // No-op: actions are wired via DEFAULT_OPTIONS.actions
   }
 
   /** @override */
@@ -40,6 +42,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
       deleteDoc: this._deleteDoc,
       toggleEffect: this._toggleEffect,
       roll: this._onRoll,
+      // Handle left-click on one-handed weapon equip control
+      'weapon-equip-context': this._onWeaponEquipContext,
     },
     // Custom property that's merged into `this.options`
     dragDrop: [{ dragSelector: '[data-drag]', dropSelector: null }],
@@ -388,6 +392,56 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
         }
       });
     }
+
+    // Handle two-handed weapon equip checkboxes in weapon list
+    const weaponEquipInputs = this.element.querySelectorAll('.items-weapons input[name="system.equipped"]');
+    for (const input of weaponEquipInputs) {
+      const li = input.closest('li.item[data-item-id]');
+      const itemId = li?.dataset?.itemId;
+      const item = itemId ? this.actor.items.get(itemId) : null;
+      if (!item || item.type !== 'weapon') continue;
+      const handed = item.system?.handedness;
+      if (handed !== 'two') continue; // Only intercept two-handed weapon checkboxes
+
+      input.addEventListener('change', async (event) => {
+        // Intercept default submit and handle custom equip logic
+        event.stopPropagation();
+        event.preventDefault();
+        try {
+          const checked = input.checked === true;
+          const actor = this.actor;
+          const slots = actor.system?.equippedWeapons || {};
+
+          if (checked) {
+            // If equipping a two-handed weapon: clear both slots of any other items first
+            const prevMain = slots.mainhand && slots.mainhand !== item.id ? this.actor.items.get(slots.mainhand) : null;
+            const prevOff = slots.offhand && slots.offhand !== item.id ? this.actor.items.get(slots.offhand) : null;
+            try { await prevMain?.update?.({ 'system.equipped': false }); } catch (e) {}
+            try { await prevOff?.update?.({ 'system.equipped': false }); } catch (e) {}
+
+            // Equip this weapon to both hands
+            await actor.update({
+              'system.equippedWeapons.mainhand': item.id,
+              'system.equippedWeapons.offhand': item.id,
+            });
+            await item.update({ 'system.equipped': true });
+            // Ensure immediate visual state reflects the change before re-render
+            input.checked = true;
+          } else {
+            // Unchecking: if this item occupies either slot, clear both; mark it unequipped
+            const updates = {};
+            if (slots.mainhand === item.id) updates['system.equippedWeapons.mainhand'] = null;
+            if (slots.offhand === item.id) updates['system.equippedWeapons.offhand'] = null;
+            if (Object.keys(updates).length) await actor.update(updates);
+            await item.update({ 'system.equipped': false });
+            // Ensure immediate visual state reflects the change before re-render
+            input.checked = false;
+          }
+        } catch (e) {
+          console.warn('LORE | Failed to toggle two-handed weapon equipped state', e);
+        }
+      });
+    }
     // Attach tab navigation (primary + gear sub-tabs)
     this._tabNavigation.attach(this.element);
   }
@@ -530,6 +584,21 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
       const label = dataset.label ?? '';
       return await RollHandler.rollInline({ actor: this.actor, formula: dataset.roll, label });
     }
+  }
+
+  /**
+   * Handle opening the context menu for one-handed weapon equipping.
+   * @param {PointerEvent} event   The originating click event
+   * @param {HTMLElement} target   The capturing HTML element which defined a [data-action]
+   * @protected
+   */
+  static _onWeaponEquipContext(event, target) {
+    // The `actions` framework in ApplicationV2 is based on click events.
+    // We'll prevent the default behavior and pass the event to our dedicated context menu handler.
+    event.preventDefault();
+
+    // Delegate to the context menu controller
+    this._contextMenus.onWeaponEquipClick(event, target);
   }
 
   /** Helper Functions */

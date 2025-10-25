@@ -247,6 +247,15 @@ body.theme-light .application {
   font-weight: bold;
   text-align: left;
 }
+.lore-roll-popup .difficulty-input-label {
+  text-align: left;
+  margin-right: 10px;
+}
+.lore-roll-popup .difficulty-input {
+  width: 50px;
+  background: var(--lore-c-slate);
+  margin-bottom: 10px;
+}
 .lore-roll-popup .modifier-input-label {
   text-align: left;
   margin-right: 10px;
@@ -598,6 +607,29 @@ body.theme-light .application {
   background-color: transparent;
   transition: background-color 120ms ease, border-color 120ms ease, transform 60ms ease;
   pointer-events: none;
+  position: relative;
+}
+.lore .item-equip .custom-circle.checked {
+  background-color: var(--lore-c-blue);
+  border-color: var(--lore-c-blue);
+}
+.lore .item-equip .custom-circle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  pointer-events: none;
+}
+.lore .item-equip .custom-circle.mainhand::after {
+  content: "M";
+}
+.lore .item-equip .custom-circle.offhand::after {
+  content: "O";
 }
 .lore .item-equip input[type="checkbox"]:checked + .custom-circle {
   background-color: var(--lore-c-blue);

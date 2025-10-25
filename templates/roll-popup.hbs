@@ -13,6 +13,10 @@
 
   <p class="roll-formula">{{rollData.formula}}</p>
 
+  <label for="difficulty-input" class="difficulty-input-label">{{localize "LORE.SheetLabels.Difficulty" }}:</label>
+  <input type="number" id="difficulty-input" class="difficulty-input" value="6" />
+  <div class="horizontal-line"></div>
+
   <label for="modifier-input" class="modifier-input-label">{{localize "LORE.SheetLabels.AdditionalMod" }}:</label>
   <input type="number" id="modifier-input" class="modifier-input" value="" />
   {{#if options}}
