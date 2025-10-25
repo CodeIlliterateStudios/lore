@@ -1,15 +1,25 @@
 
 // Lore chat message styles responsive to theme variables
 
+.chat-sidebar:not(.sidebar-popout) {
+  background: var(--lore-c-bg1);
+}
+
+.lore-chat {
+  padding: 0;
+  border-radius: 10px;
+  background: var(--lore-c-bg1);
+}
+
 .lore-chat-message {
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: 10px 12px;
-  background: var(--lore-sidebar-bg);
-  border: 1px solid var(--lore-c-slate);
+  background: var(--lore-c-bg1);
+  border: 1px solid var(--lore-c-bg2);
   border-radius: 10px;
-  color: var(--lore-c-ivory);
+  color: var(--lore-c-txt1);
 }
 
 .lcm-header {
