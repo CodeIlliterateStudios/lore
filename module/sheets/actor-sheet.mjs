@@ -90,13 +90,16 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
     // Control which parts show based on document subtype
     switch (this.document.type) {
       case 'player':
-        options.parts.push('skills', 'gear', 'magicks');
+        options.parts.push('skills', 'gear');
+        if (this.#hasMagicksBackgroundBoon()) options.parts.push('magicks');
         break;
       case 'pawn':
-        options.parts.push('skills', 'gear', 'magicks');
+        options.parts.push('skills', 'gear');
+        if (this.#hasMagicksBackgroundBoon()) options.parts.push('magicks');
         break;
       case 'professional':
-        options.parts.push('skills', 'gear', 'magicks');
+        options.parts.push('skills', 'gear');
+        if (this.#hasMagicksBackgroundBoon()) options.parts.push('magicks');
         break;
     }
   }
@@ -169,6 +172,23 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
     return context;
   }
 
+  /**
+   * Determine whether the actor should display the Magicks tab.
+   * The tab is shown only if the actor has at least one Boon item
+   * with the "magicks background" checkbox enabled.
+   * @returns {boolean}
+   */
+  #hasMagicksBackgroundBoon() {
+    try {
+      return this.document.items.some(
+        (i) => i.type === 'boon' && i.system?.magicksBackground === true
+      );
+    } catch (e) {
+      console.warn('LORE | Failed checking magicks background boon', e);
+      return false;
+    }
+  }
+
   /** @override */
   async _preparePartContext(partId, context) {
     switch (partId) {
@@ -217,8 +237,11 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
     const tabGroup = 'primary';
     // Determine a sensible default tab based on available parts
     const candidateOrder = ['skills', 'gear', 'magicks', 'effects', 'biography'];
-    if (!this.tabGroups[tabGroup]) {
-      const firstAvailable = candidateOrder.find((p) => parts.includes(p));
+    
+    const firstAvailable = candidateOrder.find((p) => parts.includes(p));
+    const current = this.tabGroups[tabGroup];
+    // Initialize or correct the current tab if it's missing from available parts
+    if (!current || !parts.includes(current)) {
       this.tabGroups[tabGroup] = firstAvailable ?? 'biography';
     }
     return parts.reduce((tabs, partId) => {
@@ -279,6 +302,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
     const armor = [];
     const skills = [];
     const magicks = [];
+    const boons = [];
+    const banes = [];
 
     // Iterate through items, allocating to containers
     for (let i of this.document.items) {
@@ -300,6 +325,12 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
       else if (i.type === 'magick') {
         magicks.push(i);
       }
+      else if (i.type === 'boon') {
+        boons.push(i);
+      }
+      else if (i.type === 'bane') {
+        banes.push(i);
+      }
     }
 
     // Sort then assign
@@ -319,6 +350,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
     context.armorByType = armorByType;
     context.skills = skills.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.magicks = magicks.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.boons = boons.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.banes = banes.sort((a, b) => (a.sort || 0) - (b.sort || 0));
   }
 
   /**

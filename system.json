@@ -19,7 +19,9 @@
       "weapon": {},
       "armor": {},
       "skill": {},
-      "magick": {}
+      "magick": {},
+      "boon": {},
+      "bane": {}
     }
   },
   "flags": {

@@ -67,3 +67,16 @@
     padding-right: 10px;
     color: var(--lore-c-txt2);
 }
+
+
+// Details sub-tabs visibility (Skills / Boons-Banes)
+&.actor {
+    .tab.skills {
+        .sub-tab[data-group='details-sub'] {
+            display: none;
+            &.active {
+                display: block;
+            }
+        }
+    }
+}

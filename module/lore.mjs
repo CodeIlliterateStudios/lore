@@ -62,6 +62,8 @@ Hooks.once('init', function () {
     skill: models.loreSkill,
     magick: models.loreMagick,
     armor: models.loreArmor,
+    boon: models.loreBoon,
+    bane: models.loreBane,
   };
  
 

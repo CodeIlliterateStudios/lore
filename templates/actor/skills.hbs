@@ -1,46 +1,128 @@
-{{! Skills Tab }}
+{{! Details (formerly Skills) Tab }}
 <section
   class='tab skills {{tab.cssClass}}'
   data-group='primary'
   data-tab='skills'
 >
-  <ol class='skills-list'>
-    <li class='skills-header flexrow'>
-      <div class='skill-name'>{{localize 'Name'}}</div>
-      <div class='skill-formula align-right'>Roll</div>
-    </li>
+{{!-- Sub-tabs navigation for Details --}}
+  <nav class='tabs sub-tabs' data-group='details-sub'>
+    <a class='item active' data-tab='skills'>{{localize 'LORE.Actor.Details.SubTabs.Skills'}}</a>
+    <a class='item' data-tab='boons-banes'>{{localize 'LORE.Actor.Details.SubTabs.BoonsBanes'}}</a>
+  </nav>
 
-    {{#each skills as |item id|}}
-      <li
-        class='skill flexrow'
-        data-item-id='{{item.id}}'
-        data-drag='true'
-        data-document-class='Item'
-      >
-        <div class='skill-name flexrow align-left'>
-          <div class='skill-image'>
-            <a class='rollable' data-roll-type='item' data-action='roll'>
-              <img
-                src='{{#if item.img}}{{item.img}}{{else}}icons/svg/mystery-man.svg{{/if}}'
-                title='{{item.name}}'
-                width='24'
-                height='24'
-              />
-            </a>
+  {{!-- SKILLS SUB-TAB --}}
+  <section class='sub-tab skills-sub active' data-group='details-sub' data-tab='skills'>
+    <ol class='skills-list'>
+      <li class='skills-header flexrow'>
+        <div class='skill-name'>{{localize 'Name'}}</div>
+        <div class='skill-formula align-right'>Roll</div>
+      </li>
+
+      {{#each skills as |item id|}}
+        <li
+          class='skill flexrow'
+          data-item-id='{{item.id}}'
+          data-drag='true'
+          data-document-class='Item'
+        >
+          <div class='skill-name flexrow align-left'>
+            <div class='skill-image'>
+              <a class='rollable' data-roll-type='item' data-action='roll'>
+                <img
+                  src='{{#if item.img}}{{item.img}}{{else}}icons/svg/mystery-man.svg{{/if}}'
+                  title='{{item.name}}'
+                  width='24'
+                  height='24'
+                />
+              </a>
+            </div>
+            <div>{{item.name}}</div>
           </div>
-          <div>{{item.name}}</div>
-        </div>
-        <div class='skill-formula skill-prop roll-summary align-right'>
-          {{item.system.rank.value}}d6
-          {{#if (eq item.name 'Untrained')}}
-            {{numberFormat -3 decimals=0 sign=true}}
-          {{else}}
-            {{#with (lookup @root.system.attributes item.system.tiedAttribute) as |attr|}}
-              {{numberFormat attr.mod decimals=0 sign=true}}
-            {{/with}}
+          <div class='skill-formula skill-prop roll-summary align-right'>
+            {{item.system.rank.value}}d6
+            {{#if (eq item.name 'Untrained')}}
+              {{numberFormat -3 decimals=0 sign=true}}
+            {{else}}
+              {{#with (lookup @root.system.attributes item.system.tiedAttribute) as |attr|}}
+                {{numberFormat attr.mod decimals=0 sign=true}}
+              {{/with}}
+            {{/if}}
+          </div>
+        </li>
+      {{/each}}
+    </ol>
+  </section>
+
+  {{!-- BOONS/BANES SUB-TAB --}} 
+  <section class='sub-tab boons-banes-sub' data-group='details-sub' data-tab='boons-banes'>
+    <ol class='items-list'>
+      <li class='item flexrow items-header'>
+        <div class='item-name'>{{localize 'LORE.Item.Boons.label'}}</div>
+        <div class='item-controls'>
+          {{#if @root.editable}}
+            <a
+              class='item-control item-create'
+              title='Create item'
+              data-action='createDoc'
+              data-document-class='Item'
+              data-type='boon'
+            >
+              <i class='fas fa-plus'></i>
+              {{localize 'DOCUMENT.New' type='boon'}}
+            </a>
           {{/if}}
         </div>
       </li>
-    {{/each}}
-  </ol>
+      {{#each boons as |item id|}}
+        <li
+          class='item flexrow'
+          data-item-id='{{item._id}}'
+          data-drag='true'
+          data-document-class='Item'
+        >
+          <div class='item-name'>
+            <div class='item-image'>
+              <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+            </div>
+            <div>{{item.name}}</div>
+          </div>
+        </li>
+      {{/each}}
+    </ol>
+
+    <ol class='items-list'>
+      <li class='item flexrow items-header'>
+        <div class='item-name'>{{localize 'LORE.Item.Banes.label'}}</div>
+        <div class='item-controls'>
+          {{#if @root.editable}}
+            <a
+              class='item-control item-create'
+              title='Create item'
+              data-action='createDoc'
+              data-document-class='Item'
+              data-type='bane'
+            >
+              <i class='fas fa-plus'></i>
+              {{localize 'DOCUMENT.New' type='bane'}}
+            </a>
+          {{/if}}
+        </div>
+      </li>
+      {{#each banes as |item id|}}
+        <li
+          class='item flexrow'
+          data-item-id='{{item._id}}'
+          data-drag='true'
+          data-document-class='Item'
+        >
+          <div class='item-name'>
+            <div class='item-image'>
+              <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+            </div>
+            <div>{{item.name}}</div>
+          </div>
+        </li>
+      {{/each}}
+    </ol>
+  </section>
 </section>

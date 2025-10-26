@@ -24,4 +24,18 @@
 
   <!-- Final Result -->
   <div class="lore-final-total"><strong>Final Result:</strong> {{finalTotal}}</div>
+
+  {{#if difficulty}}
+  <div class="lore-difficulty"><strong>Difficulty:</strong> {{difficulty}}</div>
+  <div class="lore-outcome {{#if success}}is-success{{else}}is-failure{{/if}}">
+    {{#if success}}
+      <strong>Success</strong>
+      {{#if raises}}
+        — Raises: {{raises}}
+      {{/if}}
+    {{else}}
+      <strong>Failure</strong>
+    {{/if}}
+  </div>
+  {{/if}}
 </div>
