@@ -61,6 +61,12 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
     detailsMagick: {
       template: 'systems/lore/templates/item/detail-parts/magick.hbs',
     },
+    detailsBoon: {
+      template: 'systems/lore/templates/item/detail-parts/boon.hbs',
+    },
+    detailsBane: {
+      template: 'systems/lore/templates/item/detail-parts/bane.hbs',
+    },
     effects: {
       template: 'systems/lore/templates/item/effects.hbs',
     },
@@ -89,6 +95,12 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
         break;
       case 'magick':
         options.parts.push('detailsMagick');
+        break;
+      case 'boon':
+        options.parts.push('detailsBoon');
+        break;
+      case 'bane':
+        options.parts.push('detailsBane');
         break;
     }
   }
@@ -127,6 +139,8 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
       case 'detailsWeapon':
       case 'detailsArmor':
       case 'detailsMagick':
+      case 'detailsBoon':
+      case 'detailsBane':
         // Necessary for preserving active tab on re-render
         context.tab = context.tabs[partId];
         break;
@@ -190,6 +204,8 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
         case 'detailsWeapon':
         case 'detailsArmor':
         case 'detailsMagick':
+        case 'detailsBoon':
+        case 'detailsBane':
           tab.id = 'details';
           tab.label += 'Details';
           break;

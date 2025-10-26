@@ -4,6 +4,33 @@
   data-group='primary'
   data-tab='magicks'
 >
+  <div class='magicks-resource flexrow flex-center'>
+    <div class='magicks-resource-label align-center'>Power</div>
+    
+    <div class='magicks-resource-values flexrow flex-center'>
+      <input
+        type='number'
+        name='system.magicksResource.value'
+        value='{{system.magicksResource.value}}'
+        data-dtype='Number'
+        min='0'
+        class='magicks-current'
+        aria-label='Current Power'
+      />
+      <span class='separator'>/</span>
+      <input
+        type='number'
+        name='system.magicksResource.max'
+        value='{{system.magicksResource.max}}'
+        data-dtype='Number'
+        min='0'
+        class='magicks-max'
+        aria-label='Max Power'
+      />
+    </div>
+
+  </div>
+
   <ol class='items-list'>
     <li class='item flexrow items-header'>
           <div class='item-name'>{{localize 'TYPES.Item.magick'}}</div>
@@ -42,9 +69,10 @@
               </div>
               <div>{{item.name}}</div>
             </div>
-            {{!-- Controls moved to context menu --}}
+            
+            
           </li>
-        {{/each}}
+    {{/each}}
   </ol>
 
 </section>

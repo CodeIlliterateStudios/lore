@@ -1581,3 +1581,9 @@ body.theme-light {
   padding-right: 10px;
   color: var(--lore-c-txt2);
 }
+.lore.actor .tab.skills .sub-tab[data-group='details-sub'] {
+  display: none;
+}
+.lore.actor .tab.skills .sub-tab[data-group='details-sub'].active {
+  display: block;
+}

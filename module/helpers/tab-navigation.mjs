@@ -48,6 +48,37 @@ export class LoreTabNavigation {
       console.warn('LORE | Failed to initialize Gear sub-tabs:', e);
     }
 
+    // Details sub-tabs (Skills / Boons-Banes)
+    try {
+      const subNav = rootEl.querySelector('nav.tabs.sub-tabs[data-group="details-sub"]');
+      if (subNav) {
+        const group = 'details-sub';
+        const current = this.sheet.tabGroups?.[group] ?? 'skills';
+        const sections = Array.from(rootEl.querySelectorAll('.sub-tab[data-group="details-sub"]'));
+        const links = Array.from(subNav.querySelectorAll('a.item[data-tab]'));
+
+        const activate = (tabId) => {
+          if (this.sheet.tabGroups) this.sheet.tabGroups[group] = tabId;
+          for (const a of links) a.classList.toggle('active', a.dataset.tab === tabId);
+          for (const s of sections) s.classList.toggle('active', s.dataset.tab === tabId);
+        };
+
+        const handler = (e) => {
+          const a = e.target.closest('a.item[data-tab]');
+          if (!a) return;
+          e.preventDefault();
+          activate(a.dataset.tab);
+        };
+        if (subNav._loreDetailsSubHandler) subNav.removeEventListener('click', subNav._loreDetailsSubHandler);
+        subNav.addEventListener('click', handler);
+        subNav._loreDetailsSubHandler = handler;
+
+        activate(current);
+      }
+    } catch (e) {
+      console.warn('LORE | Failed to initialize Details sub-tabs:', e);
+    }
+
     // Primary tabs (skills, gear, magicks, effects, biography)
     try {
       const primaryGroup = 'primary';

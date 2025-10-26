@@ -4,16 +4,19 @@
 export class RollPopup extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
 ) {
-  constructor({ rollType = "generic", rollData = {}, label = "", options = {} } = {}) {
+  constructor({ rollType = "generic", rollData = {}, label = "", options = {}, showDifficulty = true } = {}) {
     // Pass rendering options to super but don't overwrite the Application.options property.
     super(options);
     this.rollType = rollType;
     this.rollData = rollData;
     this.label = label;
+    this.showDifficulty = !!showDifficulty;
     // Keep popup-specific options separate to avoid clobbering Application internals
     this.popupOptions = options || {};
     // Track a simple numeric modifier entered by the user in the popup
     this.modifier = 0;
+    // Track difficulty entered by the user in the popup
+    this.difficulty = 0;
   }
 
   /**
@@ -45,6 +48,7 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
       rollData: this.rollData,
       label: this.label,
       options: this.popupOptions,
+      showDifficulty: this.showDifficulty,
       target,
     };
   }
@@ -59,6 +63,7 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
       rollData: this.rollData,
       label: this.label,
       options: this.popupOptions,
+      showDifficulty: this.showDifficulty,
       target,
     };
   }
@@ -88,6 +93,7 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
     $el.find('.close-popup').off('click').on('click', () => this.close());
     // Keep the modifier property in sync with the input field
     const $mod = $el.find('#modifier-input');
+    const $diff = $el.find('#difficulty-input');
     const $formula = $el.find('.roll-formula');
     const baseFormula = this.rollData?.formula ?? '';
     const renderFormula = (base, mod) => {
@@ -101,6 +107,11 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
       const n = Number(val);
       return Number.isFinite(n) ? Math.trunc(n) : 0;
     };
+    const parseDiff = (val) => {
+      const n = Number(val);
+      // Difficulty cannot be negative; treat NaN as 0 (meaning no check)
+      return Number.isFinite(n) ? Math.max(0, Math.trunc(n)) : 0;
+    };
     if ($mod.length) {
       // Initialize from current input value
       this.modifier = parseMod($mod.val());
@@ -112,9 +123,18 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
       });
     }
 
+    // Keep difficulty in sync
+    if ($diff.length) {
+      this.difficulty = parseDiff($diff.val());
+      $diff.off('input change').on('input change', (ev) => {
+        this.difficulty = parseDiff(ev.currentTarget.value);
+      });
+    }
+
     $el.find('.confirm-roll').off('click').on('click', () => {
       // Ensure we capture the latest modifier value right before confirm
       if ($mod.length) this.modifier = parseMod($mod.val());
+      if ($diff.length) this.difficulty = parseDiff($diff.val());
       if (this._confirmResolve) this._confirmResolve(true);
       this.close();
     });

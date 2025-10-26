@@ -69,6 +69,12 @@ export default class loreActorBase extends foundry.abstract
       feet: new fields.StringField({ initial: "" }),
     });
 
+    // Magicks resource (current / max)
+    schema.magicksResource = new fields.SchemaField({
+      value: new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 }),
+      max: new fields.NumberField({ ...requiredInteger, initial: 15, min: 0 }),
+    });
+
     return schema;
   }
 
