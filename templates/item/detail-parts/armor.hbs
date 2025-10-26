@@ -2,9 +2,9 @@
 <section class='tab details {{tab.cssClass}}' data-group='primary' data-tab='details'>
 	<div class='resource'>
 		<div class='grid grid-4col'>
-			<div class='grid-span-1'>
+			<div class='item-options grid-span-1'>
 				<label class='resource-label'>{{localize 'LORE.Item.Armor.FIELDS.type.label'}}</label>
-				<select name='system.armorType'>
+				<select class='resource-select' name='system.armorType'>
 					<option value='head'  {{#if (eq system.armorType 'head')}}selected{{/if}}>{{localize 'LORE.Item.Armor.Types.head'}}</option>
 					<option value='body'  {{#if (eq system.armorType 'body')}}selected{{/if}}>{{localize 'LORE.Item.Armor.Types.body'}}</option>
 					<option value='arms'  {{#if (eq system.armorType 'arms')}}selected{{/if}}>{{localize 'LORE.Item.Armor.Types.arms'}}</option>
@@ -13,9 +13,9 @@
 					<option value='feet'  {{#if (eq system.armorType 'feet')}}selected{{/if}}>{{localize 'LORE.Item.Armor.Types.feet'}}</option>
 				</select>
 			</div>
-					<div class='grid-span-1'>
+					<div class='item-options grid-span-1'>
 						<label class='resource-label'>{{localize 'LORE.Item.Armor.FIELDS.value.label'}}</label>
-						<input type='number' name='system.armorValue' value='{{system.armorValue}}' data-dtype='Number' min='0' />
+						<input class='resource-input' type='number' name='system.armorValue' value='{{system.armorValue}}' data-dtype='Number' min='0' />
 					</div>
 		</div>
 	</div>

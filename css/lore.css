@@ -646,6 +646,17 @@ body.theme-light {
   background: var(--lore-c-bg2);
   color: var(--lore-c-txt1);
 }
+.lore .item-options .resource-label {
+  color: var(--lore-c-txt1);
+}
+.lore .item-options .resource-select {
+  background: var(--lore-c-bg2);
+  color: var(--lore-c-txt1);
+}
+.lore .item-options .resource-input {
+  background: var(--lore-c-bg2);
+  color: var(--lore-c-txt1);
+}
 .lore .lore.item .tab[data-group="primary"] {
   background: var(--lore-c-bg1);
   color: var(--lore-c-txt1);
@@ -684,6 +695,10 @@ body.theme-light {
 }
 .lore .tab {
   background: var(--lore-c-bg1);
+}
+.lore .item .resource-label {
+  color: var(--lore-c-txt1);
+  background: var(--lore-c-bg2);
 }
 .lore.actor.application .window-content,
 .lore.actor.window-app .window-content {
