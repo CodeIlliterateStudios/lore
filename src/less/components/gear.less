@@ -59,3 +59,226 @@
 	color: var(--lore-c-red) !important;
 	text-shadow: 0 0 8px var(--lore-c-red);
 }
+
+.item-armor {
+	padding-right: 10px;
+}
+.items-sub-header {
+	background-color: var(--lore-c-bg1);
+	height: 30px;
+	margin-left: 5px;
+	border: 1px solid var(--lore-c-bg2);
+}
+
+.items-sublist {
+	margin-left: 5px;
+	list-style: none;
+}
+
+.items-sublist ul,
+.items-sublist ol {
+	list-style: none;
+	padding-left: 0;
+	margin-left: 0;
+}
+.items-list,
+.items-list .item {
+	width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.items-list .item .item-name {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1 1 auto;
+	min-width: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+	color: var(--lore-c-txt1);
+}
+
+.items-list .item .item-image {
+	.items-list .item .item-armor {
+	  margin-left: auto;
+	  justify-content: flex-end;
+	  text-align: right;
+	  display: flex;
+	  align-items: center;
+	}
+	flex: 0 0 auto;
+}
+
+.items-list .item .item-image img {
+	width: 24px;
+	height: 24px;
+	object-fit: cover;
+	border: none;
+}
+
+.items-list .items-header {
+    background-color: var(--lore-c-bg2);
+    padding-top: 5px;
+    padding-bottom: 5px;
+	margin-bottom: 5px;
+    
+}
+.items-list, .items-header .item-formula {
+	color: var(--lore-c-txt1);
+}
+.items-list > .items-header.is-collapsible {
+	cursor: pointer;
+	position: relative;
+}
+.items-list > .items-header.is-collapsible::before {
+	font-size: 10px;
+	opacity: 0.7;
+	position: absolute;
+	left: 6px;
+	top: 50%;
+	transform: translateY(-50%);
+}
+.items-list.collapsed > li:not(.items-header) {
+	display: none;
+}
+
+.items-list .items-header .item-name {
+	flex: 1 1 auto;
+}
+.item-equip {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	padding-left: 10px;
+}
+
+.item-equip label {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+}
+
+.item-equip input[type="checkbox"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.item-equip .custom-circle {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    border: 2px solid var(--lore-c-bg2);
+    background-color: transparent;
+    transition: background-color 120ms ease, border-color 120ms ease, transform 60ms ease;
+    pointer-events: none;
+	position: relative;
+}
+.item-equip .custom-circle.checked {
+	background-color: var(--lore-c-blue);
+	border-color: var(--lore-c-blue);
+}
+.item-equip .custom-circle::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	pointer-events: none;
+}
+.item-equip .custom-circle.mainhand::after {
+	content: "M";
+}
+.item-equip .custom-circle.offhand::after {
+	content: "O";
+}
+.item-equip input[type="checkbox"]:checked + .custom-circle {
+    background-color: var(--lore-c-blue);
+    border-color: var(--lore-c-blue);
+}
+.item-equip label:hover .custom-circle {
+    border-color: var(--lore-c-bg2);
+}
+.item-equip input[type="checkbox"]:active + .custom-circle {
+    transform: scale(0.95);
+}
+.item-equip input[type="checkbox"]:focus-visible + .custom-circle {
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25), 0 0 0 4px var(--lore-c-bg2);
+}
+.weapon-roll-formula {
+	color: var(--lore-c-blue);
+	text-decoration: underline;
+	cursor: pointer;
+}
+.item-controls {
+    gap: 4px;
+    flex: 0 0 auto;
+    padding-right: 1.25em;
+}
+
+.items-list .item-formula {
+	flex: 0 0 auto;
+	margin-left: auto;
+	padding-right: 1.25em;
+	white-space: nowrap;
+	color: var(--lore-c-txt2);
+}
+
+.items-list .items-header .item-formula {
+	font-weight: 600;
+	opacity: 0.9;
+}
+
+.items-list.items-weapons .items-header,
+.items-list.items-weapons .item {
+	display: grid;
+	// equip | name | roll | mod | range
+	grid-template-columns: auto 2fr 1fr 1fr 1fr;
+	align-items: center;
+	column-gap: 8px;
+}
+
+.items-list.items-weapons .item .item-name,
+.items-list.items-weapons .items-header .item-name {
+	min-width: 0;
+}
+
+.items-list.items-weapons .item .item-formula,
+.items-list.items-weapons .items-header .item-formula,
+.items-list.items-weapons .item .item-mod,
+.items-list.items-weapons .item .item-range {
+	padding-right: 0.5em;
+	white-space: nowrap;
+}
+
+// Override color for weapon roll column to match other columns
+.items-list.items-weapons .item .item-formula,
+.items-list.items-weapons .items-header .item-formula {
+	color: var(--lore-c-txt1);
+}
+
+.items-list.items-weapons .item .item-controls,
+.items-list.items-weapons .items-header .item-controls {
+	justify-self: end;
+	padding-right: 1.25em;
+}
+.items-list .item.empty .item-name {
+	opacity: 0.7;
+	font-style: italic;
+}

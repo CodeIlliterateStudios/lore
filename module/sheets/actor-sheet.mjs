@@ -236,7 +236,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
     // If you have sub-tabs this is necessary to change
     const tabGroup = 'primary';
     // Determine a sensible default tab based on available parts
-    const candidateOrder = ['skills', 'gear', 'magicks', 'effects', 'biography'];
+  const candidateOrder = ['skills', 'gear', 'magicks', 'effects', 'biography'];
     
     const firstAvailable = candidateOrder.find((p) => parts.includes(p));
     const current = this.tabGroups[tabGroup];
@@ -248,11 +248,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
       const tab = {
         cssClass: '',
         group: tabGroup,
-        // Matches tab property to
         id: '',
-        // FontAwesome Icon, if you so choose
         icon: '',
-        // Run through localization
         label: 'LORE.Actor.Tabs.',
       };
       switch (partId) {
@@ -262,7 +259,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
           return tabs;
         case 'skills':
           tab.id = 'skills';
-          tab.label += 'Skills';
+          tab.label += 'Details';
           break;
         case 'gear':
           tab.id = 'gear';
@@ -276,7 +273,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
           tab.id = 'effects';
           tab.label += 'Effects';
           break;
-          case 'biography':
+        case 'biography':
           tab.id = 'biography';
           tab.label += 'Biography';
           break;

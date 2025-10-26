@@ -17,11 +17,13 @@ export class LoreContextMenus {
     this._wheelHandler = null;
 
     // Stable bound handlers to allow proper removeEventListener
-    this._onAttributeContextMenuBound = this._onAttributeContextMenu.bind(this);
-    this._onItemContextMenuBound = this._onItemContextMenu.bind(this);
-    this._onSkillContextMenuBound = this._onSkillContextMenu.bind(this);
-    this._onSkillsHeaderContextMenuBound = this._onSkillsHeaderContextMenu.bind(this);
-    this._onGearHeaderContextMenuBound = this._onGearHeaderContextMenu.bind(this);
+  this._onAttributeContextMenuBound = this._onAttributeContextMenu.bind(this);
+  this._onItemContextMenuBound = this._onItemContextMenu.bind(this);
+  this._onSkillContextMenuBound = this._onSkillContextMenu.bind(this);
+  this._onSkillsHeaderContextMenuBound = this._onSkillsHeaderContextMenu.bind(this);
+  this._onGearHeaderContextMenuBound = this._onGearHeaderContextMenu.bind(this);
+  this._onBanesHeaderContextMenuBound = this._onBanesHeaderContextMenu.bind(this);
+  this._onBoonsHeaderContextMenuBound = this._onBoonsHeaderContextMenu.bind(this);
   }
 
   /**
@@ -59,13 +61,86 @@ export class LoreContextMenus {
       skillsHeader.addEventListener('contextmenu', this._onSkillsHeaderContextMenuBound);
     }
 
-    // Gear headers (main + sub-headers); skip main armor header
-    const gearHeaders = rootEl.querySelectorAll('.tab.gear .items-header, .tab.gear .items-sub-header');
-    for (const header of gearHeaders) {
-      if (header.classList.contains('items-header') && header.dataset.gearType === 'armor') continue;
-      header.removeEventListener('contextmenu', this._onGearHeaderContextMenuBound);
-      header.addEventListener('contextmenu', this._onGearHeaderContextMenuBound);
+    // Boons/Banes headers (in Details tab)
+    // Find the Boons and Banes headers by their label text
+    const boonsHeader = Array.from(rootEl.querySelectorAll('.tab.skills .boons-banes-sub .items-header')).find(h => h.textContent.includes('Boons'));
+    if (boonsHeader) {
+      boonsHeader.removeEventListener('contextmenu', this._onBoonsHeaderContextMenuBound);
+      boonsHeader.addEventListener('contextmenu', this._onBoonsHeaderContextMenuBound);
     }
+    const banesHeader = Array.from(rootEl.querySelectorAll('.tab.skills .boons-banes-sub .items-header')).find(h => h.textContent.includes('Banes'));
+    if (banesHeader) {
+      banesHeader.removeEventListener('contextmenu', this._onBanesHeaderContextMenuBound);
+      banesHeader.addEventListener('contextmenu', this._onBanesHeaderContextMenuBound);
+    }
+  }
+
+  /**
+   * Right-click on Boons header
+   * @param {MouseEvent} event
+   */
+  async _onBoonsHeaderContextMenu(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    this.close();
+
+    if (!this.sheet.isEditable) return;
+
+    const items = [ { action: 'create-boon', label: 'New Boon' } ];
+    const menu = await this._renderMenu(items);
+    if (!menu) return;
+
+    menu.addEventListener('click', async (e) => {
+      const itemEl = e.target.closest('.lore-context-menu-item');
+      if (!itemEl) return;
+      const action = itemEl.dataset.action;
+      try {
+        if (action === 'create-boon') {
+          const docCls = getDocumentClass('Item');
+          const name = docCls.defaultName({ type: 'boon', parent: this.sheet.actor });
+          await docCls.create({ name, type: 'boon' }, { parent: this.sheet.actor });
+        }
+      } finally {
+        this.close();
+      }
+    });
+
+    this._positionAndOpen(menu, event);
+  }
+
+  /**
+   * Right-click on Banes header
+   * @param {MouseEvent} event
+   */
+  async _onBanesHeaderContextMenu(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    this.close();
+
+    if (!this.sheet.isEditable) return;
+
+    const items = [ { action: 'create-bane', label: 'New Bane' } ];
+    const menu = await this._renderMenu(items);
+    if (!menu) return;
+
+    menu.addEventListener('click', async (e) => {
+      const itemEl = e.target.closest('.lore-context-menu-item');
+      if (!itemEl) return;
+      const action = itemEl.dataset.action;
+      try {
+        if (action === 'create-bane') {
+          const docCls = getDocumentClass('Item');
+          const name = docCls.defaultName({ type: 'bane', parent: this.sheet.actor });
+          await docCls.create({ name, type: 'bane' }, { parent: this.sheet.actor });
+        }
+      } finally {
+        this.close();
+      }
+    });
+
+    this._positionAndOpen(menu, event);
   }
 
   /** Close any open menu and remove global listeners */
