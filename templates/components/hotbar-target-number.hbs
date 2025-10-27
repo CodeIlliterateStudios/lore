@@ -1,0 +1,6 @@
+<div id="lore-dv-widget" class="lore-dv-widget {{#if isGM}}is-gm{{/if}}">
+  <button class="dv-btn dv-dec" title="Decrease Target Number" aria-label="Decrease" {{#unless isGM}}disabled aria-disabled="true"{{/unless}}>▼</button>
+  <span class="dv-label">TN:</span>
+  <span class="dv-value">{{value}}</span>
+  <button class="dv-btn dv-inc" title="Increase Target Number" aria-label="Increase" {{#unless isGM}}disabled aria-disabled="true"{{/unless}}>▲</button>
+</div>

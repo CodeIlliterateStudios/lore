@@ -31,6 +31,6 @@ The official LORE TTRPG system for FoundryVTT. More details coming soon...
 
 ## Character Tiers
 
-- Spotlight characters (Players and Professionals) get the LORE die.
-- Extras (pawns) roll only their standard pool + attribute modifier—no LORE die, no crit fails.
+- Spotlight characters (Players and Legends) get the LORE die.
+- Extras (lackeys) roll only their standard pool + attribute modifier—no LORE die, no crit fails.
 

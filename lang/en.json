@@ -15,7 +15,8 @@
       "RollMod": "Roll Mod",
       "AdditionalMod": "Additional Mod",
       "Name": "Name",
-      "Target": "Target"
+      "Target": "Target",
+      "TargetNumber": "Target Number"
     },
     "Actor": {
       "Tabs": {
@@ -62,10 +63,10 @@
           "PlayerName": {"label": "Player Name"}
         }
       },
-      "Pawn": {
+      "Lackey": {
         "FIELDS": { }
       },
-      "Professional": {
+      "Legend": {
         "FIELDS": { }
       }
     },
@@ -161,8 +162,8 @@
   "TYPES": {
     "Actor": {
       "player": "Player",
-      "pawn": "Pawn",
-      "professional": "Professional"
+      "lackey": "Lackey",
+      "legend": "Legend"
     },
     "Item": {
       "gear": "Gear",

@@ -11,8 +11,8 @@
   "documentTypes": {
     "Actor": {
       "player": {},
-      "pawn": {},
-      "professional": {}
+      "lackey": {},
+      "legend": {}
     },
     "Item": {
       "gear": {},

@@ -294,11 +294,11 @@ body.theme-light {
   font-weight: bold;
   text-align: left;
 }
-.lore-roll-popup .difficulty-input-label {
+.lore-roll-popup .target-number-input-label {
   text-align: left;
   margin-right: 10px;
 }
-.lore-roll-popup .difficulty-input {
+.lore-roll-popup .target-number-input {
   width: 50px;
   background: var(--lore-c-slate);
   margin-bottom: 10px;
@@ -356,6 +356,13 @@ body.theme-light {
 }
 /* DV widget near the hotbar */
 .lore-dv-widget {
+  /* Tweak these custom properties to resize the widget easily */
+  --tn-scale: 1.5;
+  /* overall scale multiplier */
+  --tn-font-size: 13px;
+  /* base font size inside the widget */
+  --tn-gap: 6px;
+  /* space between elements */
   position: fixed;
   /* JS positions it relative to hotbar */
   z-index: 60;
@@ -363,13 +370,17 @@ body.theme-light {
   */
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--tn-gap);
   padding: 4px 8px;
   border-radius: 6px;
-  background: var(--color-border-light-highlight, rgba(0, 0, 0, 0.2));
-  color: var(--color-text-light-highlight, #fff);
-  border: 1px solid var(--color-border-dark, rgba(0, 0, 0, 0.4));
+  background: var(--lore-c-bg1);
+  color: var(--lore-c-txt1);
+  border: 1px solid var(--lore-c-bg2);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  font-size: var(--tn-font-size);
+  transform: scale(var(--tn-scale));
+  transform-origin: left bottom;
+  /* keep it anchored to hotbar corner when scaling */
 }
 .lore-dv-widget .dv-label {
   font-weight: 700;
@@ -382,23 +393,53 @@ body.theme-light {
 }
 .lore-dv-widget .dv-btn {
   appearance: none;
-  border: 1px solid var(--color-border-light-2, rgba(255, 255, 255, 0.5));
-  background: var(--color-bg-option, rgba(255, 255, 255, 0.1));
-  color: inherit;
-  border-radius: 4px;
-  width: 22px;
-  height: 22px;
-  line-height: 20px;
+  border: none;
+  background: var(--lore-c-bg2);
+  color: var(--lore-c-txt1);
+  /* Force a perfect circle and center content */
+  display: inline-grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
   padding: 0;
+  line-height: 1;
+  min-width: 18px;
+  /* defeat any theme min sizes */
+  min-height: 18px;
   cursor: pointer;
 }
 .lore-dv-widget .dv-btn:hover {
-  background: var(--color-bg-option-hover, rgba(255, 255, 255, 0.2));
+  filter: brightness(1.1);
 }
 .lore-dv-widget .dv-btn[aria-disabled="true"],
 .lore-dv-widget .dv-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+/* Ensure arrow icons (text, font icons, or inline SVG) use the text color */
+.lore-dv-widget .dv-btn > i,
+.lore-dv-widget .dv-btn > svg {
+  color: currentColor;
+  fill: currentColor;
+  line-height: 1;
+}
+/* Tweak icon sizing so it doesn't stretch the circle */
+.lore-dv-widget .dv-btn > i {
+  font-size: 11px;
+}
+.lore-dv-widget .dv-btn > svg {
+  width: 10px;
+  height: 10px;
+}
+/* Optional quick presets */
+.lore-dv-widget.is-small {
+  --tn-scale: 0.85;
+}
+.lore-dv-widget.is-large {
+  --tn-scale: 1.25;
 }
 .lore {
   /* Header field labels and inputs themed like actor header */

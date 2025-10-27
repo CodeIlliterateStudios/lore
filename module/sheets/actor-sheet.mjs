@@ -94,11 +94,11 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
         options.parts.push('skills', 'gear');
         if (this.#hasMagicksBackgroundBoon()) options.parts.push('magicks');
         break;
-      case 'pawn':
+      case 'lackey':
         options.parts.push('skills', 'gear');
         if (this.#hasMagicksBackgroundBoon()) options.parts.push('magicks');
         break;
-      case 'professional':
+      case 'legend':
         options.parts.push('skills', 'gear');
         if (this.#hasMagicksBackgroundBoon()) options.parts.push('magicks');
         break;

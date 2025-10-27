@@ -52,8 +52,8 @@ Hooks.once('init', function () {
   CONFIG.Actor.documentClass = loreActor;
   CONFIG.Actor.dataModels = {
     player: models.lorePlayer,
-    pawn: models.lorePawn,
-    professional: models.loreProfessional,
+    lackey: models.loreLackey,
+    legend: models.loreLegend,
   };
   
   CONFIG.Item.documentClass = loreItem;
@@ -144,6 +144,7 @@ Hooks.once('ready', function () {
     if (typeof load === 'function') {
       load([
         'systems/lore/templates/chat/message.hbs',
+        'systems/lore/templates/components/hotbar-target-number.hbs',
       ]);
     } else {
       console.warn('Lore | No Handlebars template loader available. Skipping template preload.');
@@ -181,23 +182,37 @@ Hooks.once('ready', function () {
   Hooks.on('createScene', updateDefaultBackground);
   Hooks.on('deleteScene', updateDefaultBackground);
 
-  // Insert and maintain the global Difficulty Value (DV) widget near the hotbar
-  const getDV = () => Math.max(0, Number(game.settings.get('lore', 'difficultyValue') || 0));
-  const setDV = (v) => game.user.isGM && game.settings.set('lore', 'difficultyValue', Math.max(0, Number(v) || 0));
+  // Insert and maintain the global Target Number (TN) widget near the hotbar
+  // Use the registered setting key 'targetNumberValue' consistently across the system
+  const getDV = () => Math.max(0, Number(game.settings.get('lore', 'targetNumberValue') || 0));
+  const setDV = (v) => game.user.isGM && game.settings.set('lore', 'targetNumberValue', Math.max(0, Number(v) || 0));
 
-  function ensureDVWidget() {
+  async function ensureDVWidget() {
     let el = document.getElementById('lore-dv-widget');
     if (!el) {
-      el = document.createElement('div');
-      el.id = 'lore-dv-widget';
-      el.className = 'lore-dv-widget';
-      el.innerHTML = `
-        <button class="dv-btn dv-dec" title="Decrease Difficulty" aria-label="Decrease">\u25BC</button>
-        <span class="dv-label">DV</span>
-        <span class="dv-value">0</span>
-        <button class="dv-btn dv-inc" title="Increase Difficulty" aria-label="Increase">\u25B2</button>
-      `;
-      document.body.appendChild(el);
+      try {
+        const tplPath = 'systems/lore/templates/components/hotbar-target-number.hbs';
+        const compiled = await foundry.applications.handlebars.renderTemplate(tplPath, {
+          value: Math.max(0, Number(game.settings.get('lore', 'targetNumberValue') || 0)),
+          isGM: !!game.user?.isGM,
+        });
+        const tmp = document.createElement('div');
+        tmp.innerHTML = compiled.trim();
+        el = tmp.firstElementChild;
+        if (el) document.body.appendChild(el);
+      } catch (e) {
+        console.error('Lore | Failed to render hotbar-target-number.hbs, falling back to DOM creation', e);
+        el = document.createElement('div');
+        el.id = 'lore-dv-widget';
+        el.className = 'lore-dv-widget';
+        el.innerHTML = `
+          <button class="dv-btn dv-dec" title="Decrease Target Number" aria-label="Decrease">\u25BC</button>
+          <span class="dv-label">TN</span>
+          <span class="dv-value">0</span>
+          <button class="dv-btn dv-inc" title="Increase Target Number" aria-label="Increase">\u25B2</button>
+        `;
+        document.body.appendChild(el);
+      }
 
       // Events
       const dec = el.querySelector('.dv-dec');
@@ -258,9 +273,31 @@ Hooks.once('ready', function () {
   // React to DV changes from any user
   Hooks.on('updateSetting', (setting) => {
     try {
-      if (setting?.key === 'lore.difficultyValue') updateDVWidget();
+      if (setting?.key === 'lore.targetNumberValue') updateDVWidget();
     } catch {}
   });
+
+  // One-time migration: rename actor types for existing worlds
+  (async () => {
+    try {
+      if (!game.user?.isGM) return;
+      const actors = Array.from(game.actors ?? []);
+      const mappings = [
+        { from: 'professional', to: 'legend' },
+        { from: 'pawn', to: 'lackey' },
+      ];
+      for (const map of mappings) {
+        const needs = actors.filter(a => a?.type === map.from);
+        for (const a of needs) {
+          try { await a.update({ type: map.to }); }
+          catch (e) { console.warn(`Lore | Failed to migrate actor type ${map.from} -> ${map.to}:`, a, e); }
+        }
+        if (needs.length) console.info(`Lore | Migrated ${needs.length} actor(s) from type '${map.from}' to '${map.to}'.`);
+      }
+    } catch (e) {
+      console.warn('Lore | Migration check failed', e);
+    }
+  })();
 
 
   // Automatically add default skills to new actors
