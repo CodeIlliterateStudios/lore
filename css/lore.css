@@ -488,6 +488,13 @@ body.theme-light {
   align-items: center;
   text-align: center;
 }
+.lore .flex-center {
+  justify-content: center;
+  align-items: center;
+}
+.lore .center-text {
+  text-align: center;
+}
 .lore .flex-group-left {
   justify-content: flex-start;
   text-align: left;
@@ -699,6 +706,40 @@ body.theme-light {
 .lore .item .resource-label {
   color: var(--lore-c-txt1);
   background: var(--lore-c-bg2);
+}
+.lore .effects {
+  background: var(--lore-c-bg1);
+  padding: 1px;
+}
+.lore .effects .effects-list,
+.lore .effects .effect-list {
+  /* Remove UA and core styles that indent and space lists */
+  margin: 0;
+  padding: 0;
+  padding-inline-start: 0;
+  list-style: none;
+}
+.lore .effects .effects-list .effects-header {
+  background: var(--lore-c-bg2);
+  padding: 1px;
+}
+.lore .effects .effects-list .effects-header > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.lore .effects .effects-list .effects-header .effect-name {
+  font-weight: bold;
+  color: var(--lore-c-txt1);
+}
+.lore .effects .effects-list .effects-header .effect-source {
+  font-weight: bold;
+  color: var(--lore-c-txt1);
+}
+.lore .effects .effects-list .effects-header .effect-controls {
+  font-weight: bold;
+  color: var(--lore-c-txt1);
 }
 .lore.actor.application .window-content,
 .lore.actor.window-app .window-content {

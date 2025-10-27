@@ -6,10 +6,6 @@
         <div class='effect-name effect-name flexrow'>
           {{localize section.label}}
         </div>
-        <div class='effect-source'>
-          {{localize 'LORE.Effect.Source'}}
-        </div>
-        <div class='effect-source'>{{localize 'EFFECT.TabDuration'}}</div>
         <div class='effect-controls effect-controls flexrow'>
           <a
             class='effect-control'
@@ -17,6 +13,7 @@
             data-document-class='ActiveEffect'
             data-origin="{{@root.item.uuid}}"
             data-img="icons/svg/aura.svg"
+            data-transfer="true"
             {{#if (eq section.type "inactive")}}
               data-disabled="true"
             {{else if (eq section.type "temporary")}}
@@ -41,7 +38,6 @@
               <img class='effect-image' src='{{effect.img}}' height="24" width="24"/>
               <div>{{effect.name}}</div>
             </div>
-            <div class='effect-source'>{{effect.sourceName}}</div>
             <div class='effect-duration'>{{effect.duration.label}}</div>
             <div class='effect-controls effect-controls flexrow'>
               {{#if @root.editable}}

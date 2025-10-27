@@ -6,6 +6,7 @@ import { LoreContextMenus } from "../helpers/context-menu.mjs";
 import { LoreTabNavigation } from "../helpers/tab-navigation.mjs";
 import { LoreWoundsFatigue } from "../helpers/wounds-fatigue.mjs";
 import { LoreMorale } from "../helpers/morale.mjs";
+import { prepareActiveEffectCategories } from "../helpers/effects.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -129,6 +130,18 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
 
     // Offloading context prep to a helper function
     this._prepareItems(context);
+
+    // Prepare dynamic slot arrays for wounds and fatigue based on actor max values
+    try {
+      const woundsMax = Math.max(0, Number(this.actor.system?.wounds?.max ?? 0));
+      const fatigueMax = Math.max(0, Number(this.actor.system?.fatigue?.max ?? 0));
+      context.woundSlots = Array.from({ length: woundsMax }, (_, i) => i + 1);
+      context.fatigueSlots = Array.from({ length: fatigueMax }, (_, i) => i + 1);
+    } catch (e) {
+      console.warn('LORE | Failed preparing wound/fatigue slots', e);
+      context.woundSlots = [1, 2, 3];
+      context.fatigueSlots = [1, 2, 3];
+    }
 
     // Prepare equipped items for paper doll and armor summary
     const equipped = {};

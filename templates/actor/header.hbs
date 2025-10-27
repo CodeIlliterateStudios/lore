@@ -36,15 +36,11 @@
 	      {{localize 'LORE.Actor.base.FIELDS.wounds.value.label'}}
       </label>
       <div class='wounds-content flexrow flex-center flex-between center-text'>
-	      <label style="position:relative;display:inline-block;">
-		      <input type='checkbox' name='system.wounds.checkboxes' value='1' class='wounds-checkbox'/><span class='custom-circle'></span>
-	      </label>
-	      <label style="position:relative;display:inline-block;">
-		      <input type='checkbox' name='system.wounds.checkboxes' value='2' class='wounds-checkbox'/><span class='custom-circle'></span>
-	      </label>
-	      <label style="position:relative;display:inline-block;">
-		      <input type='checkbox' name='system.wounds.checkboxes' value='3' class='wounds-checkbox'/><span class='custom-circle'></span>
-	      </label>
+        {{#each woundSlots}}
+        <label style="position:relative;display:inline-block;">
+          <input type='checkbox' name='system.wounds.checkboxes' value='{{this}}' class='wounds-checkbox'/><span class='custom-circle'></span>
+        </label>
+        {{/each}}
       </div>
     </div>
 
@@ -80,15 +76,11 @@
 	      {{localize 'LORE.Actor.base.FIELDS.fatigue.value.label'}}
       </label>
       <div class='fatigue-content flexrow flex-center flex-between center-text'>
-	      <label style="position:relative;display:inline-block;">
-		      <input type='checkbox' name='system.fatigue.checkboxes' value='1' class='fatigue-checkbox'/><span class='custom-circle'></span>
-	      </label>
-	      <label style="position:relative;display:inline-block;">
-		      <input type='checkbox' name='system.fatigue.checkboxes' value='2' class='fatigue-checkbox'/><span class='custom-circle'></span>
-	      </label>
-	      <label style="position:relative;display:inline-block;">
-		      <input type='checkbox' name='system.fatigue.checkboxes' value='3' class='fatigue-checkbox'/><span class='custom-circle'></span>
-	      </label>
+        {{#each fatigueSlots}}
+        <label style="position:relative;display:inline-block;">
+          <input type='checkbox' name='system.fatigue.checkboxes' value='{{this}}' class='fatigue-checkbox'/><span class='custom-circle'></span>
+        </label>
+        {{/each}}
       </div>
     </div>
 

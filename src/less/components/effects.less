@@ -1,2 +1,43 @@
 // main: "../lore.less", out: false
-// Effects component styles placeholder
+
+.effects {
+    background: var(--lore-c-bg1);
+    padding: 1px;
+}
+
+.effects .effects-list,
+.effects .effect-list {
+    /* Remove UA and core styles that indent and space lists */
+    margin: 0;
+    padding: 0;
+    padding-inline-start: 0;
+    list-style: none;
+}
+
+.effects .effects-list .effects-header {
+    background: var(--lore-c-bg2);
+    padding: 1px;
+}
+
+// Center the header labels within the effects list
+.effects .effects-list .effects-header > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.effects .effects-list .effects-header .effect-name {
+    font-weight: bold;
+    color: var(--lore-c-txt1);
+}
+
+.effects .effects-list .effects-header .effect-source {
+    font-weight: bold;
+    color: var(--lore-c-txt1);
+}
+
+.effects .effects-list .effects-header .effect-controls {
+    font-weight: bold;
+    color: var(--lore-c-txt1);
+}
