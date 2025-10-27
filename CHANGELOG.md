@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## 0.0.3 - Unreleased
+
+### UX
+
+- Implemented targeting for weapon skill and damage rolls.
+- Added a target number window next to hotbar for GM to set a global difficulty for all rolls. Setting this to 0 will ignore it, and allow manual per roll difficulty.
+
+### UI
+
+- Improved general layout and styling.
+
 ## 0.0.2 - 2025-10-26
 
 ### Features

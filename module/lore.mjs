@@ -8,6 +8,7 @@ import { loreItemSheet } from './sheets/item-sheet.mjs';
 import { LORE } from './helpers/config.mjs';
 import './helpers/chat.mjs';
 import { registerSystemSettings } from './helpers/settings.mjs';
+import { RollHandler } from './helpers/roll-handler.mjs';
 // Import DataModel classes
 import * as models from './data/_module.mjs';
 
@@ -180,6 +181,87 @@ Hooks.once('ready', function () {
   Hooks.on('createScene', updateDefaultBackground);
   Hooks.on('deleteScene', updateDefaultBackground);
 
+  // Insert and maintain the global Difficulty Value (DV) widget near the hotbar
+  const getDV = () => Math.max(0, Number(game.settings.get('lore', 'difficultyValue') || 0));
+  const setDV = (v) => game.user.isGM && game.settings.set('lore', 'difficultyValue', Math.max(0, Number(v) || 0));
+
+  function ensureDVWidget() {
+    let el = document.getElementById('lore-dv-widget');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'lore-dv-widget';
+      el.className = 'lore-dv-widget';
+      el.innerHTML = `
+        <button class="dv-btn dv-dec" title="Decrease Difficulty" aria-label="Decrease">\u25BC</button>
+        <span class="dv-label">DV</span>
+        <span class="dv-value">0</span>
+        <button class="dv-btn dv-inc" title="Increase Difficulty" aria-label="Increase">\u25B2</button>
+      `;
+      document.body.appendChild(el);
+
+      // Events
+      const dec = el.querySelector('.dv-dec');
+      const inc = el.querySelector('.dv-inc');
+      dec?.addEventListener('click', () => {
+        if (!game.user.isGM) return;
+        const curr = getDV();
+        setDV(Math.max(0, curr - 1));
+        updateDVWidget();
+      });
+      inc?.addEventListener('click', () => {
+        if (!game.user.isGM) return;
+        const curr = getDV();
+        setDV(curr + 1);
+        updateDVWidget();
+      });
+    }
+    updateDVWidget();
+    positionDVWidget();
+    return el;
+  }
+
+  function updateDVWidget() {
+    const el = document.getElementById('lore-dv-widget');
+    if (!el) return;
+    const valEl = el.querySelector('.dv-value');
+    const dec = el.querySelector('.dv-dec');
+    const inc = el.querySelector('.dv-inc');
+    const dv = getDV();
+    if (valEl) valEl.textContent = String(dv > 0 ? dv : 0);
+    const gm = !!game.user?.isGM;
+    [dec, inc].forEach(btn => {
+      if (!btn) return;
+      btn.disabled = !gm;
+      btn.setAttribute('aria-disabled', String(!gm));
+    });
+    // Set a class to visually indicate non-GM users (buttons appear disabled)
+    el.classList.toggle('is-gm', gm);
+  }
+
+  function positionDVWidget() {
+    const el = document.getElementById('lore-dv-widget');
+    const hb = document.getElementById('hotbar');
+    if (!el || !hb) return;
+    try {
+      const rect = hb.getBoundingClientRect();
+      // Position fixed near the right edge of the hotbar
+      el.style.position = 'fixed';
+      el.style.left = `${Math.round(rect.right + 8)}px`;
+      el.style.bottom = `${Math.round(window.innerHeight - rect.bottom + 2)}px`;
+    } catch {}
+  }
+
+  // Create/position on ready and when hotbar re-renders or the window resizes
+  ensureDVWidget();
+  Hooks.on('renderHotbar', ensureDVWidget);
+  window.addEventListener('resize', () => positionDVWidget());
+  // React to DV changes from any user
+  Hooks.on('updateSetting', (setting) => {
+    try {
+      if (setting?.key === 'lore.difficultyValue') updateDVWidget();
+    } catch {}
+  });
+
 
   // Automatically add default skills to new actors
   Hooks.on('createActor', async function(actor, options, userId) {
@@ -319,19 +401,7 @@ function rollItemMacro(itemUuid) {
       );
     }
 
-    // Do not roll for gear items
-    if (item.type === 'gear') {
-      return ui.notifications?.info?.(`${item.name} is gear and cannot be rolled.`);
-    }
-
-    // Trigger the item roll and send it to chat directly (no popup)
-  const rollResult = await item.roll();
-    const roll = rollResult instanceof Roll ? rollResult : new Roll(rollResult?.formula || '');
-    const rollMode = game.settings.get('core', 'rollMode');
-    await roll.toMessage({
-      speaker: ChatMessage.getSpeaker({ actor: item.parent }),
-      flavor: item.name,
-      rollMode,
-    });
+    // Use the centralized roll handler so DV and chat card logic apply
+    await RollHandler.rollItem(item);
   });
 }

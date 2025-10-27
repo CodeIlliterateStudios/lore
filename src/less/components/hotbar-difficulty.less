@@ -1,0 +1,47 @@
+/* DV widget near the hotbar */
+.lore-dv-widget {
+  position: fixed; /* JS positions it relative to hotbar */
+  z-index: 60; /* above hotbar
+  */
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--color-border-light-highlight, rgba(0,0,0,0.2));
+  color: var(--color-text-light-highlight, #fff);
+  border: 1px solid var(--color-border-dark, rgba(0,0,0,0.4));
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.lore-dv-widget .dv-label {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.lore-dv-widget .dv-value {
+  min-width: 1.5em;
+  text-align: center;
+  font-weight: 700;
+}
+
+.lore-dv-widget .dv-btn {
+  appearance: none;
+  border: 1px solid var(--color-border-light-2, rgba(255,255,255,0.5));
+  background: var(--color-bg-option, rgba(255,255,255,0.1));
+  color: inherit;
+  border-radius: 4px;
+  width: 22px;
+  height: 22px;
+  line-height: 20px;
+  padding: 0;
+  cursor: pointer;
+}
+.lore-dv-widget .dv-btn:hover {
+  background: var(--color-bg-option-hover, rgba(255,255,255,0.2));
+}
+.lore-dv-widget .dv-btn[aria-disabled="true"],
+.lore-dv-widget .dv-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

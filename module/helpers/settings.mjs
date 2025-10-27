@@ -8,13 +8,14 @@
  * registerSystemSettings() and wire up any effects in your own hooks.
  */
 export function registerSystemSettings() {
-  // Example (disabled):
-  // game.settings.register('lore', 'exampleToggle', {
-  //   name: 'LORE.Settings.ExampleToggle.Name',
-  //   hint: 'LORE.Settings.ExampleToggle.Hint',
-  //   scope: 'client', // or 'world'
-  //   config: true,
-  //   type: Boolean,
-  //   default: false,
-  // });
+  // Global Difficulty Value (DV) used to evaluate success/failure for rolls.
+  // 0 means "not set"; when > 0, all rolls use this DV for outcome evaluation.
+  game.settings.register('lore', 'difficultyValue', {
+    name: 'Difficulty Value',
+    hint: 'When greater than zero, all rolls use this value to determine success or failure. Only GMs can change it via the hotbar widget.',
+    scope: 'world',
+    config: false,
+    type: Number,
+    default: 0,
+  });
 }

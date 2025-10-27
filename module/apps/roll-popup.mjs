@@ -93,7 +93,7 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
     $el.find('.close-popup').off('click').on('click', () => this.close());
     // Keep the modifier property in sync with the input field
     const $mod = $el.find('#modifier-input');
-    const $diff = $el.find('#difficulty-input');
+  const $diff = $el.find('#difficulty-input');
     const $formula = $el.find('.roll-formula');
     const baseFormula = this.rollData?.formula ?? '';
     const renderFormula = (base, mod) => {
@@ -125,6 +125,9 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
 
     // Keep difficulty in sync
     if ($diff.length) {
+      // If a global DV is set, use it as the default value in the field
+      const globalDV = Math.max(0, Number(game.settings.get('lore', 'difficultyValue') || 0));
+      if (globalDV > 0) $diff.val(globalDV);
       this.difficulty = parseDiff($diff.val());
       $diff.off('input change').on('input change', (ev) => {
         this.difficulty = parseDiff(ev.currentTarget.value);
