@@ -148,6 +148,27 @@ body.theme-light {
   background: color-mix(in srgb, var(--lore-c-ivory) 3%, transparent);
   border: 1px solid var(--lore-c-slate);
 }
+.lore-roll-card .lore-target {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: var(--color-text-dark-5, #555);
+}
+.lore-roll-card .lore-target .lore-target-label {
+  font-weight: 600;
+  color: var(--color-text, inherit);
+}
+.lore-roll-card .lore-target .lore-target-img {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-light, #999);
+}
+.lore-roll-card .lore-target .lore-target-name {
+  font-weight: 600;
+}
 .lore-roll-card .lore-main-roll {
   margin-top: 10px;
   text-align: left;
@@ -1494,6 +1515,13 @@ body.theme-light {
 .lore .items-list .item.empty .item-name {
   opacity: 0.7;
   font-style: italic;
+}
+.lore .items-list .item .item-armor {
+  margin-left: auto;
+  justify-content: flex-end;
+  text-align: right;
+  display: flex;
+  align-items: center;
 }
 .lore .paper-doll-with-summary {
   display: flex;

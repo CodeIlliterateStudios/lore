@@ -1,5 +1,16 @@
 <div class="lore-roll-card">
   
+  {{!-- Target (optional, typically for weapon attacks) --}}
+  {{#if target}}
+  <div class="lore-target">
+    <span class="lore-target-label">Target:</span>
+    {{#if target.img}}
+      <img class="lore-target-img" src="{{target.img}}" alt="{{target.name}}"/>
+    {{/if}}
+    <span class="lore-target-name">{{target.name}}</span>
+  </div>
+  {{/if}}
+  
   <!-- Main/normal roll -->
   <div class="lore-main-roll">
     {{{mainRollHtml}}}

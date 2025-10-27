@@ -248,7 +248,6 @@
 .items-list.items-weapons .items-header,
 .items-list.items-weapons .item {
 	display: grid;
-	// equip | name | roll | mod | range
 	grid-template-columns: auto 2fr 1fr 1fr 1fr;
 	align-items: center;
 	column-gap: 8px;
@@ -267,7 +266,6 @@
 	white-space: nowrap;
 }
 
-// Override color for weapon roll column to match other columns
 .items-list.items-weapons .item .item-formula,
 .items-list.items-weapons .items-header .item-formula {
 	color: var(--lore-c-txt1);
@@ -281,4 +279,12 @@
 .items-list .item.empty .item-name {
 	opacity: 0.7;
 	font-style: italic;
+}
+
+.items-list .item .item-armor {
+  margin-left: auto;
+  justify-content: flex-end;
+  text-align: right;
+  display: flex;
+  align-items: center;
 }
