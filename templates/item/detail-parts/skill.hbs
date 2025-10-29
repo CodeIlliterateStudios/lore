@@ -4,14 +4,14 @@
   data-group='primary'
   data-tab='details'
 >
-  <div class="form-group">
-    <label for="system.rank.value">{{localize 'LORE.Item.Skill.Rank'}}</label>
-    <input type="number" name="system.rank.value" value="{{system.rank.value}}" min="1" max="{{system.rank.max}}"/>
+  <div class="skill-form-group">
+    <label class='skill-rank-label' for="system.rank.value">{{localize 'LORE.Item.Skill.Rank'}}</label>
+    <input class='skill-rank-input' type="number" name="system.rank.value" value="{{system.rank.value}}" min="1" max="{{system.rank.max}}"/>
   </div>
 
-  <div class="form-group">
-    <label for="system.tiedAttribute">{{localize 'LORE.Item.Skill.Attribute'}}</label>
-    <select name="system.tiedAttribute" id="system.tiedAttribute">
+  <div class="skill-form-group">
+    <label class='skill-attribute-label' for="system.tiedAttribute">{{localize 'LORE.Item.Skill.Attribute'}}</label>
+    <select class='skill-attribute-select' name="system.tiedAttribute" id="system.tiedAttribute">
       {{#each config.attributeTypes as |type key|}}
         <option value="{{key}}" {{#if (eq ../system.tiedAttribute key)}}selected{{/if}}>
           {{localize (lookup ../config.attributes key)}}

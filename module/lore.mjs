@@ -299,6 +299,30 @@ Hooks.once('ready', function () {
     }
   })();
 
+  // One-time migration: ensure prototype token link defaults by actor type
+  (async () => {
+    try {
+      if (!game.user?.isGM) return;
+      const actors = Array.from(game.actors ?? []);
+      let changed = 0;
+      for (const a of actors) {
+        const desiredLink = a.type === 'lackey' ? false : (a.type === 'player' || a.type === 'legend' ? true : undefined);
+        if (desiredLink === undefined) continue;
+        const currentLink = a.prototypeToken?.actorLink;
+        if (typeof currentLink === 'boolean' && currentLink === desiredLink) continue;
+        try {
+          await a.prototypeToken?.update({ actorLink: desiredLink });
+          changed++;
+        } catch (e) {
+          console.warn('Lore | Failed to migrate prototype token link state for actor:', a, e);
+        }
+      }
+      if (changed) console.info(`Lore | Updated prototype token link state for ${changed} actor(s).`);
+    } catch (e) {
+      console.warn('Lore | Prototype token link migration failed', e);
+    }
+  })();
+
 
   // Automatically add default skills to new actors
   Hooks.on('createActor', async function(actor, options, userId) {
@@ -307,9 +331,28 @@ Hooks.once('ready', function () {
       // For newly created Player actors, default the prototype token disposition to Friendly
       if (actor.type === 'player' && actor.prototypeToken) {
         try {
-          await actor.prototypeToken.update({ disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY });
+          await actor.prototypeToken.update({
+            disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+            actorLink: true,
+          });
         } catch (err) {
-          console.error('Lore | Failed to set default token disposition to Friendly:', err);
+          console.error('Lore | Failed to set default token disposition/link for Player:', err);
+        }
+      }
+      // Ensure Legends are linked by default
+      if (actor.type === 'legend' && actor.prototypeToken) {
+        try {
+          await actor.prototypeToken.update({ actorLink: true });
+        } catch (err) {
+          console.error('Lore | Failed to set default token link for Legend:', err);
+        }
+      }
+      // Ensure Lackeys are unlinked by default
+      if (actor.type === 'lackey' && actor.prototypeToken) {
+        try {
+          await actor.prototypeToken.update({ actorLink: false });
+        } catch (err) {
+          console.error('Lore | Failed to set default token link for Lackey:', err);
         }
       }
 

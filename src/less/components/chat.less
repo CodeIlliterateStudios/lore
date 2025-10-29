@@ -22,6 +22,8 @@
   color: var(--lore-c-txt1);
 }
 
+/* Removed earlier explicit scrollbar rules in favor of CSS variable overrides below */
+
 .lcm-header {
   display: flex;
   align-items: center;
@@ -94,6 +96,17 @@
   background: color-mix(in srgb, var(--lore-c-ivory) 3%, transparent);
 
   border: 1px solid var(--lore-c-slate);
+}
+
+/* Integrate with Foundry's layered global scrollbar rule by overriding the
+   CSS custom properties it reads (--color-scrollbar, --color-scrollbar-track).
+   Using !important ensures these variables win the cascade even across layers. */
+.chat-sidebar,
+#sidebar .tab[data-tab="chat"],
+.chat-popout .window-content,
+#chat-log {
+  --color-scrollbar: var(--lore-c-bg2) !important;
+  --color-scrollbar-track: var(--lore-c-bg1) !important;
 }
 
 

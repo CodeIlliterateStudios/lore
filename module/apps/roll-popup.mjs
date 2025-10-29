@@ -93,7 +93,7 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
     $el.find('.close-popup').off('click').on('click', () => this.close());
     // Keep the modifier property in sync with the input field
     const $mod = $el.find('#modifier-input');
-  const $tn = $el.find('#target-number-input');
+    const $tn = $el.find('#target-number-input');
     const $formula = $el.find('.roll-formula');
     const baseFormula = this.rollData?.formula ?? '';
     const renderFormula = (base, mod) => {
@@ -107,7 +107,7 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
       const n = Number(val);
       return Number.isFinite(n) ? Math.trunc(n) : 0;
     };
-    const parseDiff = (val) => {
+    const parseTN = (val) => {
       const n = Number(val);
       // Target Number cannot be negative; treat NaN as 0 (meaning no check)
       return Number.isFinite(n) ? Math.max(0, Math.trunc(n)) : 0;
@@ -124,20 +124,20 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
     }
 
     // Keep target number in sync
-    if ($diff.length) {
+    if ($tn.length) {
       // If a global DV is set, use it as the default value in the field
       const globalDV = Math.max(0, Number(game.settings.get('lore', 'targetNumberValue') || 0));
-      if (globalDV > 0) $diff.val(globalDV);
-      this.targetNumber = parseDiff($diff.val());
-      $diff.off('input change').on('input change', (ev) => {
-        this.targetNumber = parseDiff(ev.currentTarget.value);
+      if (globalDV > 0) $tn.val(globalDV);
+      this.targetNumber = parseTN($tn.val());
+      $tn.off('input change').on('input change', (ev) => {
+        this.targetNumber = parseTN(ev.currentTarget.value);
       });
     }
 
     $el.find('.confirm-roll').off('click').on('click', () => {
       // Ensure we capture the latest modifier value right before confirm
       if ($mod.length) this.modifier = parseMod($mod.val());
-      if ($diff.length) this.targetNumber = parseDiff($diff.val());
+      if ($tn.length) this.targetNumber = parseTN($tn.val());
       if (this._confirmResolve) this._confirmResolve(true);
       this.close();
     });

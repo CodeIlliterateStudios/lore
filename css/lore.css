@@ -86,6 +86,7 @@ body.theme-light {
   border-radius: 10px;
   color: var(--lore-c-txt1);
 }
+/* Removed earlier explicit scrollbar rules in favor of CSS variable overrides below */
 .lcm-header {
   display: flex;
   align-items: center;
@@ -147,6 +148,16 @@ body.theme-light {
   border-radius: 8px;
   background: color-mix(in srgb, var(--lore-c-ivory) 3%, transparent);
   border: 1px solid var(--lore-c-slate);
+}
+/* Integrate with Foundry's layered global scrollbar rule by overriding the
+   CSS custom properties it reads (--color-scrollbar, --color-scrollbar-track).
+   Using !important ensures these variables win the cascade even across layers. */
+.chat-sidebar,
+#sidebar .tab[data-tab="chat"],
+.chat-popout .window-content,
+#chat-log {
+  --color-scrollbar: var(--lore-c-bg2) !important;
+  --color-scrollbar-track: var(--lore-c-bg1) !important;
 }
 .lore-roll-card .lore-target {
   display: flex;
@@ -1910,6 +1921,16 @@ body.theme-light {
 }
 .lore.actor .tab.skills .sub-tab[data-group='details-sub'].active {
   display: block;
+}
+.lore .skill-form-group .skill-rank-label,
+.lore .skill-form-group .skill-attribute-label {
+  color: var(--lore-c-txt2);
+  font-weight: bold;
+}
+.lore .skill-form-group .skill-rank-input,
+.lore .skill-form-group .skill-attribute-select {
+  background: var(--lore-c-bg2);
+  color: var(--lore-c-txt1);
 }
 .lore .magicks {
   padding-top: 10px;
