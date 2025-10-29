@@ -10,7 +10,11 @@
       </div>
     </div>
     <div class="lcm-right">
-      {{#if tags}}
+      {{#if visibilityLabel}}
+        <div class="lcm-tags">
+          <span class="lcm-tag lcm-visibility">{{visibilityLabel}}</span>
+        </div>
+      {{else if tags}}
         <div class="lcm-tags">
           {{#each tags}}
             <span class="lcm-tag">{{this}}</span>

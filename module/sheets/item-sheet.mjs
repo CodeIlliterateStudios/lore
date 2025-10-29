@@ -98,13 +98,11 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
         break;
       case 'boon':
         options.parts.push('detailsBoon');
-        // Only boons/banes have Effects tab
-        options.parts.push('effects');
+        // options.parts.push('effects');
         break;
       case 'bane':
         options.parts.push('detailsBane');
-        // Only boons/banes have Effects tab
-        options.parts.push('effects');
+        // options.parts.push('effects');
         break;
     }
   }
@@ -379,6 +377,8 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
     const effect = this._getEffect(target);
     await effect.update({ disabled: !effect.disabled });
   }
+
+  
 
   /** Helper Functions */
 

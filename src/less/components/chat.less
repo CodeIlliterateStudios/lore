@@ -1,5 +1,4 @@
 // main: "../lore.less", out: false
-// Lore chat message styles responsive to theme variables
 
 .chat-sidebar:not(.sidebar-popout) {
   background: var(--lore-c-bg1);
@@ -21,8 +20,6 @@
   border-radius: 10px;
   color: var(--lore-c-txt1);
 }
-
-/* Removed earlier explicit scrollbar rules in favor of CSS variable overrides below */
 
 .lcm-header {
   display: flex;
@@ -98,9 +95,6 @@
   border: 1px solid var(--lore-c-slate);
 }
 
-/* Integrate with Foundry's layered global scrollbar rule by overriding the
-   CSS custom properties it reads (--color-scrollbar, --color-scrollbar-track).
-   Using !important ensures these variables win the cascade even across layers. */
 .chat-sidebar,
 #sidebar .tab[data-tab="chat"],
 .chat-popout .window-content,

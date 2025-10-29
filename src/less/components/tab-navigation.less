@@ -1,4 +1,5 @@
-// Fix for scroll cutoff: ensure all parent containers allow flex children to shrink
+// main: "../lore.less", out: false
+
 &.actor {
     &.application .window-content,
     &.window-app .window-content {
@@ -12,7 +13,6 @@
         flex: 1 1 auto;
         display: flex;
         flex-direction: column;
-        /* overflow: hidden; removed to allow child scrolling */
     }
     &.application .window-content > .tab.gear.active,
     &.window-app .window-content > .tab.gear.active {
@@ -20,14 +20,10 @@
         flex-direction: column;
         flex: 1 1 auto;
         min-height: 0;
-        /* overflow: hidden; removed to allow child scrolling */
     }
 }
-// main: "../lore.less", out: false
 
-// Navigation tabs and tab content layout
 &.actor {
-    // Primary (main) navigation bar within the window content
     &.application .window-content > nav.tabs.main-tabs,
     &.window-app .window-content > nav.tabs.main-tabs {
         grid-row: 2;
@@ -40,7 +36,6 @@
         border-bottom: 1px solid var(--lore-c-bg2);
         
     }
-    // Main tab links sizing
     &.application .window-content nav.tabs.main-tabs a.main-tab,
     &.window-app .window-content nav.tabs.main-tabs a.main-tab {
         padding: 4px 8px;
@@ -55,8 +50,6 @@
             text-shadow: 0 0 8px var(--lore-c-txt1);
         }
     }
-
-    // Support when main nav is not a direct child
     &.application .window-content nav.tabs.main-tabs,
     &.window-app .window-content nav.tabs.main-tabs {
         grid-row: 2;
@@ -71,26 +64,20 @@
         border-bottom: 1px solid var(--lore-c-bg2);
     }
 
-    
-
-    // Sub-tabs navigation (e.g., inside Gear tab)
     &.application .window-content nav.tabs.sub-tabs,
     &.window-app .window-content nav.tabs.sub-tabs {
-        /* Sub nav appears within a primary tab's content area */
         display: flex;
         flex-wrap: wrap;
         gap: 4px 6px;
         align-items: center;
         padding: 2px 4px;
-        //margin: 4px 0 6px;
         border-top: none;
         background: var(--lore-c-bg1);
-        //border-top: 1px solid var(--lore-c-bg2);
         border-bottom: 1px solid var(--lore-c-bg2);
         font-size: 12px;
         line-height: 1.4;
     }
-    // Sub tab links sized slightly smaller than main tabs
+
     &.application .window-content nav.tabs.sub-tabs a.item,
     &.window-app .window-content nav.tabs.sub-tabs a.item {
         padding: 2px 6px;
@@ -105,7 +92,6 @@
         }
     }
 
-    // Generic tab content containers
     &.application .window-content > .tab,
     &.window-app .window-content > .tab {
         grid-row: 3;
@@ -116,7 +102,6 @@
         color: var(--lore-c-txt2);
     }
 
-    // Only show the active primary tab
     &.application .window-content > .tab[data-group='primary'],
     &.window-app .window-content > .tab[data-group='primary'] {
         display: none;
@@ -126,7 +111,6 @@
         display: block;
     }
 
-    // Hide non-active sub-tabs (any tab groups other than primary)
     &.application .window-content > .tab[data-group]:not([data-group='primary']),
     &.window-app .window-content > .tab[data-group]:not([data-group='primary']) {
         display: none;
@@ -136,7 +120,6 @@
         display: block;
     }
 
-    // When tabs are not direct children, ensure correct grid placement
     &.application .window-content .tab,
     &.window-app .window-content .tab {
         grid-row: 3;
@@ -144,6 +127,4 @@
         min-height: 0;
         overflow: auto;
     }
-
-    
 }

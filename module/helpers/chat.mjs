@@ -29,16 +29,64 @@ Hooks.on('renderChatMessageHTML', async (message, html, data) => {
     const timestamp = new Date(ts).toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit' });
 
   // Flags and tags
-    const isWhisper = Array.isArray(message.whisper) && message.whisper.length > 0;
+    // Normalize message visibility fields across Foundry versions (v10-v13)
     const isBlind = !!message.blind;
     const isRoll = (Array.isArray(message.rolls) && message.rolls.length > 0) || !!html.querySelector('.dice-roll');
+
+    // Resolve whisper recipients to an array of user IDs
+    let whisperIds = [];
+    try {
+      if (typeof message.getWhisperRecipients === 'function') {
+        // v12+ helper returns User[]
+        whisperIds = (message.getWhisperRecipients() ?? []).map(u => u?.id).filter(Boolean);
+      } else if (message.recipients) {
+        // Some versions expose recipients as a Set/array of Users
+        const recips = message.recipients instanceof Set ? Array.from(message.recipients) : message.recipients;
+        whisperIds = (recips ?? []).map(u => u?.id ?? u).filter(Boolean);
+      } else if (message.whisper instanceof Set) {
+        whisperIds = Array.from(message.whisper);
+      } else if (Array.isArray(message.whisper)) {
+        whisperIds = message.whisper;
+      } else if (typeof message.whisper === 'string' && message.whisper.length) {
+        whisperIds = [message.whisper];
+      }
+    } catch (e) {
+      console.warn('Lore | Unable to normalize whisper recipients:', e);
+      whisperIds = Array.isArray(message.whisper) ? message.whisper : [];
+    }
+    const isWhisper = whisperIds.length > 0;
   const rollType = message?.flags?.lore?.rollType || null;
   const rollName = message?.flags?.lore?.rollName || null;
 
+    // Compute a single, human-friendly visibility label for roll messages
+    let visibilityLabel = null;
     const tags = [];
-    if (isRoll) tags.push('Roll');
-    if (isWhisper) tags.push('Whisper');
-    if (isBlind) tags.push('Blind');
+    try {
+      if (isRoll) {
+        const authorId = (message.author?.id) || (message.user?.id) || (typeof message.user === 'string' ? message.user : null);
+        const gmIds = (game.users ?? []).filter(u => u.isGM).map(u => u.id);
+
+        // Evaluate whisper target composition
+        const onlyGMs = whisperIds.length > 0 && whisperIds.every(id => gmIds.includes(id));
+        const toSelf = whisperIds.length === 1 && authorId && whisperIds[0] === authorId;
+
+        if (isBlind && onlyGMs) visibilityLabel = 'Blind GM';
+        else if (onlyGMs) visibilityLabel = 'Private GM';
+        else if (toSelf) visibilityLabel = 'Self';
+        else if (!isWhisper) visibilityLabel = 'Public';
+        else visibilityLabel = 'Private';
+      } else {
+        // Non-roll messages keep the old tag behavior
+        if (isWhisper) tags.push('Whisper');
+        if (isBlind) tags.push('Blind');
+      }
+    } catch (e) {
+      // Fallback to previous behavior on any unexpected error
+      if (isRoll) tags.push('Roll');
+      if (isWhisper) tags.push('Whisper');
+      if (isBlind) tags.push('Blind');
+      console.warn('Lore | Failed to compute visibility label:', e);
+    }
 
     // Render our custom partial
     const context = {
@@ -47,6 +95,7 @@ Hooks.on('renderChatMessageHTML', async (message, html, data) => {
       // timestamp,
       rollType,
       rollName,
+      visibilityLabel,
       tags,
       content: originalContentHTML,
     };

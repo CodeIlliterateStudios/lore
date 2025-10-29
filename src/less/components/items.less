@@ -19,10 +19,8 @@
 	&.window-app .window-content {
 		display: block;
 	}
-		// Normalize spacing inside Details tab to avoid ghost space from collapsed margins
 		&.application .window-content > .tab.details,
 		&.window-app .window-content > .tab.details {
-			/* Provide padding so first/last child margins don't collapse outside */
 			padding: 6px 10px;
 		}
 		&.application .window-content > .tab.details > :first-child,
@@ -33,14 +31,14 @@
 		&.window-app .window-content > .tab.details > :last-child {
 			margin-bottom: 0;
 		}
-	// Item tabs should size to content; don't force full-height which creates empty top/bottom space
+	
 	&.application .window-content > .tab.active,
 	&.window-app .window-content > .tab.active {
 		height: auto;
 		min-height: 0;
 		overflow: visible;
 	}
-	// Item tab navigation styled like actor tabs
+	
 	&.application .window-content > nav.tabs.main-tabs,
 	&.window-app .window-content > nav.tabs.main-tabs {
 		grid-row: 2;
@@ -53,7 +51,7 @@
 		border-top: 1px solid var(--lore-c-bg2);
 		border-bottom: 1px solid var(--lore-c-bg2);
 	}
-	// Main tab links sizing
+	
 	&.application .window-content nav.tabs.main-tabs a.main-tab,
 	&.window-app .window-content nav.tabs.main-tabs a.main-tab {
 		padding: 4px 8px;
@@ -68,7 +66,7 @@
 			text-shadow: 0 0 8px var(--lore-c-txt1);
 		}
 	}
-	// Sub-tabs navigation (e.g., inside item tab)
+	
 	&.application .window-content nav.tabs.sub-tabs,
 	&.window-app .window-content nav.tabs.sub-tabs {
 		display: flex;
@@ -81,7 +79,7 @@
 		font-size: 12px;
 		line-height: 1.4;
 	}
-	// Sub tab links sized slightly smaller than main tabs
+	
 	&.application .window-content nav.tabs.sub-tabs a.item,
 	&.window-app .window-content nav.tabs.sub-tabs a.item {
 		padding: 2px 6px;
@@ -118,7 +116,7 @@
 	box-sizing: border-box;
 	background: transparent !important;
 }
-/* Header field labels and inputs themed like actor header */
+
 .item-sheet-header .resource .resource-label {
 	color: var(--lore-c-txt1);
 }
@@ -152,7 +150,23 @@
 	color: var(--lore-c-txt1);
 }
 
-/* Tab content for item sheets adopts actor theme */
+.weapon-damage-label {
+	color: var(--lore-c-txt1);
+	font-weight: bold;
+	display: block;
+	width: max-content;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 2px;
+}
+.weapon-damage-formula {
+	color: var(--lore-c-txt2);
+	display: block;
+	width: max-content;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .lore.item .tab[data-group="primary"] {
 	background: var(--lore-c-bg1);
 	color: var(--lore-c-txt1);
@@ -196,4 +210,7 @@
 .item .resource-label {
 	color: var(--lore-c-txt1);
 	background: var(--lore-c-bg2);
+}
+.resource .resource-checkbox {
+  accent-color: var(--lore-c-bg2);
 }

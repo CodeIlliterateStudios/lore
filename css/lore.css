@@ -86,7 +86,6 @@ body.theme-light {
   border-radius: 10px;
   color: var(--lore-c-txt1);
 }
-/* Removed earlier explicit scrollbar rules in favor of CSS variable overrides below */
 .lcm-header {
   display: flex;
   align-items: center;
@@ -149,9 +148,6 @@ body.theme-light {
   background: color-mix(in srgb, var(--lore-c-ivory) 3%, transparent);
   border: 1px solid var(--lore-c-slate);
 }
-/* Integrate with Foundry's layered global scrollbar rule by overriding the
-   CSS custom properties it reads (--color-scrollbar, --color-scrollbar-track).
-   Using !important ensures these variables win the cascade even across layers. */
 .chat-sidebar,
 #sidebar .tab[data-tab="chat"],
 .chat-popout .window-content,
@@ -201,10 +197,6 @@ body.theme-light {
 .lore-roll-card .lore-main-roll .die-icon.is-dropped {
   opacity: 0.35;
   filter: grayscale(100%);
-}
-.lore-roll-card .lore-main-roll .die-icon.is-exploded {
-  /* Approximate a green tint */
-  filter: hue-rotate(85deg) saturate(1.8) brightness(1.1);
 }
 .lore-roll-card .lore-main-roll .dice-modifier {
   font-weight: 600;
@@ -365,20 +357,12 @@ body.theme-light {
   gap: 8px;
   margin: 10px 0;
 }
-/* DV widget near the hotbar */
 .lore-dv-widget {
-  /* Tweak these custom properties to resize the widget easily */
   --tn-scale: 1.5;
-  /* overall scale multiplier */
   --tn-font-size: 13px;
-  /* base font size inside the widget */
   --tn-gap: 6px;
-  /* space between elements */
   position: fixed;
-  /* JS positions it relative to hotbar */
   z-index: 60;
-  /* above hotbar
-  */
   display: inline-flex;
   align-items: center;
   gap: var(--tn-gap);
@@ -391,7 +375,6 @@ body.theme-light {
   font-size: var(--tn-font-size);
   transform: scale(var(--tn-scale));
   transform-origin: left bottom;
-  /* keep it anchored to hotbar corner when scaling */
 }
 .lore-dv-widget .dv-label {
   font-weight: 700;
@@ -407,7 +390,6 @@ body.theme-light {
   border: none;
   background: var(--lore-c-bg2);
   color: var(--lore-c-txt1);
-  /* Force a perfect circle and center content */
   display: inline-grid;
   place-items: center;
   box-sizing: border-box;
@@ -418,7 +400,6 @@ body.theme-light {
   padding: 0;
   line-height: 1;
   min-width: 18px;
-  /* defeat any theme min sizes */
   min-height: 18px;
   cursor: pointer;
 }
@@ -430,14 +411,12 @@ body.theme-light {
   opacity: 0.5;
   cursor: not-allowed;
 }
-/* Ensure arrow icons (text, font icons, or inline SVG) use the text color */
 .lore-dv-widget .dv-btn > i,
 .lore-dv-widget .dv-btn > svg {
   color: currentColor;
   fill: currentColor;
   line-height: 1;
 }
-/* Tweak icon sizing so it doesn't stretch the circle */
 .lore-dv-widget .dv-btn > i {
   font-size: 11px;
 }
@@ -445,30 +424,11 @@ body.theme-light {
   width: 10px;
   height: 10px;
 }
-/* Optional quick presets */
 .lore-dv-widget.is-small {
   --tn-scale: 0.85;
 }
 .lore-dv-widget.is-large {
   --tn-scale: 1.25;
-}
-.lore {
-  /* Header field labels and inputs themed like actor header */
-  /* Tab content for item sheets adopts actor theme */
-  /* Clean Paper Doll Absolute Layout */
-  /* Ensure images fit within the slot padding and stay inside the border */
-  /* Head: top center */
-  /* Body: center */
-  /* Arms: left edge, upper third */
-  /* Hands: left edge, lower third */
-  /* Legs: right edge, upper third */
-  /* Feet: right edge, lower third */
-  /* Mainhand: fixed from top for visibility */
-  /* Offhand: fixed from top for visibility */
-  /* Paper Doll Weapon Slots */
-  /* Paper Doll Weapon Slots - edge layout */
-  /* Paper Doll Layout */
-  /* Armor summary panel */
 }
 .lore .window-app {
   font-family: 'Roboto', sans-serif;
@@ -647,6 +607,15 @@ body.theme-light {
 .lore.window-app .window-content {
   padding: 0;
 }
+.lore .resource .resource-checkbox {
+  accent-color: var(--lore-c-txt1);
+  --checkbox-checked-color: var(--lore-c-txt1);
+  --checkbox-unchecked-color: var(--lore-c-bg2);
+}
+.lore .resource .resource-checkbox::before {
+  color: var(--checkbox-unchecked-color);
+  border-color: var(--checkbox-unchecked-color);
+}
 .lore .tab.active {
   flex: 1 1 auto;
   min-height: 0;
@@ -666,7 +635,6 @@ body.theme-light {
 }
 .lore.item.application .window-content > .tab.details,
 .lore.item.window-app .window-content > .tab.details {
-  /* Provide padding so first/last child margins don't collapse outside */
   padding: 6px 10px;
 }
 .lore.item.application .window-content > .tab.details > :first-child,
@@ -783,6 +751,22 @@ body.theme-light {
   background: var(--lore-c-bg2);
   color: var(--lore-c-txt1);
 }
+.lore .weapon-damage-label {
+  color: var(--lore-c-txt1);
+  font-weight: bold;
+  display: block;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2px;
+}
+.lore .weapon-damage-formula {
+  color: var(--lore-c-txt2);
+  display: block;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+}
 .lore .lore.item .tab[data-group="primary"] {
   background: var(--lore-c-bg1);
   color: var(--lore-c-txt1);
@@ -826,13 +810,15 @@ body.theme-light {
   color: var(--lore-c-txt1);
   background: var(--lore-c-bg2);
 }
+.lore .resource .resource-checkbox {
+  accent-color: var(--lore-c-bg2);
+}
 .lore .effects {
   background: var(--lore-c-bg1);
   padding: 1px;
 }
 .lore .effects .effects-list,
 .lore .effects .effect-list {
-  /* Remove UA and core styles that indent and space lists */
   margin: 0;
   padding: 0;
   padding-inline-start: 0;
@@ -872,7 +858,6 @@ body.theme-light {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  /* overflow: hidden; removed to allow child scrolling */
 }
 .lore.actor.application .window-content > .tab.gear.active,
 .lore.actor.window-app .window-content > .tab.gear.active {
@@ -880,7 +865,6 @@ body.theme-light {
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
-  /* overflow: hidden; removed to allow child scrolling */
 }
 .lore.actor.application .window-content > nav.tabs.main-tabs,
 .lore.actor.window-app .window-content > nav.tabs.main-tabs {
@@ -924,7 +908,6 @@ body.theme-light {
 }
 .lore.actor.application .window-content nav.tabs.sub-tabs,
 .lore.actor.window-app .window-content nav.tabs.sub-tabs {
-  /* Sub nav appears within a primary tab's content area */
   display: flex;
   flex-wrap: wrap;
   gap: 4px 6px;
@@ -1205,9 +1188,6 @@ body.theme-light {
 .lore .morale-input {
   width: 100%;
   color: var(--lore-c-bg2);
-  /* Custom slider styles */
-  /* Remove default styles for Firefox */
-  /* General track height for all browsers */
   height: 30px;
 }
 .lore .morale-input::-webkit-slider-runnable-track {
@@ -1626,7 +1606,6 @@ body.theme-light {
   gap: 12px;
   align-items: flex-start;
   flex-wrap: nowrap;
-  /* Separator below the equipment icons and armor values */
   border-bottom: 1px solid var(--lore-c-bg2);
   padding-bottom: 10px;
   margin-bottom: 10px;
@@ -1639,9 +1618,7 @@ body.theme-light {
   --paper-doll-weapon-icon: 24px;
 }
 .lore .paper-doll-absolute-layout .paper-doll-slots {
-  /* Anchor the paper doll block in the top-left and give it a visible boundary */
   position: relative;
-  /* 3 slots wide/tall (slot-size * 3) plus two 10px gutters used by absolute offsets */
   width: calc(var(--paper-doll-slot-size, 50px) * 3 + 20px);
   height: calc(var(--paper-doll-slot-size, 50px) * 3 + 20px);
 }
@@ -1656,9 +1633,7 @@ body.theme-light {
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 6px #0001;
-  /* Keep the total box (including border/padding) at the defined slot size */
   box-sizing: border-box;
-  /* Create a small inset so images don't touch the border */
   padding: 3px;
 }
 .lore .paper-doll-absolute-layout .slot img {
@@ -1786,9 +1761,7 @@ body.theme-light {
 }
 .lore .paper-doll-with-summary .paper-doll-absolute-layout {
   width: auto;
-  /* shrink to content so summary can sit to the right */
   margin: 0;
-  /* avoid auto-centering inside the flex row */
 }
 .lore .armor-summary {
   background: var(--lore-c-bg1);
@@ -1813,14 +1786,11 @@ body.theme-light {
 }
 .lore .armor-summary-list li {
   display: contents;
-  /* allow grid to handle layout */
 }
 .lore .armor-summary-list .label {
-  /* Use main text color so it contrasts on both dark/light themes */
   color: var(--lore-c-txt1);
 }
 .lore .armor-summary-list .item-name {
-  /* Use main text color for visibility; slightly reduced opacity for hierarchy */
   color: var(--lore-c-txt1);
   opacity: 0.9;
 }

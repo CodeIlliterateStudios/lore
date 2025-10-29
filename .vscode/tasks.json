@@ -38,6 +38,12 @@
 			"type": "shell",
 			"command": "npm run build",
 			"group": "build"
+		},
+		{
+			"label": "Build LESS once",
+			"type": "shell",
+			"command": "npm run build",
+			"group": "build"
 		}
 	]
 }

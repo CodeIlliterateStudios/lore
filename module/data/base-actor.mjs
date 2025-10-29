@@ -114,7 +114,6 @@ export default class loreActorBase extends foundry.abstract
       return false;
     }
   prepareDerivedData() {
-
     // Loop through attribute scores, and add their modifiers to our sheet output.
     for (const key in this.attributes) {
       let mod = this.attributes[key].value - 1;
@@ -123,7 +122,7 @@ export default class loreActorBase extends foundry.abstract
       } else if(this.attributes[key].type === 'mental') {
         mod -= this.fatigue.value;
       }
-      
+
       this.attributes[key].mod = mod;
       // Handle attribute label localization.
       this.attributes[key].label =

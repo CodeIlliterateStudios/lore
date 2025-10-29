@@ -1,13 +1,12 @@
-/* DV widget near the hotbar */
-.lore-dv-widget {
-  /* Tweak these custom properties to resize the widget easily */
-  --tn-scale: 1.5;            /* overall scale multiplier */
-  --tn-font-size: 13px;     /* base font size inside the widget */
-  --tn-gap: 6px;            /* space between elements */
+// main: "../lore.less", out: false
 
-  position: fixed; /* JS positions it relative to hotbar */
-  z-index: 60; /* above hotbar
-  */
+.lore-dv-widget {
+  --tn-scale: 1.5;
+  --tn-font-size: 13px;
+  --tn-gap: 6px;
+
+  position: fixed;
+  z-index: 60;
   display: inline-flex;
   align-items: center;
   gap: var(--tn-gap);
@@ -19,7 +18,7 @@
   box-shadow: 0 1px 2px rgba(0,0,0,0.2);
   font-size: var(--tn-font-size);
   transform: scale(var(--tn-scale));
-  transform-origin: left bottom; /* keep it anchored to hotbar corner when scaling */
+  transform-origin: left bottom;
 }
 
 .lore-dv-widget .dv-label {
@@ -38,7 +37,6 @@
   border: none;
   background: var(--lore-c-bg2);
   color: var(--lore-c-txt1);
-  /* Force a perfect circle and center content */
   display: inline-grid;
   place-items: center;
   box-sizing: border-box;
@@ -48,7 +46,7 @@
   border-radius: 50%;
   padding: 0;
   line-height: 1;
-  min-width: 18px;  /* defeat any theme min sizes */
+  min-width: 18px;
   min-height: 18px;
   cursor: pointer;
 }
@@ -61,7 +59,6 @@
   cursor: not-allowed;
 }
 
-/* Ensure arrow icons (text, font icons, or inline SVG) use the text color */
 .lore-dv-widget .dv-btn > i,
 .lore-dv-widget .dv-btn > svg {
   color: currentColor;
@@ -69,10 +66,8 @@
   line-height: 1;
 }
 
-/* Tweak icon sizing so it doesn't stretch the circle */
 .lore-dv-widget .dv-btn > i { font-size: 11px; }
 .lore-dv-widget .dv-btn > svg { width: 10px; height: 10px; }
 
-/* Optional quick presets */
 .lore-dv-widget.is-small { --tn-scale: 0.85; }
 .lore-dv-widget.is-large { --tn-scale: 1.25; }
