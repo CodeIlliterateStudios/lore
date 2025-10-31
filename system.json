@@ -42,7 +42,7 @@
       "thumbnail": "systems/lore/assets/lore-logo.png"
     }
   ],
-  "version": "0.0.2",
+  "version": "0.0.3",
   "compatibility": {
     "minimum": "13.348",
     "verified": "13.350"
@@ -59,8 +59,8 @@
   "packs": [],
   "packFolders": [],
   "socket": false,
-  "manifest": "https://github.com/CodeIlliterateStudios/lore/releases/download/v0.0.2/system.json",
-  "download": "https://github.com/CodeIlliterateStudios/lore/archive/refs/tags/v0.0.2.zip",
+  "manifest": "https://github.com/CodeIlliterateStudios/lore/releases/download/v0.0.3/system.json",
+  "download": "https://github.com/CodeIlliterateStudios/lore/archive/refs/tags/v0.0.3.zip",
   "background": "systems/lore/assets/lore-logo.png",
   "grid": {
     "type": 1,

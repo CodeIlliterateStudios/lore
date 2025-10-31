@@ -1,16 +1,38 @@
 # CHANGELOG
 
 
-## 0.0.3 - Unreleased
+## 0.0.3 - 2025-10-31
 
 ### UX
 
 - Implemented targeting for weapon skill and damage rolls.
 - Added a Target Number window next to hotbar for GM to set a global target number for all rolls. Setting this to 0 will ignore it and allow a manual per-roll target number.
+- Roll Popup now synchronizes its Target Number field with the global Target Number (when set).
 
 ### UI
 
 - Improved general layout and styling.
+- Roll cards now display the targeted token's image and name (when a target is selected).
+- Chat messages include a visibility label for clearer context.
+- Polished styles for resource checkboxes and multiple UI areas (sidebar, skills, and tab navigation).
+
+### Changes
+
+- Terminology updates:
+    - Difficulty renamed to Target Number (TN).
+    - Actor types renamed: Pawn → Lackey; Professional → Legend.
+- Prototype token link defaults now vary by actor type.
+
+### Internal
+
+- Added dedicated data modules for actor subtypes: `actor-lackey.mjs` and `actor-legend.mjs`.
+- Introduced a dedicated hotbar Target Number component and styles: `templates/components/hotbar-target-number.hbs`, `src/less/components/hotbar-target-number.less`.
+- General CSS cleanup and variable usage improvements across LESS/CSS.
+- Removed obsolete stylesheet `css/item-armor-fix.css`.
+
+### Bug-fixes
+
+- Fixed a bug where multiple instances of default skills were being applied for each logged in GM instead of only once on creation.
 
 ## 0.0.2 - 2025-10-26
 

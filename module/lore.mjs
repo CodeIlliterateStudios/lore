@@ -45,7 +45,7 @@ Hooks.once('init', function () {
    * @type {String}
    */
   CONFIG.Combat.initiative = {
-    formula: '(@attributes.ref.value)d6khx + @attributes.ref.mod',
+    formula: '2d6 + @attributes.ref.mod',
     decimals: 2,
   };
 
@@ -299,6 +299,43 @@ Hooks.once('ready', function () {
     }
   })();
 
+  // One-time cleanup: deduplicate default skills by name if duplicates exist (e.g., from prior seeding bug)
+  (async () => {
+    try {
+      if (!game.user?.isGM) return;
+      const actors = Array.from(game.actors ?? []);
+      let totalRemoved = 0;
+      for (const a of actors) {
+        const skills = (a.items ?? []).filter(i => i?.type === 'skill');
+        if (!skills.length) continue;
+        const byName = new Map(); // name(lower) -> array of items
+        for (const it of skills) {
+          const key = String(it.name || '').trim().toLowerCase();
+          if (!byName.has(key)) byName.set(key, []);
+          byName.get(key).push(it);
+        }
+        const toDelete = [];
+        for (const arr of byName.values()) {
+          if (arr.length <= 1) continue;
+          // Keep the first, delete the rest
+          const extras = arr.slice(1);
+          toDelete.push(...extras.map(e => e.id));
+        }
+        if (toDelete.length) {
+          try {
+            await a.deleteEmbeddedDocuments('Item', toDelete);
+            totalRemoved += toDelete.length;
+          } catch (e) {
+            console.warn('Lore | Failed to remove duplicate skills for actor:', a, e);
+          }
+        }
+      }
+      if (totalRemoved) console.info(`Lore | Removed ${totalRemoved} duplicate skill item(s) across actors.`);
+    } catch (e) {
+      console.warn('Lore | Skill deduplication check failed', e);
+    }
+  })();
+
   // One-time migration: ensure prototype token link defaults by actor type
   (async () => {
     try {
@@ -326,7 +363,9 @@ Hooks.once('ready', function () {
 
   // Automatically add default skills to new actors
   Hooks.on('createActor', async function(actor, options, userId) {
-    // Only add if actor is owned by the current user
+    // Only run on the client that initiated the creation to avoid duplicates across connected users
+    if (game.user?.id !== userId) return;
+    // Only add if actor is owned by the current user (defensive)
     if (actor.isOwner) {
       // For newly created Player actors, default the prototype token disposition to Friendly
       if (actor.type === 'player' && actor.prototypeToken) {
@@ -356,7 +395,8 @@ Hooks.once('ready', function () {
         }
       }
 
-      const defaultSkills = [
+  // Build the default skills list
+  const defaultSkills = [
         {
           name: 'Untrained',
           type: 'skill',
@@ -412,9 +452,26 @@ Hooks.once('ready', function () {
           }
         },
       ];
-      // Create each skill item for the actor
-      for (let skillData of defaultSkills) {
-        await actor.createEmbeddedDocuments('Item', [skillData]);
+      // Prevent duplicates: skip if we've already seeded on this actor or if skills already exist
+      const alreadySeeded = !!actor.getFlag?.('lore', 'skillsSeeded');
+      const existingSkillNames = new Set(
+        (actor.items ?? [])
+          .filter(i => i?.type === 'skill')
+          .map(i => String(i.name || '').trim().toLowerCase())
+      );
+
+      // Only create any skills that are missing by name
+      const skillsToCreate = alreadySeeded
+        ? []
+        : defaultSkills.filter(s => !existingSkillNames.has(String(s.name).trim().toLowerCase()));
+
+      if (skillsToCreate.length) {
+        // Create each missing skill item for the actor
+        for (const skillData of skillsToCreate) {
+          await actor.createEmbeddedDocuments('Item', [skillData]);
+        }
+        // Mark as seeded so subsequent create events or reloads won't duplicate
+        try { await actor.setFlag?.('lore', 'skillsSeeded', true); } catch {}
       }
     }
   });
