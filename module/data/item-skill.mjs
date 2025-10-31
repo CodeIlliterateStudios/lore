@@ -23,6 +23,16 @@ export default class loreSkill extends loreItemBase {
       choices: Object.keys(CONFIG.LORE?.attributeTypes ?? { ref: '', int: '', gri: '', mig: '', phy: '', cha: '' })
     });
 
+    // Flat modifier applied to this skill's rolls (can be negative)
+    schema.modifier = new fields.NumberField({
+      required: true,
+      nullable: false,
+      integer: true,
+      initial: 0,
+      min: -999,
+      step: 1,
+    });
+
     return schema;
   }
 

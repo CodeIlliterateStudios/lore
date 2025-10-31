@@ -79,6 +79,7 @@
       "Skill": {
         "Rank": "Rank",
         "Attribute": "Attribute",
+        "Modifier": "Modifier",
         "FIELDS": {
           "rank": {"label": "Rank"},
           "attribute": {"label": "Linked Attribute"}
