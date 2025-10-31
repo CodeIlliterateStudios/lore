@@ -18,7 +18,7 @@
       </div>
       <div class='grid-span-1'>
         <label class='weapon-damage-label'>Damage Roll:</label>
-        <label class='weapon-damage-formula'>{{system.formula}}</label>
+        <label class='weapon-roll-formula'>{{system.damageFormula}}</label>
       </div>
     </div>
     {{!-- Show range options only for ranged weapons --}}
@@ -46,7 +46,11 @@
     <div class='grid grid-4col'>
       <div class='item-options grid-span-1'>
         <label class='resource-label'>{{localize 'LORE.Item.Gear.FIELDS.numDice.label'}}</label>
-        <input class='resource-input' type='text' name='system.roll.diceNum' value='{{system.roll.diceNum}}' data-dtype='Number' />
+        <input class='resource-input' type='number' name='system.damage.diceNum' value='{{system.damage.diceNum}}' data-dtype='Number' min='0' />
+      </div>
+      <div class='item-options grid-span-1'>
+        <label class='resource-label'>Mod</label>
+        <input class='resource-input' type='number' name='system.damage.modifier' value='{{system.damage.modifier}}' data-dtype='Number' />
       </div>
     </div>
   </div>
