@@ -27,10 +27,9 @@ export default class loreActorBase extends foundry.abstract
 
     schema.stunned = new fields.BooleanField({ initial: false });
 
-    schema.movement = new fields.NumberField({ ...requiredInteger, initial: 6, min: 0 });
-  // Default Parry/Toughness to 2, but do not override user edits in prepareDerivedData
-  schema.parry = new fields.NumberField({ ...requiredInteger, initial: 2, min: 0 });
-  schema.toughness = new fields.NumberField({ ...requiredInteger, initial: 2, min: 0 });
+    schema.movement = new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 });
+    schema.parry = new fields.NumberField({ ...requiredInteger, initial: 2, min: 0 });
+    schema.toughness = new fields.NumberField({ ...requiredInteger, initial: 2, min: 0 });
 
     schema.morale = new fields.NumberField({ ...requiredInteger, initial: 0, min: -6, max: 6 });
 

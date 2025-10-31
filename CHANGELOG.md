@@ -16,6 +16,11 @@
 - Roll cards now display the targeted token's image and name (when a target is selected).
 - Chat messages include a visibility label for clearer context.
 - Polished styles for resource checkboxes and multiple UI areas (sidebar, skills, and tab navigation).
+- Exploded dice in roll cards are now clearly highlighted (color shift, outline, and glow) for better readability.
+- Gear tab weapon list shows computed damage formula and appropriate context:
+    - Melee rows display the attack modifier derived from Might.
+    - Ranged rows hide the modifier column and show range bands.
+    - Reach and range units are displayed when provided.
 
 ### Changes
 
@@ -23,6 +28,9 @@
     - Difficulty renamed to Target Number (TN).
     - Actor types renamed: Pawn → Lackey; Professional → Legend.
 - Prototype token link defaults now vary by actor type.
+- Base movement default set to 5 (was 6).
+- Weapon damage dice now explode by default on d6; formulas normalize to use `d6x`.
+- Weapon items support range/reach data and a flat damage modifier that is incorporated into a computed `damageFormula` (or a direct formula string when supplied).
 
 ### Internal
 
@@ -30,10 +38,17 @@
 - Introduced a dedicated hotbar Target Number component and styles: `templates/components/hotbar-target-number.hbs`, `src/less/components/hotbar-target-number.less`.
 - General CSS cleanup and variable usage improvements across LESS/CSS.
 - Removed obsolete stylesheet `css/item-armor-fix.css`.
+- Added `equipWeapon` helper on the base actor data model to enforce one-/two-handed rules and maintain `mainhand`/`offhand` slots consistently.
+- Weapon schema extended: `handedness`, `range` (reach and bands), and damage composition fields; derived `formula` and `damageFormula` now computed.
 
 ### Bug-fixes
 
 - Fixed a bug where multiple instances of default skills were being applied for each logged in GM instead of only once on creation.
+- Actor header level input now binds correctly to `system.level.value`.
+
+### Docs
+
+- README updated to clarify the Critical Failure rule: it triggers when the LORE die shows 1 and more than half of the normal dice also show 1.
 
 ## 0.0.2 - 2025-10-26
 
@@ -51,7 +66,7 @@
     - New confirmation popup (`RollPopup`) with on-the-fly modifier input and optional Target Number field (for attributes and skills). Shows a live, human-readable formula preview that resolves `@data` paths to current values and displays the current user target.
     - Skills: automatically applies the tied attribute modifier; Untrained imposes -3. Optionally rolls a LORE die for qualifying actors (Players/Legends). Computes success and raises versus the Target Number.
     - Weapons: automatically uses MIG (melee) or REF (ranged) modifiers; hides the Target Number field and does not add a LORE die for damage rolls.
-    - Morale is automatically applied to the final total. Detects Critical Failure ("snake eyes") when both the main kept die and LORE die show 1.
+    - Morale is automatically applied to the final total. Critical Failure updated: triggers when the LORE die shows 1 and more than half of the normal dice also show 1.
     - Chat cards now include dice-face icons for each die, a separate LORE die section when used, Morale breakdown, final total, and roll metadata flags (roll type, name, target number, success, raises, `critFailure`).
     - Gear items are non-rollable and now post their description to chat instead of attempting a roll.
 

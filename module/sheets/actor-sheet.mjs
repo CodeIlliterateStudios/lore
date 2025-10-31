@@ -350,6 +350,19 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
     // Sort then assign
     context.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.weapons = weapons.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    // Compute display attack modifier for each weapon row
+    try {
+      const migMod = Number(this.actor.system?.attributes?.mig?.mod ?? 0) || 0;
+      for (const w of context.weapons) {
+        const isRanged = (w.system?.weaponType === 'ranged');
+        // Show only Might modifier for melee; ranged shows nothing in the template
+        const total = isRanged ? 0 : migMod;
+        w.displayAttackMod = total;
+        w.displayAttackModSigned = `${total >= 0 ? '+' : ''}${total}`;
+      }
+    } catch (e) {
+      console.warn('LORE | Failed computing weapon display modifiers', e);
+    }
     context.armor = armor.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     
     // Group armor by armorType for the gear tab

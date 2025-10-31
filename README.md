@@ -27,7 +27,7 @@ The official LORE TTRPG system for FoundryVTT. More details coming soon...
 
     - Player Characters and special NPCs roll an additional d6—the LORE die—on every check.
     - This die represents narrative weight, protagonist energy, and mechanical spotlight.
-    - Only LORE die users can critically fail, triggered by Snake Eyes (LORE die and any other die both roll a 1).
+  - Only LORE die users can critically fail. Trigger: the LORE die shows 1 and more than half of the normal dice (non‑LORE) also show 1.
 
 ## Character Tiers
 

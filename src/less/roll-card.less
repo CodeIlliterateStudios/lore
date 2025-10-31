@@ -44,6 +44,14 @@
             opacity: 0.35;
             filter: grayscale(100%);
         }
+        .die-icon.is-exploded {
+            /* Make explosions unmistakable */
+            filter: hue-rotate(85deg) saturate(1.8) brightness(1.1);
+            outline: 2px solid var(--color-level-warning, #e67e22);
+            outline-offset: 1px;
+            border-radius: 4px;
+            box-shadow: 0 0 6px rgba(230, 126, 34, 0.8);
+        }
         
         .dice-modifier {
             font-weight: 600;
@@ -73,7 +81,12 @@
             filter: grayscale(100%);
         }
         .die-icon.is-exploded {
+            /* Make explosions unmistakable */
             filter: hue-rotate(85deg) saturate(1.8) brightness(1.1);
+            outline: 2px solid var(--color-level-warning, #e67e22);
+            outline-offset: 1px;
+            border-radius: 4px;
+            box-shadow: 0 0 6px rgba(230, 126, 34, 0.8);
         }
         .dice-modifier {
             font-weight: 600;

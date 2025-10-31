@@ -59,29 +59,26 @@
           <a class='rollable item-formula item-prop' data-roll-type='item' data-action='roll'>
               {{!-- Display D6LOREIcon.svg for each damage die --}}
               <span class="weapon-dice-icons">
-                {{item.system.formula}}
+                {{item.system.damageFormula}}
               </span>
           </a>
 
-          {{!-- Modifier and attribute source --}}
+          {{!-- Modifier display: Melee shows Might + additional, Ranged shows additional only --}}
           {{#if (eq item.system.weaponType 'ranged')}}
-            {{!-- Ranged uses Reflex (ref) --}}
-            <div class='item-mod item-prop'>
-              + {{@root.actor.system.attributes.ref.mod}}
-              ({{localize (lookup @root.config.attributeAbbreviations 'ref')}})
+            <div class='item-mod item-prop'></div>
+          {{else}}
+            <div class='item-mod item-prop' title='Might: {{@root.actor.system.attributes.mig.mod}}'>
+              {{item.displayAttackModSigned}}
             </div>
-            {{!-- Range bands for ranged --}}
+          {{/if}}
+          {{!-- Range display varies by type --}}
+          {{#if (eq item.system.weaponType 'ranged')}}
             <div class='item-range item-prop'>
               {{#with item.system.range as |r|}}
                 {{r.short}}/{{r.medium}}/{{r.long}} {{#if r.units}}{{r.units}}{{/if}}
               {{/with}}
             </div>
           {{else}}
-            {{!-- Melee uses Might (mig) --}}
-            <div class='item-mod item-prop'>
-              + {{@root.actor.system.attributes.mig.mod}}
-              ({{localize (lookup @root.config.attributeAbbreviations 'mig')}})
-            </div>
             <div class='item-range item-prop'>
               {{#if item.system.range.reach}}
                 Reach {{item.system.range.reach}} {{item.system.range.units}}

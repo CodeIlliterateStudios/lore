@@ -77,7 +77,11 @@ export default class loreWeapon extends loreItemBase {
     this.formula = toPart(roll);
     // Prefer a direct damage formula string if supplied; otherwise compose from parts
     const directDamage = (dmg.formula ?? '').toString().trim();
-    const baseDamage = directDamage || toPart(dmg);
+    let baseDamage = directDamage || toPart(dmg);
+    // Ensure damage dice explode on 6: add an 'x' after any d6 that doesn't already have it
+    if (baseDamage) {
+      baseDamage = baseDamage.replace(/\bd6(?!x)\b/gi, 'd6x');
+    }
     // Append flat numeric modifier if present and non-zero
     const flatMod = Number(dmg.modifier ?? 0) || 0;
     if (flatMod !== 0) {
