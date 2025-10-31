@@ -8,6 +8,7 @@
 - Implemented targeting for weapon skill and damage rolls.
 - Added a Target Number window next to hotbar for GM to set a global target number for all rolls. Setting this to 0 will ignore it and allow a manual per-roll target number.
 - Roll Popup now synchronizes its Target Number field with the global Target Number (when set).
+- Added weapon damage modifier.
 
 ### UI
 
