@@ -59,7 +59,7 @@
   "packs": [],
   "packFolders": [],
   "socket": false,
-  "manifest": "https://github.com/CodeIlliterateStudios/lore/releases/download/v0.0.3/system.json",
+  "manifest": "https://raw.githubusercontent.com/CodeIlliterateStudios/lore/master/system.json",
   "download": "https://github.com/CodeIlliterateStudios/lore/archive/refs/tags/v0.0.3.zip",
   "background": "systems/lore/assets/lore-logo.png",
   "grid": {
