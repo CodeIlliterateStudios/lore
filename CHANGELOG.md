@@ -20,7 +20,7 @@
 - Gear tab weapon list shows computed damage formula and appropriate context:
     - Melee rows display the attack modifier derived from Might.
     - Ranged rows hide the modifier column and show range bands.
-    - Reach and range units are displayed when provided.
+    - Reach and range units are displayed when provided. 
 
 ### Changes
 
