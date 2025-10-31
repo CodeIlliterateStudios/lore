@@ -12,13 +12,15 @@
   gap: var(--tn-gap);
   padding: 4px 8px;
   border-radius: 6px;
-  background: var(--lore-c-bg1);
-  color: var(--lore-c-txt1);
-  border: 1px solid var(--lore-c-bg2);
+  /* Provide fallbacks so the widget looks correct even if CSS vars aren't available yet */
+  background: var(--lore-c-bg1, #2e2e2e);
+  color: var(--lore-c-txt1, #fdfdfd);
+  border: 1px solid var(--lore-c-bg2, #6e6e6e);
   box-shadow: 0 1px 2px rgba(0,0,0,0.2);
   font-size: var(--tn-font-size);
   transform: scale(var(--tn-scale));
   transform-origin: left bottom;
+  white-space: nowrap;
 }
 
 .lore-dv-widget .dv-label {
@@ -33,9 +35,12 @@
 }
 
 .lore-dv-widget .dv-btn {
+  /* Reset native button styling across browsers */
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   border: none;
-  background: var(--lore-c-bg2);
+  background: var(--lore-c-bg2, #6e6e6e);
   color: var(--lore-c-txt1);
   display: inline-grid;
   place-items: center;
@@ -50,6 +55,7 @@
   min-height: 18px;
   cursor: pointer;
 }
+.lore-dv-widget .dv-btn::-moz-focus-inner { border: 0; padding: 0; }
 .lore-dv-widget .dv-btn:hover {
   filter: brightness(1.1);
 }
