@@ -61,6 +61,15 @@ export class LoreContextMenus {
       skillsHeader.addEventListener('contextmenu', this._onSkillsHeaderContextMenuBound);
     }
 
+    // Gear tab headers (Weapons, Armor sections and sub-sections, Misc Gear)
+    const gearHeaders = rootEl.querySelectorAll(
+      '.tab.gear .items-header[data-gear-type], .tab.gear .items-sub-header[data-gear-type]'
+    );
+    for (const header of gearHeaders) {
+      header.removeEventListener('contextmenu', this._onGearHeaderContextMenuBound);
+      header.addEventListener('contextmenu', this._onGearHeaderContextMenuBound);
+    }
+
     // Boons/Banes headers (in Details tab)
     // Find the Boons and Banes headers by their label text
     const boonsHeader = Array.from(rootEl.querySelectorAll('.tab.skills .boons-banes-sub .items-header')).find(h => h.textContent.includes('Boons'));

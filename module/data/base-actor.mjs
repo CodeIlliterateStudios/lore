@@ -28,8 +28,9 @@ export default class loreActorBase extends foundry.abstract
     schema.stunned = new fields.BooleanField({ initial: false });
 
     schema.movement = new fields.NumberField({ ...requiredInteger, initial: 6, min: 0 });
-    schema.parry = new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 });
-    schema.toughness = new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 });
+  // Default Parry/Toughness to 2, but do not override user edits in prepareDerivedData
+  schema.parry = new fields.NumberField({ ...requiredInteger, initial: 2, min: 0 });
+  schema.toughness = new fields.NumberField({ ...requiredInteger, initial: 2, min: 0 });
 
     schema.morale = new fields.NumberField({ ...requiredInteger, initial: 0, min: -6, max: 6 });
 
@@ -129,15 +130,8 @@ export default class loreActorBase extends foundry.abstract
         game.i18n.localize(CONFIG.LORE.attributes[key]) ?? key;
     }
 
-    
-    let parry = 2;
-    // Handle Parry calculation.
-    this.parry = parry;
-
-    
-    let toughness = 2;
-    // Handle Toughness calculation.
-    this.toughness = toughness;
+  // Parry and Toughness: leave as-is unless/ until explicit derived formula is implemented.
+  // Any future calculation should respect active effects and only override when a rule applies.
 
   // Do defense calculation here once implemented.
   }

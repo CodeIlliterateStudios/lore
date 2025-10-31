@@ -98,11 +98,13 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
         break;
       case 'boon':
         options.parts.push('detailsBoon');
-        // options.parts.push('effects');
+        // Re-enable effects tab for Boons
+        options.parts.push('effects');
         break;
       case 'bane':
         options.parts.push('detailsBane');
-        // options.parts.push('effects');
+        // Re-enable effects tab for Banes only
+        options.parts.push('effects');
         break;
     }
   }

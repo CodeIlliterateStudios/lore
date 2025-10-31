@@ -9,6 +9,8 @@
   z-index: 60;
   display: inline-flex;
   align-items: center;
+  /* Force horizontal layout even if upstream CSS sets a different flex-direction */
+  flex-direction: row;
   gap: var(--tn-gap);
   padding: 4px 8px;
   border-radius: 6px;
