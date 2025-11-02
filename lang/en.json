@@ -68,6 +68,10 @@
       },
       "Legend": {
         "FIELDS": { }
+      },
+      "LoreCoins": {
+        "Label": "Lore Coins",
+        "Tooltip": "Left-click: use a coin. Right-click: gain a coin."
       }
     },
     "Item": {

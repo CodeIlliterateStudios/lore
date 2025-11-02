@@ -336,6 +336,29 @@ Hooks.once('ready', function () {
     }
   })();
 
+  // One-time migration: initialize loreCoin for existing Player and Legend actors
+  (async () => {
+    try {
+      if (!game.user?.isGM) return;
+      const actors = Array.from(game.actors ?? []);
+      let changed = 0;
+      for (const a of actors) {
+        if (!['player', 'legend'].includes(a.type)) continue;
+        const lc = a.system?.loreCoin;
+        if (typeof lc !== 'number') {
+          try { await a.update({ 'system.loreCoin': 2 }); changed++; }
+          catch (e) { console.warn('Lore | Failed to set default loreCoin for actor:', a, e); }
+        } else if (lc < 0) {
+          try { await a.update({ 'system.loreCoin': 0 }); changed++; }
+          catch (e) { console.warn('Lore | Failed to clamp loreCoin for actor:', a, e); }
+        }
+      }
+      if (changed) console.info(`Lore | Initialized/clamped loreCoin for ${changed} actor(s).`);
+    } catch (e) {
+      console.warn('Lore | loreCoin migration failed', e);
+    }
+  })();
+
   // One-time migration: ensure prototype token link defaults by actor type
   (async () => {
     try {

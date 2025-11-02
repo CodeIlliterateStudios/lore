@@ -12,6 +12,8 @@ export default class lorePlayer extends loreActorBase {
     const schema = super.defineSchema();
 
     schema.playerName = new fields.StringField({ initial: "" });
+    // Lore Coins: players start with 2, minimum 0
+    schema.loreCoin = new fields.NumberField({ ...requiredInteger, initial: 2, min: 0 });
     
     return schema;
   }

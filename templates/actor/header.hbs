@@ -1,7 +1,7 @@
 {{! Sheet Header }}
 <header class='sheet-header'>
 
-  <div class='top-header grid grid-4col flex-center'>
+  <div class='top-header grid grid-6col flex-center'>
     <div class='name-container grid-span-3'>
       <label for='name' class='resource-label hidden'>
 	      {{localize 'LORE.SheetLabels.Name'}}
@@ -14,17 +14,26 @@
 	      placeholder='Name'
       />
     </div>
-    <div class='level-container'>
-      <label for='system.level.value' class='level-label'>
-	      {{localize 'LORE.Actor.base.FIELDS.level.label'}}
-      </label>
-      <input
-        class='level-input text-center'
-		    type='text'
-		    name='system.level.value'
-		    value='{{system.level.value}}'
-		    data-dtype='Number'
-	    />
+    <div class='level-container grid-span-3'>
+      <div class='level-controls grid-span-1'>
+        <label for='system.level.value' class='level-label'>
+          {{localize 'LORE.Actor.base.FIELDS.level.label'}}
+        </label>
+        <input
+          class='level-input text-center'
+          type='text'
+          name='system.level.value'
+          value='{{system.level.value}}'
+          data-dtype='Number'
+        />
+      </div>
+      {{#if showLoreCoins}}
+      <div class='lore-coin-box grid-span-2 flex-row flex-center' title='{{localize "LORE.Actor.LoreCoins.Tooltip"}}' aria-label='{{localize "LORE.Actor.LoreCoins.Label"}}'>
+        {{#each loreCoinSlots}}
+          <span class='lore-coin {{#if this.filled}}filled{{else}}empty{{/if}}' aria-hidden='true'></span>
+        {{/each}}
+      </div>
+      {{/if}}
     </div>
   </div>
 

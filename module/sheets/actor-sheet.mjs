@@ -147,7 +147,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
       context.fatigueSlots = [1, 2, 3];
     }
 
-    // Prepare equipped items for paper doll and armor summary
+  // Prepare equipped items for paper doll and armor summary
     const equipped = {};
     const eqArmor = this.actor.system?.equippedArmor || {};
     const eqWeapons = this.actor.system?.equippedWeapons || {};
@@ -363,7 +363,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
     } catch (e) {
       console.warn('LORE | Failed computing weapon display modifiers', e);
     }
-    context.armor = armor.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+  context.armor = armor.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     
     // Group armor by armorType for the gear tab
     const armorByType = { head: [], body: [], arms: [], hands: [], legs: [], feet: [] };
@@ -379,6 +379,21 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
     context.magicks = magicks.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.boons = boons.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.banes = banes.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+
+    // Lore Coins UI context (players and legends only) - fixed 5-slot display
+    try {
+      context.showLoreCoins = ['player', 'legend'].includes(this.document.type);
+      const lc = Number(this.actor.system?.loreCoin ?? 0);
+      const loreCoinCount = isNaN(lc) ? 0 : Math.max(0, lc);
+      const maxSlots = 5;
+      context.loreCoinSlots = Array.from({ length: maxSlots }, (_, i) => ({
+        idx: i + 1,
+        filled: i < loreCoinCount,
+      }));
+    } catch (e) {
+      context.showLoreCoins = false;
+      context.loreCoinSlots = [];
+    }
   }
 
   /**
@@ -504,6 +519,29 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
     }
     // Attach tab navigation (primary + gear sub-tabs)
     this._tabNavigation.attach(this.element);
+
+    // Lore Coins click handlers (left click: use/decrement, right click: add/increment)
+    try {
+      if (['player', 'legend'].includes(this.document.type)) {
+        const coinBox = this.element.querySelector('.lore-coin-box');
+        if (coinBox) {
+          coinBox.addEventListener('click', async (event) => {
+            event.preventDefault();
+            const current = Number(this.actor.system?.loreCoin ?? 0) || 0;
+            const next = Math.max(0, current - 1);
+            if (next !== current) await this.actor.update({ 'system.loreCoin': next });
+          });
+          coinBox.addEventListener('contextmenu', async (event) => {
+            event.preventDefault();
+            const current = Number(this.actor.system?.loreCoin ?? 0) || 0;
+            const next = current + 1;
+            await this.actor.update({ 'system.loreCoin': next });
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('LORE | Failed binding lore coin handlers', e);
+    }
   }
 
   /**************

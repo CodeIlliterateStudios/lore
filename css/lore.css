@@ -454,6 +454,10 @@ body.theme-light {
 .lore-dv-widget.is-large {
   --tn-scale: 1.25;
 }
+.lore {
+  /* Level + Lore Coins layout */
+  /* When zero coins, show a faint placeholder */
+}
 .lore .window-app {
   font-family: 'Roboto', sans-serif;
 }
@@ -1107,6 +1111,49 @@ body.theme-light {
   text-align: center;
   background: var(--lore-c-bg2);
   color: var(--lore-c-txt2);
+}
+.lore .level-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.lore .level-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.lore .lore-coin-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  /* Fixed width to fit exactly 5 coins (5*12 + 4*6 + padding) */
+  width: 96px;
+  min-width: 96px;
+  max-width: 96px;
+  min-height: 28px;
+  border: 2px solid var(--lore-c-bg2);
+  border-radius: 6px;
+  background: var(--lore-c-bg2);
+  cursor: pointer;
+  user-select: none;
+}
+.lore .lore-coin {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  /* Default: empty look */
+  background: transparent;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+.lore .lore-coin.filled {
+  background: var(--lore-c-gold, #d4af37);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.15);
+}
+.lore .lore-coin-empty {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.25);
 }
 .lore .middle-header .wounds-container,
 .lore .middle-header .fatigue-container {
