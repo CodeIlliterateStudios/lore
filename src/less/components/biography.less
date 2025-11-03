@@ -23,3 +23,55 @@
   height: 100%;
   overflow-y: auto;
 }
+
+/* Ancestry slot styling */
+.ancestry-slot {
+  /* Match other input blocks in feel and width */
+  display: block;
+  border-radius: 3px;
+  padding: 4px 6px;
+}
+
+.ancestry-list {
+  list-style: none; /* remove bullet dot */
+  margin: 0;
+  padding: 0;
+}
+
+.ancestry-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* push trash to right */
+  gap: 8px;
+}
+
+.ancestry-name a {
+  color: var(--lore-c-gold);
+  text-decoration: underline;
+}
+
+.ancestry-clear {
+  /* Small, unobtrusive icon button */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--lore-c-txt1);
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ancestry-clear i { font-size: 12px; }
+
+.ancestry-clear:hover { filter: brightness(1.1); }
+
+.ancestry-empty {
+  opacity: 0.75;
+  font-style: italic;
+}

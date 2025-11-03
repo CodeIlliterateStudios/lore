@@ -22,6 +22,7 @@ export class loreItem extends Item {
       skill: "systems/lore/assets/icons/D6Icon.svg",
       boon: "icons/svg/upgrade.svg",
       bane: "icons/svg/downgrade.svg",
+      ancestry: "systems/lore/assets/default-item.png",
       default: "systems/lore/assets/default-item.png"
     };
     return { img: defaultImages[type] || defaultImages.default };

@@ -4,7 +4,7 @@
 export class RollPopup extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
 ) {
-  constructor({ rollType = "generic", rollData = {}, label = "", options = {}, showTargetNumber = true } = {}) {
+  constructor({ rollType = "generic", rollData = {}, label = "", options = {}, showTargetNumber = true, origin = null } = {}) {
     // Pass rendering options to super but don't overwrite the Application.options property.
     super(options);
     this.rollType = rollType;
@@ -13,6 +13,8 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
     this.showTargetNumber = !!showTargetNumber;
     // Keep popup-specific options separate to avoid clobbering Application internals
     this.popupOptions = options || {};
+    // Origin of the roll to compute distances (expects {actorId, tokenId})
+    this.origin = origin || null;
     // Track a simple numeric modifier entered by the user in the popup
     this.modifier = 0;
     // Track target number entered by the user in the popup
@@ -41,7 +43,9 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
 
   /** @override */
   getData() {
-    const target = this.#getCurrentTargetInfo();
+  const target = this.#getCurrentTargetInfo();
+  // Show distance whenever we can compute it and a target exists
+  const showDistance = !!(target && target.distance && Number.isFinite(target.distance.value));
     return {
       title: this.title,
       rollType: this.rollType,
@@ -50,13 +54,15 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
       options: this.popupOptions,
       showTargetNumber: this.showTargetNumber,
       target,
+      showDistance,
     };
   }
 
   /** @override */
   async _prepareContext(options) {
     // Provide the same render context the template expects
-    const target = this.#getCurrentTargetInfo();
+  const target = this.#getCurrentTargetInfo();
+  const showDistance = !!(target && target.distance && Number.isFinite(target.distance.value));
     return {
       title: this.title,
       rollType: this.rollType,
@@ -65,6 +71,7 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
       options: this.popupOptions,
       showTargetNumber: this.showTargetNumber,
       target,
+      showDistance,
     };
   }
   /** @override */
@@ -181,9 +188,75 @@ export class RollPopup extends foundry.applications.api.HandlebarsApplicationMix
       const img = tok.texture?.src ?? tok.document?.texture?.src ?? tok.actor?.img ?? null;
       const id = tok.id ?? tok.document?.id ?? null;
       if (!name) return null;
-      return { name, img, id };
+
+      // Attempt to compute distance from an origin token to the target token
+      let distance = null;
+      try {
+        const originTok = this.#resolveOriginToken();
+        if (originTok && canvas?.grid) {
+          // Measure distance using grid rules (diagonal rules, grid spaces) to match ruler display
+          const ray = new Ray(originTok.center, tok.center);
+          const dists = canvas.grid.measureDistances([{ ray }], { gridSpaces: true });
+          let value = Number(dists?.[0]);
+          const units = canvas?.scene?.grid?.units ?? '';
+          if (Number.isFinite(value)) {
+            // Format value similar to ruler display: integers without decimals, else two decimals
+            const roundedInt = Math.round(value);
+            value = Math.abs(value - roundedInt) < 0.01 ? roundedInt : Math.round(value * 100) / 100;
+            distance = { value, units };
+          }
+        }
+      } catch (e) {
+        // Ignore distance errors; just omit distance display
+      }
+
+      return { name, img, id, distance };
     } catch (e) {
       console.warn('LORE | Failed to resolve current target for RollPopup:', e);
+      return null;
+    }
+  }
+
+  /**
+   * Resolve the origin token for this roll based on provided origin info.
+   * Falls back to a controlled token of the same actor or the first active token of the actor.
+   * @returns {Token|null}
+   */
+  #resolveOriginToken() {
+    try {
+      const origin = this.origin || {};
+      const wantedActorId = origin.actorId ?? null;
+      const wantedTokenId = origin.tokenId ?? null;
+      // Direct tokenId lookup on the canvas
+      if (wantedTokenId && canvas?.tokens) {
+        const tok = canvas.tokens.get(wantedTokenId);
+        if (tok) return tok;
+      }
+      // Prefer a controlled token that matches the actor
+      if (wantedActorId && canvas?.tokens) {
+        const controlled = (canvas.tokens.controlled ?? []).find(t => t?.actor?.id === wantedActorId);
+        if (controlled) return controlled;
+      }
+      // Fallback: if exactly one token is controlled, use it
+      if (canvas?.tokens?.controlled?.length === 1) {
+        return canvas.tokens.controlled[0];
+      }
+      // Fallback: any active token of the actor, preferring the current scene
+      if (wantedActorId) {
+        const actor = game?.actors?.get?.(wantedActorId) ?? null;
+        const toks = actor?.getActiveTokens?.() ?? [];
+        const onScene = toks.find(t => t?.scene?.id === canvas?.scene?.id) || null;
+        return onScene || toks[0] || null;
+      }
+      // As a last resort, use the user's assigned character's token if present
+      const userActor = game?.user?.character ?? null;
+      if (userActor) {
+        const toks = userActor.getActiveTokens?.() ?? [];
+        const onScene = toks.find(t => t?.scene?.id === canvas?.scene?.id) || null;
+        return onScene || toks[0] || null;
+      }
+      return null;
+    } catch {
       return null;
     }
   }

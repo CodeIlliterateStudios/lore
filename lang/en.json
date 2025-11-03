@@ -16,7 +16,8 @@
       "AdditionalMod": "Additional Mod",
       "Name": "Name",
       "Target": "Target",
-      "TargetNumber": "Target Number"
+      "TargetNumber": "Target Number",
+      "Distance": "Distance"
     },
     "Actor": {
       "Tabs": {
@@ -35,7 +36,7 @@
       "base": {
         "FIELDS": {
           "level": {"label": "Level"},
-          "Ancestry": {"label": "Ancestry"},
+          "Ancestry": {"label": "Ancestry", "empty": "Drop an Ancestry item here"},
           "Gender": {"label": "Gender"},
           "Age": {"label": "Age"},
           "Height": {"label": "Height"},
@@ -150,6 +151,9 @@
       "Temporary": "Temporary Effects",
       "Passive": "Passive Effects",
       "Inactive": "Inactive Effects"
+    },
+    "Common": {
+      "Clear": "Clear"
     }
   },
   "LORE.Settings": {
@@ -177,7 +181,8 @@
       "magick": "Magick",
       "armor": "Armor",
       "boon": "Boon",
-      "bane": "Bane"
+      "bane": "Bane",
+      "ancestry": "Ancestry"
     }
   }
 }

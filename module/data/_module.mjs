@@ -13,3 +13,4 @@ export { default as loreMagick } from './item-magick.mjs';
 export { default as loreArmor } from './item-armor.mjs';
 export { default as loreBoon } from './item-boon.mjs';
 export { default as loreBane } from './item-bane.mjs';
+export { default as loreAncestry } from './item-ancestry.mjs';

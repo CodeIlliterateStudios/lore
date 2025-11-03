@@ -1,124 +1,48 @@
 {{! Sheet Header }}
 <header class='sheet-header'>
-
-  <div class='top-header grid grid-6col flex-center'>
-    <div class='name-container grid-span-3'>
-      <label for='name' class='resource-label hidden'>
-	      {{localize 'LORE.SheetLabels.Name'}}
-      </label>
+  <div class='actor-header-first grid grid-4col'>
+    <div class='actor-name grid-span-3'>
       <input
-	      name='name'
-        class='name-input'
-	      type='text'
-	      value='{{actor.name}}'
-	      placeholder='Name'
+        type='text'
+        name='name'
+        class='actor-name-input'
+        value='{{actor.name}}'
+        data-dtype='String'
+        placeholder='Name'
+        {{#unless editable}}disabled{{/unless}}
       />
     </div>
-    <div class='level-container grid-span-3'>
-      <div class='level-controls grid-span-1'>
-        <label for='system.level.value' class='level-label'>
-          {{localize 'LORE.Actor.base.FIELDS.level.label'}}
-        </label>
-        <input
-          class='level-input text-center'
-          type='text'
-          name='system.level.value'
-          value='{{system.level.value}}'
-          data-dtype='Number'
-        />
-      </div>
-      {{#if showLoreCoins}}
-      <div class='lore-coin-box grid-span-2 flex-row flex-center' title='{{localize "LORE.Actor.LoreCoins.Tooltip"}}' aria-label='{{localize "LORE.Actor.LoreCoins.Label"}}'>
-        {{#each loreCoinSlots}}
-          <span class='lore-coin {{#if this.filled}}filled{{else}}empty{{/if}}' aria-hidden='true'></span>
-        {{/each}}
-      </div>
-      {{/if}}
-    </div>
-  </div>
-
-  <div class='horizontal-line'></div>
-
-  <div class='middle-header grid grid-9col flex-center'>
-    <div class='wounds-container grid-span-3'>
-      <label class='wounds-label center-text'>
-	      {{localize 'LORE.Actor.base.FIELDS.wounds.value.label'}}
-      </label>
-      <div class='wounds-content flexrow flex-center flex-between center-text'>
-        {{#each woundSlots}}
-        <label style="position:relative;display:inline-block;">
-          <input type='checkbox' name='system.wounds.checkboxes' value='{{this}}' class='wounds-checkbox'/><span class='custom-circle'></span>
-        </label>
-        {{/each}}
-      </div>
-    </div>
-
-    <div class='condition-container grid-span-3'>
-      <div class='condition-item center-text' style='display:flex;flex-direction:column;align-items:center;gap:2px;'>
-        <span class='condition-label'>
-	        {{localize 'LORE.Actor.base.FIELDS.unconscious.label'}}
-        </span>
-        <label>
-	        <input type='checkbox' name='system.unconscious' {{#if system.unconscious}}checked{{/if}} class='status-checkbox'/><span class='custom-circle'></span>
-        </label>
-      </div>
-      <div class='condition-item center-text'>
-        <span class='condition-label'>
-	        {{localize 'LORE.Actor.base.FIELDS.stunned.label'}}
-        </span>
-        <label>
-	        <input type='checkbox' name='system.stunned' {{#if system.stunned}}checked{{/if}} class='status-checkbox'/><span class='custom-circle'></span>
-        </label>
-      </div>
-      <div class='condition-item center-text'>
-        <span class='condition-label'>
-	        {{localize 'LORE.Actor.base.FIELDS.incapacitated.label'}}
-        </span>
-        <label>
-	        <input type='checkbox' name='system.incapacitated' {{#if system.incapacitated}}checked{{/if}} class='status-checkbox'/><span class='custom-circle'></span>
-        </label>
-      </div>
-    </div>
-
-    <div class='fatigue-container grid-span-3'>
-      <label class='fatigue-label center-text'>
-	      {{localize 'LORE.Actor.base.FIELDS.fatigue.value.label'}}
-      </label>
-      <div class='fatigue-content flexrow flex-center flex-between center-text'>
-        {{#each fatigueSlots}}
-        <label style="position:relative;display:inline-block;">
-          <input type='checkbox' name='system.fatigue.checkboxes' value='{{this}}' class='fatigue-checkbox'/><span class='custom-circle'></span>
-        </label>
-        {{/each}}
-      </div>
-    </div>
-
-  </div>
-
-  <div class='morale-slider-container'>
-    <label for='system.morale' class='morale-label'>
-      {{localize 'LORE.Actor.base.FIELDS.morale.label'}}: {{system.morale}}
-    </label>
-    
-    <div class='morale-slider flexrow flex-center' style='gap: 8px;'>
+    <div class='actor-level grid-span-1 align-right'>
+      <label for='system-level'>Lvl:</label>
       <input
-        type='range'
-        class='morale-input'
-        name='system.morale'
-        value='{{system.morale}}'
-        min='-6'
-        max='6'
-        step='1'
+        type='text'
+        name='system.level.value'
+        class='actor-level-input'
+        id='system-level'
+        value='{{system.level.value}}'
         data-dtype='Number'
-        aria-label='{{localize "LORE.Actor.base.FIELDS.morale.label"}}'
+        placeholder='Level'
+        {{#unless editable}}disabled{{/unless}}
       />
-      <div class='morale-ticks' aria-hidden='true'>
-        {{#each (range -6 7)}}
-          <span class="morale-tick"></span>
-        {{/each}}
-      </div>
     </div>
-    
   </div>
+  <div class='tags-container' aria-label="Tags">
+    {{#if system.tags}}
+      {{#if system.tags.length}}
+        <ul class="tag-list" role="list">
+          {{#each system.tags as |tag|}}
+            {{#if tag}}
+              <li class="tag-chip {{#if (isAncestryTag tag)}}is-ancestry{{/if}}" role="listitem" data-tag="{{tag}}">{{tagLabel tag}}</li>
+            {{/if}}
+          {{/each}}
+        </ul>
+      {{else}}
+        <div class="tags-empty">No tags</div>
+      {{/if}}
+    {{else}}
+      <div class="tags-empty">No tags</div>
+    {{/if}}
+  </div>
+  
 
 </header>

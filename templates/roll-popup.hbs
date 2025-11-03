@@ -7,6 +7,12 @@
       <div class="roll-target-text">
         <span class="roll-target-label">{{localize "LORE.SheetLabels.Target"}}:</span>
         <span class="roll-target-name">{{target.name}}</span>
+        {{#if showDistance}}
+          <div class="roll-target-distance">
+            <span class="roll-target-distance-label">{{localize "LORE.SheetLabels.Distance"}}:</span>
+            <span class="roll-target-distance-value">{{target.distance.value}} {{target.distance.units}}</span>
+          </div>
+        {{/if}}
       </div>
     </div>
   {{/if}}

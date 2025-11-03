@@ -1,0 +1,18 @@
+<section class='tab details {{tab.cssClass}}' data-group='primary' data-tab='details'>
+  <div class='resource'>
+    <div class='grid grid-4col'>
+      <div class='item-options grid-span-2'>
+        <label class='resource-label'>Ancestry Tag</label>
+        <input class='resource-input' type='text' name='system.tag' value='{{system.tag}}' placeholder='e.g. dwarf, elf, human' />
+        <p class='hint'>Optional. If set, this ancestry will add a tag to the actor when applied. Keep it simple: lowercase, no spaces if you plan to reference it in rules later.</p>
+      </div>
+      <div class='item-options grid-span-2'>
+        <label class='resource-label'>Additional Tags</label>
+        <input class='resource-input' type='text' name='system.extraTags' value='{{system.extraTags}}' placeholder='e.g. humanoid, aquatic, feline' />
+        <p class='hint'>Comma- or space-separated list of non-ancestry tags this ancestry applies (e.g., humanoid, feline). These appear as plain tags on the actor.</p>
+      </div>
+    </div>
+  </div>
+  <div class='details ancestry-details'>
+  </div>
+</section>

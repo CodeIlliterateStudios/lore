@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+## Unreleased
+
+### Bug-fixes
+
+- Actor sheet: clicking the equipped Ancestry now opens the item sheet reliably instead of opening a new browser window/tab. Prevented default link navigation in the action handler.
+
+
 ## 0.0.3 - 2025-10-31
 
 ### UX

@@ -33,8 +33,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
   static DEFAULT_OPTIONS = {
     classes: ['lore', 'actor'],
     position: {
-      width: 600,
-      height: 600,
+      width: 700,
+      height: 700,
     },
     actions: {
       onEditImage: this._onEditImage,
@@ -45,6 +45,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
       roll: this._onRoll,
       // Handle left-click on one-handed weapon equip control
       'weapon-equip-context': this._onWeaponEquipContext,
+      // Clear ancestry slot
+      'clear-ancestry': this._onClearAncestry,
     },
     // Custom property that's merged into `this.options`
     dragDrop: [{ dragSelector: '[data-drag]', dropSelector: null }],
@@ -151,6 +153,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
     const equipped = {};
     const eqArmor = this.actor.system?.equippedArmor || {};
     const eqWeapons = this.actor.system?.equippedWeapons || {};
+  const eqAncestryId = this.actor.system?.equippedAncestry || '';
 
     // Start with any explicit equipped IDs stored on the actor (if used)
     for (const slot of ["head","body","arms","hands","legs","feet"]) {
@@ -174,6 +177,8 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
       const id = eqWeapons[slot];
       equipped[slot] = id ? this.actor.items.get(id) : null;
     }
+  // Ancestry: show only the explicitly mapped ancestry item
+  equipped.ancestry = eqAncestryId ? this.actor.items.get(eqAncestryId) : null;
     context.equipped = equipped;
 
     // Compute armor summary values per slot (fallback to 0 if empty)
@@ -433,7 +438,7 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
         const itemId = link.dataset.itemId;
         const weaponType = link.dataset.weaponType;
         // Find the correct skill name
-        let skillName = weaponType === 'ranged' ? 'shooting' : 'fighting';
+  let skillName = weaponType === 'ranged' ? 'shooting' : 'brawling';
         // Try to find the skill item on the actor
         let skillItem = this.actor.items.find(i => i.type === 'skill' && i.name.toLowerCase() === skillName);
         // If not found, fall back to untrained
@@ -587,8 +592,15 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
    * @protected
    */
   static async _viewDoc(event, target) {
+    // Prevent anchor default navigation (which can open a new tab/window depending on the environment)
+    try { event?.preventDefault?.(); } catch (e) {}
+    try {
+      // Stop propagation so no outer handlers or default behaviors interfere
+      event?.stopPropagation?.();
+      if (event?.stopImmediatePropagation) event.stopImmediatePropagation();
+    } catch (e) {}
     const doc = this._getEmbeddedDocument(target);
-    doc.sheet.render(true);
+    doc?.sheet?.render?.(true);
   }
 
   /**
@@ -898,13 +910,36 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
     if (!this.actor.isOwner) return false;
     const ItemCls = getDocumentClass('Item');
     const item = await ItemCls.fromDropData(data);
+    
+    // Special handling: ancestry item occupies a single slot on the actor
+    if (item?.type === 'ancestry') {
+      let embedded = item;
+      // If not already on this actor, create it first
+      if (this.actor.uuid !== item.parent?.uuid) {
+        const source = item.toObject?.() ?? item;
+        const created = await this.actor.createEmbeddedDocuments('Item', [source]);
+        embedded = created && created[0] ? this.actor.items.get(created[0]._id ?? created[0].id) : null;
+      }
+      if (!embedded) return false;
+      // Map ancestry slot to this item ID
+      await this.actor.update({ 'system.equippedAncestry': embedded.id });
+      return [embedded];
+    }
 
     // Handle item sorting within the same Actor
     if (this.actor.uuid === item.parent?.uuid)
       return this._onSortItem(event, item);
 
-    // Create the owned item
+    // Create the owned item (default behavior)
     return this._onDropItemCreate(item, event);
+  }
+
+  /**
+   * Clear the ancestry slot mapping on the actor.
+   */
+  static async _onClearAncestry(event, target) {
+    event.preventDefault();
+    await this.actor.update({ 'system.equippedAncestry': '' });
   }
 
   /**

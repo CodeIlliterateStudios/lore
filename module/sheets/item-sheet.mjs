@@ -67,6 +67,9 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
     detailsBane: {
       template: 'systems/lore/templates/item/detail-parts/bane.hbs',
     },
+    detailsAncestry: {
+      template: 'systems/lore/templates/item/detail-parts/ancestry.hbs',
+    },
     effects: {
       template: 'systems/lore/templates/item/effects.hbs',
     },
@@ -105,6 +108,9 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
         options.parts.push('detailsBane');
         // Re-enable effects tab for Banes only
         options.parts.push('effects');
+        break;
+      case 'ancestry':
+        options.parts.push('detailsAncestry');
         break;
     }
   }
@@ -145,6 +151,7 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
       case 'detailsMagick':
       case 'detailsBoon':
       case 'detailsBane':
+      case 'detailsAncestry':
         // Necessary for preserving active tab on re-render
         context.tab = context.tabs[partId];
         break;
@@ -210,6 +217,7 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
         case 'detailsMagick':
         case 'detailsBoon':
         case 'detailsBane':
+        case 'detailsAncestry':
           tab.id = 'details';
           tab.label += 'Details';
           break;
@@ -316,8 +324,14 @@ export class loreItemSheet extends api.HandlebarsApplicationMixin(
    * @protected
    */
   static async _viewEffect(event, target) {
+    // Prevent anchor default navigation (which could open a new tab/window in some contexts)
+    try { event?.preventDefault?.(); } catch (e) {}
+    try {
+      event?.stopPropagation?.();
+      if (event?.stopImmediatePropagation) event.stopImmediatePropagation();
+    } catch (e) {}
     const effect = this._getEffect(target);
-    effect.sheet.render(true);
+    effect?.sheet?.render?.(true);
   }
 
   /**

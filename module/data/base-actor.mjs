@@ -33,6 +33,11 @@ export default class loreActorBase extends foundry.abstract
 
     schema.morale = new fields.NumberField({ ...requiredInteger, initial: 0, min: -6, max: 6 });
 
+    // Generic string tags for rules interactions (e.g., ancestry-derived)
+    schema.tags = new fields.ArrayField(new fields.StringField({ initial: '' }), {
+      initial: [],
+    });
+
     // Iterate over attribute names and create a new SchemaField for each.
     schema.attributes = new fields.SchemaField(
       Object.keys(CONFIG.LORE.attributes).reduce((obj, attribute) => {
@@ -46,8 +51,8 @@ export default class loreActorBase extends foundry.abstract
       }, {})
     );
 
-    
-    schema.ancestry = new fields.StringField({ initial: "" });
+  // Single-item slot for Ancestry: stores the embedded Item ID or empty string
+  schema.equippedAncestry = new fields.StringField({ initial: "" });
     schema.gender = new fields.StringField({ initial: "" });
     schema.age = new fields.StringField({ initial: "" });
     schema.height = new fields.StringField({ initial: "" });

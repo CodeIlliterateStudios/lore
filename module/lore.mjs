@@ -65,6 +65,7 @@ Hooks.once('init', function () {
     armor: models.loreArmor,
     boon: models.loreBoon,
     bane: models.loreBane,
+    ancestry: models.loreAncestry,
   };
  
 
@@ -88,15 +89,23 @@ Hooks.once('init', function () {
         try { ItemsColl.unregisterSheet('core', CoreItemSheetV1); } catch {}
       }
       // Register V2 sheets as default for our system
+      // Resolve supported types as an array; documentTypes.* may be an object map in the manifest
+      const actorTypes = Array.isArray(game.system?.documentTypes?.Actor)
+        ? game.system.documentTypes.Actor
+        : Object.keys(game.system?.documentTypes?.Actor ?? CONFIG.Actor.dataModels ?? {});
+      const itemTypes = Array.isArray(game.system?.documentTypes?.Item)
+        ? game.system.documentTypes.Item
+        : Object.keys(game.system?.documentTypes?.Item ?? CONFIG.Item.dataModels ?? {});
+
       ActorsColl?.registerSheet?.('lore', loreActorSheet, {
         makeDefault: true,
         label: 'LORE.SheetLabels.Actor',
-        types: game.system?.documentTypes?.Actor ?? Object.keys(CONFIG.Actor.dataModels ?? {}),
+        types: actorTypes,
       });
       ItemsColl?.registerSheet?.('lore', loreItemSheet, {
         makeDefault: true,
         label: 'LORE.SheetLabels.Item',
-        types: game.system?.documentTypes?.Item ?? Object.keys(CONFIG.Item.dataModels ?? {}),
+        types: itemTypes,
       });
     } catch (e) {
       console.error('Lore | Failed to register sheets:', e);
@@ -129,6 +138,19 @@ Handlebars.registerHelper('range', function (start, end) {
   let arr = [];
   for (let i = start; i < end; i++) arr.push(i);
   return arr;
+});
+
+// Tag helpers for actor header
+Handlebars.registerHelper('isAncestryTag', function(tag) {
+  try {
+    return typeof tag === 'string' && tag.startsWith('ancestry:');
+  } catch (e) { return false; }
+});
+Handlebars.registerHelper('tagLabel', function(tag) {
+  try {
+    if (typeof tag !== 'string') return '';
+    return tag.startsWith('ancestry:') ? tag.slice('ancestry:'.length) : tag;
+  } catch (e) { return String(tag ?? ''); }
 });
 
 
@@ -277,6 +299,58 @@ Hooks.once('ready', function () {
     } catch {}
   });
 
+  // Keep actor tags in sync with ancestry items
+  Hooks.on('updateItem', async (item, changes, opts, userId) => {
+    try {
+      if (item?.type !== 'ancestry') return;
+      const parent = item.parent;
+      if (!(parent instanceof Actor)) return;
+      // If the ancestry's tag or extra tags changed, recompute the actor's tags
+      if (foundry.utils.hasProperty(changes, 'system.tag') ||
+          foundry.utils.hasProperty(changes, 'system.extraTags')) {
+        const next = parent._computeTagsFromItems();
+        const autoNow = parent._computeAutoTagsFromItems();
+        await parent.update({ 'system.tags': next, 'flags.lore.autoTags': Array.isArray(autoNow) ? autoNow : [] });
+      }
+    } catch (e) {
+      console.warn('Lore | Failed to sync tags on ancestry update', e);
+    }
+  });
+
+  Hooks.on('createItem', async (item, opts, userId) => {
+    try {
+      if (item?.type !== 'ancestry') return;
+      const parent = item.parent;
+      if (!(parent instanceof Actor)) return;
+  const next = parent._computeTagsFromItems();
+  const autoNow = parent._computeAutoTagsFromItems();
+  await parent.update({ 'system.tags': next, 'flags.lore.autoTags': Array.isArray(autoNow) ? autoNow : [] });
+    } catch (e) {
+      console.warn('Lore | Failed to sync tags on ancestry create', e);
+    }
+  });
+
+  Hooks.on('deleteItem', async (item, opts, userId) => {
+    try {
+      if (item?.type !== 'ancestry') return;
+      const parent = item.parent;
+      if (!(parent instanceof Actor)) return;
+      // If the deleted item was mapped to the ancestry slot, clear the mapping
+      try {
+        if ((parent.system?.equippedAncestry ?? '') === item.id) {
+          await parent.update({ 'system.equippedAncestry': '' });
+        }
+      } catch (e) {
+        console.warn('Lore | Failed to clear equippedAncestry after ancestry delete', e);
+      }
+  const next = parent._computeTagsFromItems();
+  const autoNow = parent._computeAutoTagsFromItems();
+  await parent.update({ 'system.tags': next, 'flags.lore.autoTags': Array.isArray(autoNow) ? autoNow : [] });
+    } catch (e) {
+      console.warn('Lore | Failed to sync tags on ancestry delete', e);
+    }
+  });
+
   // One-time migration: rename actor types for existing worlds
   (async () => {
     try {
@@ -333,6 +407,71 @@ Hooks.once('ready', function () {
       if (totalRemoved) console.info(`Lore | Removed ${totalRemoved} duplicate skill item(s) across actors.`);
     } catch (e) {
       console.warn('Lore | Skill deduplication check failed', e);
+    }
+  })();
+
+  // One-time migration: rename Fighting skill to Brawling on existing actors
+  (async () => {
+    try {
+      if (!game.user?.isGM) return;
+      const actors = Array.from(game.actors ?? []);
+      let renamed = 0;
+      let merged = 0;
+      for (const a of actors) {
+        const skills = (a.items ?? []).filter(i => i?.type === 'skill');
+        if (!skills.length) continue;
+        const byLower = new Map(); // name(lower) -> array of items
+        for (const it of skills) {
+          const key = String(it.name || '').trim().toLowerCase();
+          if (!byLower.has(key)) byLower.set(key, []);
+          byLower.get(key).push(it);
+        }
+        const fighting = byLower.get('fighting') ?? [];
+        if (!fighting.length) continue;
+        const brawling = byLower.get('brawling') ?? [];
+
+        // If a Brawling skill already exists, merge ranks and delete Fighting copies
+        if (brawling.length) {
+          try {
+            // Select the primary brawling to keep (first)
+            const keep = brawling[0];
+            // Compute max rank among all fighting and existing brawling
+            const ranks = [];
+            for (const it of [...fighting, ...brawling]) {
+              const rv = Number(it.system?.rank?.value ?? 0) || 0;
+              ranks.push(rv);
+            }
+            const maxRank = ranks.length ? Math.max(...ranks) : undefined;
+            const updates = [];
+            if (typeof maxRank === 'number' && (Number(keep.system?.rank?.value ?? 0) || 0) !== maxRank) {
+              updates.push({ _id: keep.id, 'system.rank.value': maxRank });
+            }
+            if (updates.length) await a.updateEmbeddedDocuments('Item', updates);
+            // Delete all fighting skills
+            const toDelete = fighting.map(f => f.id);
+            if (toDelete.length) await a.deleteEmbeddedDocuments('Item', toDelete);
+            merged += toDelete.length;
+          } catch (e) {
+            console.warn('Lore | Failed merging Fighting -> Brawling skills for actor:', a, e);
+          }
+        } else {
+          // No existing Brawling skill: rename all Fighting to Brawling (first one; delete extras)
+          try {
+            // Rename the first to Brawling
+            const first = fighting[0];
+            await a.updateEmbeddedDocuments('Item', [{ _id: first.id, name: 'Brawling' }]);
+            renamed++;
+            // Delete any additional Fighting duplicates
+            const extras = fighting.slice(1).map(f => f.id);
+            if (extras.length) await a.deleteEmbeddedDocuments('Item', extras);
+          } catch (e) {
+            console.warn('Lore | Failed renaming Fighting -> Brawling for actor:', a, e);
+          }
+        }
+      }
+      if (renamed || merged) console.info(`Lore | Fighting->Brawling migration complete. Renamed: ${renamed}, Merged: ${merged}`);
+    } catch (e) {
+      console.warn('Lore | Fighting->Brawling migration failed', e);
     }
   })();
 

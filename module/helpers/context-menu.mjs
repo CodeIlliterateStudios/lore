@@ -24,6 +24,7 @@ export class LoreContextMenus {
   this._onGearHeaderContextMenuBound = this._onGearHeaderContextMenu.bind(this);
   this._onBanesHeaderContextMenuBound = this._onBanesHeaderContextMenu.bind(this);
   this._onBoonsHeaderContextMenuBound = this._onBoonsHeaderContextMenu.bind(this);
+  this._onTagContextMenuBound = this._onTagContextMenu.bind(this);
   }
 
   /**
@@ -40,8 +41,10 @@ export class LoreContextMenus {
       row.addEventListener('contextmenu', this._onAttributeContextMenuBound);
     }
 
-    // Item rows
-    const itemRows = rootEl.querySelectorAll('.items-list li.item[data-document-class="Item"]');
+    // Item rows (gear, etc.) and ancestry slot row
+    const itemRows = rootEl.querySelectorAll(
+      '.items-list li.item[data-document-class="Item"], .ancestry-list li.ancestry-item[data-document-class="Item"]'
+    );
     for (const row of itemRows) {
       row.removeEventListener('contextmenu', this._onItemContextMenuBound);
       row.addEventListener('contextmenu', this._onItemContextMenuBound);
@@ -52,6 +55,13 @@ export class LoreContextMenus {
     for (const row of skillRows) {
       row.removeEventListener('contextmenu', this._onSkillContextMenuBound);
       row.addEventListener('contextmenu', this._onSkillContextMenuBound);
+    }
+
+    // Tag chips in header for delete menu
+    const tagChips = rootEl.querySelectorAll('.sheet-header .tag-chip');
+    for (const chip of tagChips) {
+      chip.removeEventListener('contextmenu', this._onTagContextMenuBound);
+      chip.addEventListener('contextmenu', this._onTagContextMenuBound);
     }
 
     // Skills header
@@ -82,6 +92,56 @@ export class LoreContextMenus {
       banesHeader.removeEventListener('contextmenu', this._onBanesHeaderContextMenuBound);
       banesHeader.addEventListener('contextmenu', this._onBanesHeaderContextMenuBound);
     }
+  }
+
+  /**
+   * Right-click on a tag chip in the header to remove it.
+   * Auto-applied tags (e.g., from ancestry) will be re-added immediately by a recompute.
+   * @param {MouseEvent} event
+   */
+  async _onTagContextMenu(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    this.close();
+
+    const chip = event.currentTarget?.closest('.tag-chip');
+    if (!chip) return;
+    const rawTag = chip.dataset?.tag;
+    if (!rawTag) return;
+
+    const items = [ { action: 'delete-tag', label: game.i18n?.localize?.('Delete') ?? 'Delete' } ];
+    const menu = await this._renderMenu(items);
+    if (!menu) return;
+
+    menu.addEventListener('click', async (e) => {
+      const itemEl = e.target.closest('.lore-context-menu-item');
+      if (!itemEl) return;
+      const action = itemEl.dataset.action;
+      try {
+        if (action === 'delete-tag') {
+          const actor = this.sheet.actor;
+          const curr = Array.isArray(actor.system?.tags) ? actor.system.tags.slice() : [];
+          const filtered = curr.filter(t => t !== rawTag);
+          const prevAuto = Array.isArray(actor.flags?.lore?.autoTags) ? actor.flags.lore.autoTags : [];
+          const prevAutoSet = new Set(prevAuto.map(t => String(t)));
+          // Manual set after deletion
+          const manual = filtered
+            .filter(t => typeof t === 'string' && !t.startsWith('ancestry:'))
+            .filter(t => !prevAutoSet.has(t));
+          // Fresh auto from items
+          const autoNow = actor._computeAutoTagsFromItems();
+          const nextSet = new Set();
+          for (const t of manual) { const norm = String(t).trim(); if (norm) nextSet.add(norm); }
+          for (const t of autoNow) { const norm = String(t).trim(); if (norm) nextSet.add(norm); }
+          await actor.update({ 'system.tags': Array.from(nextSet), 'flags.lore.autoTags': Array.isArray(autoNow) ? autoNow : [] });
+        }
+      } finally {
+        this.close();
+      }
+    });
+
+    this._positionAndOpen(menu, event);
   }
 
   /**

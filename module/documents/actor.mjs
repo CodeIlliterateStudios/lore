@@ -58,6 +58,23 @@ export class loreActor extends Actor {
     } catch (err) {
       console.warn('LORE: Failed to auto-toggle unconscious on wounds change', err);
     }
+    // If ancestry slot changed, recompute tags in the same update
+    try {
+      if (foundry.utils.hasProperty(changed, 'system.equippedAncestry')) {
+        const override = {
+          equippedAncestry: foundry.utils.getProperty(changed, 'system.equippedAncestry') ?? this.system?.equippedAncestry,
+        };
+        const nextTags = this._computeTagsFromItems(override);
+        if (Array.isArray(nextTags)) {
+          foundry.utils.setProperty(changed, 'system.tags', nextTags);
+        }
+        // Persist fresh auto-tags snapshot for reliable manual vs auto diffing
+        const autoNow = this._computeAutoTagsFromItems(override);
+        foundry.utils.setProperty(changed, 'flags.lore.autoTags', Array.isArray(autoNow) ? autoNow : []);
+      }
+    } catch (err) {
+      console.warn('LORE: Failed to recompute tags on ancestry change', err);
+    }
     return super._preUpdate(changed, options, userId);
   }
 
@@ -78,6 +95,83 @@ export class loreActor extends Actor {
   super.prepareDerivedData();
   const actorData = this;
   const flags = actorData.flags.lore || {};
+  }
+
+  /**
+   * Compute only the auto-applied tags that derive from owned items (currently: equipped ancestry).
+   * Does not include any manual tags. Used to persist a flag for reliable diffing/removal.
+   * @param {object} [override] Optional overrides like { equippedAncestry }
+   * @returns {string[]} Array of auto-applied tags
+   */
+  _computeAutoTagsFromItems(override = {}) {
+    try {
+      // Determine the equipped ancestry item
+      const eqId = override?.equippedAncestry ?? this.system?.equippedAncestry ?? '';
+      let ancestryItem = null;
+      if (eqId) ancestryItem = this.items.get(eqId) ?? null;
+      const tagKey = String(ancestryItem?.system?.tag ?? '').trim();
+
+      // Collect extra non-ancestry tags from ancestry (comma/space separated string)
+      const extra = ancestryItem?.system?.extraTags;
+      const extraRaw = Array.isArray(extra) ? extra : String(extra ?? '').trim();
+      /** @type {string[]} */
+      let extraTags = [];
+      if (Array.isArray(extraRaw)) {
+        extraTags = extraRaw;
+      } else if (extraRaw) {
+        extraTags = extraRaw
+          .split(/[\s,]+/)
+          .map(t => String(t || '').trim())
+          .filter(Boolean);
+      }
+
+      const out = new Set();
+      if (tagKey) out.add(`ancestry:${tagKey}`);
+      for (const t of extraTags) {
+        const norm = String(t).trim();
+        if (norm) out.add(norm.toLowerCase());
+      }
+      return Array.from(out);
+    } catch (e) {
+      console.warn('LORE | Error computing auto tags for actor', e);
+      return [];
+    }
+  }
+
+  /**
+   * Compute the actor's tags based on owned items and system state.
+   * Currently: ancestry contributes a single tag from the ancestry item's system.tag.
+   * Manual tags are preserved by subtracting previously auto-applied tags stored in flags.lore.autoTags.
+   * @param {object} [override] Optional overrides like { equippedAncestry }
+   * @returns {string[]} Array of tags
+   */
+  _computeTagsFromItems(override = {}) {
+    try {
+      const existing = Array.isArray(this.system?.tags) ? this.system.tags : [];
+      const prevAuto = Array.isArray(this.flags?.lore?.autoTags) ? this.flags.lore.autoTags : [];
+
+      // Manual tags = existing minus previous auto-applied tags and minus any ancestry-prefixed tags
+      const prevAutoSet = new Set(prevAuto.map(t => String(t)));
+      const manual = existing
+        .filter(t => typeof t === 'string' && !t.startsWith('ancestry:'))
+        .filter(t => !prevAutoSet.has(t));
+
+      // Fresh auto tags from current items
+      const autoNow = this._computeAutoTagsFromItems(override);
+      const out = new Set();
+      for (const t of manual) {
+        const norm = String(t).trim();
+        if (norm) out.add(norm);
+      }
+      for (const t of autoNow) {
+        const norm = String(t).trim();
+        if (norm) out.add(norm);
+      }
+      return Array.from(out);
+    } catch (e) {
+      console.warn('LORE | Error computing tags for actor', e);
+      return Array.isArray(this.system?.tags) ? this.system.tags : [];
+    }
   }
 
   /**

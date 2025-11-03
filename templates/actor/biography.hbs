@@ -10,8 +10,25 @@
   <input class='biography-input' type="text" name="system.playerName" value="{{system.playerName}}" {{#unless editable}}disabled{{/unless}}>
   {{/if}}
 
-  <label class='biography-label' for="system.ancestry">{{localize "LORE.Actor.base.FIELDS.Ancestry.label"}}</label>
-  <input class='biography-input' type="text" name="system.ancestry" value="{{system.ancestry}}" {{#unless editable}}disabled{{/unless}}>
+  <label class='biography-label'>{{localize "LORE.Actor.base.FIELDS.Ancestry.label"}}</label>
+  <div class="biography-input ancestry-slot" data-drop="ancestry">
+    {{#if equipped.ancestry}}
+      <ul class="ancestry-list">
+        <li class="ancestry-item" data-document-class="Item" data-item-id="{{equipped.ancestry.id}}" data-drag>
+          <span class="ancestry-name">
+            <a href="#" data-action="viewDoc">{{equipped.ancestry.name}}</a>
+          </span>
+          {{#if editable}}
+            <button type="button" class="ancestry-clear" data-action="clear-ancestry" title="{{localize "LORE.Common.Clear"}}">
+              <i class="fas fa-trash" aria-hidden="true"></i>
+            </button>
+          {{/if}}
+        </li>
+      </ul>
+    {{else}}
+      <div class="ancestry-empty">{{localize "LORE.Actor.base.FIELDS.Ancestry.empty"}}</div>
+    {{/if}}
+  </div>
 
   <div class="grid grid-4col">
     <div>
