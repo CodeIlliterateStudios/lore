@@ -146,10 +146,17 @@ Handlebars.registerHelper('isAncestryTag', function(tag) {
     return typeof tag === 'string' && tag.startsWith('ancestry:');
   } catch (e) { return false; }
 });
+Handlebars.registerHelper('isSizeTag', function(tag) {
+  try {
+    return typeof tag === 'string' && tag.startsWith('size:');
+  } catch (e) { return false; }
+});
 Handlebars.registerHelper('tagLabel', function(tag) {
   try {
     if (typeof tag !== 'string') return '';
-    return tag.startsWith('ancestry:') ? tag.slice('ancestry:'.length) : tag;
+    if (tag.startsWith('ancestry:')) return tag.slice('ancestry:'.length);
+    if (tag.startsWith('size:')) return tag.slice('size:'.length);
+    return tag;
   } catch (e) { return String(tag ?? ''); }
 });
 
@@ -307,6 +314,7 @@ Hooks.once('ready', function () {
       if (!(parent instanceof Actor)) return;
       // If the ancestry's tag or extra tags changed, recompute the actor's tags
       if (foundry.utils.hasProperty(changes, 'system.tag') ||
+          foundry.utils.hasProperty(changes, 'system.sizeTag') ||
           foundry.utils.hasProperty(changes, 'system.extraTags')) {
         const next = parent._computeTagsFromItems();
         const autoNow = parent._computeAutoTagsFromItems();

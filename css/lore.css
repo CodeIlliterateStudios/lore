@@ -1148,6 +1148,11 @@ body.theme-light {
   border-color: var(--lore-c-green);
   background-color: rgba(60, 179, 113, 0.2);
 }
+.lore .tag-chip.is-size {
+  border-color: var(--lore-c-gold);
+  background-color: rgba(218, 165, 32, 0.22);
+  color: var(--lore-c-txt1);
+}
 .lore .biography {
   padding: 10px;
   height: 100%;

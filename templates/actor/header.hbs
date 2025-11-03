@@ -32,7 +32,7 @@
         <ul class="tag-list" role="list">
           {{#each system.tags as |tag|}}
             {{#if tag}}
-              <li class="tag-chip {{#if (isAncestryTag tag)}}is-ancestry{{/if}}" role="listitem" data-tag="{{tag}}">{{tagLabel tag}}</li>
+              <li class="tag-chip {{#if (isAncestryTag tag)}}is-ancestry{{/if}} {{#if (isSizeTag tag)}}is-size{{/if}}" role="listitem" data-tag="{{tag}}">{{tagLabel tag}}</li>
             {{/if}}
           {{/each}}
         </ul>

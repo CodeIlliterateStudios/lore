@@ -7,6 +7,11 @@
         <p class='hint'>Optional. If set, this ancestry will add a tag to the actor when applied. Keep it simple: lowercase, no spaces if you plan to reference it in rules later.</p>
       </div>
       <div class='item-options grid-span-2'>
+        <label class='resource-label'>Size Tag</label>
+        <input class='resource-input' type='text' name='system.sizeTag' value='{{system.sizeTag}}' placeholder='e.g. small, medium, large' />
+        <p class='hint'>Optional. If set, a size tag is added to the actor. Size tags are highlighted in gold on actor sheets.</p>
+      </div>
+      <div class='item-options grid-span-2'>
         <label class='resource-label'>Additional Tags</label>
         <input class='resource-input' type='text' name='system.extraTags' value='{{system.extraTags}}' placeholder='e.g. humanoid, aquatic, feline' />
         <p class='hint'>Comma- or space-separated list of non-ancestry tags this ancestry applies (e.g., humanoid, feline). These appear as plain tags on the actor.</p>
@@ -14,5 +19,27 @@
     </div>
   </div>
   <div class='details ancestry-details'>
+    <fieldset class="item-options">
+      <legend class="resource-label">Biography Fields</legend>
+      <p class='hint'>Select which biography fields appear on actor sheets when this ancestry is equipped.</p>
+      <div class='grid grid-4col'>
+        <label class='checkbox'>
+          <input type='checkbox' name='system.bioFields.gender' {{checked system.bioFields.gender}}>
+          {{localize "LORE.Actor.base.FIELDS.Gender.label"}}
+        </label>
+        <label class='checkbox'>
+          <input type='checkbox' name='system.bioFields.age' {{checked system.bioFields.age}}>
+          {{localize "LORE.Actor.base.FIELDS.Age.label"}}
+        </label>
+        <label class='checkbox'>
+          <input type='checkbox' name='system.bioFields.height' {{checked system.bioFields.height}}>
+          {{localize "LORE.Actor.base.FIELDS.Height.label"}}
+        </label>
+        <label class='checkbox'>
+          <input type='checkbox' name='system.bioFields.weight' {{checked system.bioFields.weight}}>
+          {{localize "LORE.Actor.base.FIELDS.Weight.label"}}
+        </label>
+      </div>
+    </fieldset>
   </div>
 </section>

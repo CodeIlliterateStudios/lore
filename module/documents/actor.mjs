@@ -110,6 +110,7 @@ export class loreActor extends Actor {
       let ancestryItem = null;
       if (eqId) ancestryItem = this.items.get(eqId) ?? null;
       const tagKey = String(ancestryItem?.system?.tag ?? '').trim();
+      const sizeKey = String(ancestryItem?.system?.sizeTag ?? '').trim();
 
       // Collect extra non-ancestry tags from ancestry (comma/space separated string)
       const extra = ancestryItem?.system?.extraTags;
@@ -127,6 +128,7 @@ export class loreActor extends Actor {
 
       const out = new Set();
       if (tagKey) out.add(`ancestry:${tagKey}`);
+      if (sizeKey) out.add(`size:${sizeKey}`);
       for (const t of extraTags) {
         const norm = String(t).trim();
         if (norm) out.add(norm.toLowerCase());

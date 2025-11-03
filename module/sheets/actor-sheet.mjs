@@ -234,6 +234,20 @@ export class loreActorSheet extends api.HandlebarsApplicationMixin(sheets.ActorS
             relativeTo: this.actor,
           }
         );
+        // Compute which biography fields should be visible based on equipped ancestry
+        try {
+          const ancestry = context?.equipped?.ancestry ?? null;
+          const bf = ancestry?.system?.bioFields ?? {};
+          context.bioVisibility = {
+            gender: ancestry ? (bf.gender ?? true) : true,
+            age: ancestry ? (bf.age ?? true) : true,
+            height: ancestry ? (bf.height ?? true) : true,
+            weight: ancestry ? (bf.weight ?? true) : true,
+          };
+        } catch (e) {
+          console.warn('LORE | Failed computing biography field visibility', e);
+          context.bioVisibility = { gender: true, age: true, height: true, weight: true };
+        }
         break;
       case 'effects':
         context.tab = context.tabs[partId];
